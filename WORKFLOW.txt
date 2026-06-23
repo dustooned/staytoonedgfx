@@ -1,0 +1,486 @@
+================================================================
+  STAY TOONED GFX — WORKFLOW GUIDE
+  How to add content, tag it, and push it live
+================================================================
+
+  QUICK REFERENCE — The pipeline every time:
+  ─────────────────────────────────────────────
+  1. Export image(s) at the right size  →  IMAGE-SPECS.txt
+  2. Rename with zero-padded numbers    →  01.jpg, 02.jpg...
+  3. Place in the correct folder
+  4. Edit or create the .json tag file
+  5. Run:  node scan.js
+  6. Push to GitHub
+
+
+================================================================
+  PART 1: FOLDER STRUCTURE AT A GLANCE
+================================================================
+
+  v1/
+  ├── index.html              ← homepage (series grid + updates + subscribe)
+  ├── series.html             ← series archive (auto-populated)
+  ├── reader.html             ← comic reader (auto-populated)
+  ├── blog.html               ← blog index (add entries manually here)
+  ├── about.html              ← about page (edit directly)
+  ├── archive.html            ← full chapter archive (auto-populated)
+  ├── 404.html                ← GitHub Pages custom 404
+  ├── scan.js                 ← run after any content change
+  ├── manifest.json           ← AUTO-GENERATED — do not edit
+  ├── sitemap.xml             ← AUTO-GENERATED — do not edit
+  ├── CNAME                   ← custom domain (staytoonedgfx.com)
+  │
+  ├── assets/
+  │   ├── site.webmanifest    ← PWA/Android app manifest (already created)
+  │   ├── favicon.ico         ← drop in (16+32px multi-size)
+  │   ├── favicon-16x16.png   ← drop in
+  │   ├── favicon-32x32.png   ← drop in
+  │   ├── apple-touch-icon.png ← drop in (180×180)
+  │   ├── android-chrome-192x192.png  ← drop in
+  │   ├── android-chrome-512x512.png  ← drop in
+  │   ├── logo.png            ← drop in (site header logo)
+  │   └── artist.jpg          ← drop in (about page photo)
+  │
+  ├── comics/
+  │   └── [series-slug]/
+  │       ├── series.json     ← series metadata (edit this)
+  │       ├── cover.jpg       ← homepage card image
+  │       ├── header.png      ← title card logo / treatment
+  │       ├── bg.jpg          ← page background (cover or tile)
+  │       ├── cursor.png      ← custom cursor for this series
+  │       └── [chapter-slug]/
+  │           ├── chapter.json  ← chapter metadata (edit this)
+  │           ├── bg.jpg        ← chapter-specific bg (optional)
+  │           ├── 01.jpg
+  │           ├── 02.jpg
+  │           └── ...
+  │
+  └── posts/
+      └── [post-slug].html    ← one file per blog post
+
+
+================================================================
+  PART 2: DATA TAGS — WHAT TO PUT IN YOUR JSON FILES
+================================================================
+
+  ── series.json ──────────────────────────────────────────────
+
+  Location: comics/[series-slug]/series.json
+
+  {
+    "title":          "Full display name of the series",
+    "shortName":      "Abbreviation shown in tight spaces (IAGL, Dio...)",
+    "description":    "One or two sentences. Shown on the homepage card.",
+    "accentColor":    "#hex",     ← hover glow, badge colour, button accents
+    "theme":          "warm",     ← visual theme for the header. Options:
+                                     "warm"  — amber/gold (IAGL)
+                                     "cool"  — cyan/blue (Melvin)
+                                     "dark"  — red/dramatic (Dio La Damned)
+    "backgroundMode": "cover"     ← how bg.jpg is displayed. Options:
+                                     "cover" — scales to fill the screen (default)
+                                     "tile"  — repeats as a seamless pattern
+  }
+
+  Optional files — drop in the series folder, scan.js picks them up:
+
+    cover.jpg    ← series card image on the homepage   (600 × 800 px)
+    header.png   ← title treatment / logo in the banner (500 px wide, PNG)
+    bg.jpg       ← background for series and reader pages
+    cursor.png   ← custom cursor active on this series' pages
+    cursor.gif   ← animated cursor (alternative to cursor.png)
+
+  Background mode guide:
+
+    "cover" (default — omit this field if you don't need tile):
+      bg.jpg should be large: 1920 × 1080 px or bigger.
+      Scales to fill the screen. Fixed while scrolling.
+      Good for: illustrations, character art, splash art.
+
+    "tile":
+      bg.jpg should be a small seamless pattern: 200–800 px square.
+      Repeats to fill the screen. Scrolls with the page.
+      Good for: textures, graph paper, dot grids, halftone,
+      crosshatch, newsprint, lined paper, repeating motifs.
+      See IMAGE-SPECS.txt Part 2 for tile sizing and design tips.
+
+
+  ── chapter.json ─────────────────────────────────────────────
+
+  Location: comics/[series-slug]/[chapter-slug]/chapter.json
+
+  {
+    "title":          "Chapter 1: Last Limp, Half Moon",
+    "date":           "2025-01-15",   ← YYYY-MM-DD, shown on chapter card
+    "backgroundMode": "tile"          ← optional — overrides the series setting
+                                         for this chapter only ("cover" or "tile")
+  }
+
+  Optional: drop bg.jpg inside the chapter folder to give that chapter
+  a different background from the series default.
+  Pair with "backgroundMode" in chapter.json to also change cover/tile.
+
+
+  ── Accent colour reference ───────────────────────────────────
+
+    Dio La Damned:    "#c62828"   (deep red)
+    It's a Good Life: "#f0a500"  (amber)
+    Melvin:           "#4fc3f7"  (cyan)
+
+    To change: edit accentColor in series.json and run node scan.js.
+
+
+================================================================
+  PART 3: ADDING PAGES TO AN EXISTING CHAPTER
+================================================================
+
+  This is the most common task — adding new pages to a chapter
+  that already exists.
+
+  Step 1 — Export your art
+    See IMAGE-SPECS.txt for the correct pixel dimensions.
+    Export as WebP (preferred) or JPEG at 85% quality.
+
+  Step 2 — Rename your files
+    Use zero-padded numbers continuing from the last page:
+
+      If the chapter already has 01.jpg–05.jpg,
+      your new files become 06.jpg, 07.jpg, 08.jpg...
+
+  Step 3 — Drop them in the chapter folder
+
+      comics/dio/chapter-01/06.jpg
+      comics/dio/chapter-01/07.jpg
+
+  Step 4 — Run the scanner
+
+      node scan.js
+
+    Check the output. It should show the updated page count.
+    manifest.json and sitemap.xml are both updated automatically.
+
+  Step 5 — Push to GitHub
+
+      git add .
+      git commit -m "dio ch01: add pages 6-7"
+      git push
+
+
+================================================================
+  PART 4: ADDING A NEW CHAPTER
+================================================================
+
+  Step 1 — Create the chapter folder
+
+    Name it with zero-padded numbers to keep them in order:
+      comics/dio/chapter-02/
+
+  Step 2 — Create chapter.json inside it
+
+    Minimum required:
+      {
+        "title": "Chapter 2: Title Here",
+        "date":  "2026-07-01"
+      }
+
+  Step 3 — Add your page images
+
+      comics/dio/chapter-02/01.jpg
+      comics/dio/chapter-02/02.jpg
+      ...
+
+    Optional extras for this chapter:
+      bg.jpg           → chapter-specific background
+      chapter.json     → add "backgroundMode": "tile" to tile that bg
+
+  Step 4 — Run the scanner
+
+      node scan.js
+
+  Step 5 — Push
+
+      git add .
+      git commit -m "dio: add chapter 2"
+      git push
+
+
+================================================================
+  PART 5: ADDING A NEW SERIES
+================================================================
+
+  Step 1 — Create the series folder
+
+    Use a short, lowercase, hyphenated slug. This becomes the URL.
+      comics/my-new-series/
+
+  Step 2 — Create series.json
+
+    {
+      "title":       "My New Series",
+      "shortName":   "MNS",
+      "description": "What the series is about, in 1-2 sentences.",
+      "accentColor": "#hex",
+      "theme":       "warm"
+    }
+
+  Step 3 — Add series assets (all optional but recommended)
+
+    Drop these directly in the series folder:
+      cover.jpg    → homepage card image        (600 × 800 px)
+      header.png   → title treatment / logo     (500 px wide max, PNG)
+      bg.jpg       → page background            (1920 px wide for cover mode)
+      cursor.png   → custom series cursor       (32–64 px square, PNG)
+
+  Step 4 — Create the first chapter
+
+      comics/my-new-series/chapter-01/chapter.json
+      comics/my-new-series/chapter-01/01.jpg
+      comics/my-new-series/chapter-01/02.jpg
+      ...
+
+  Step 5 — Run the scanner
+
+      node scan.js
+
+    The new series appears on the homepage automatically.
+
+  Step 6 — Push
+
+      git add .
+      git commit -m "add: My New Series, chapter 1"
+      git push
+
+
+================================================================
+  PART 6: ADDING A CUSTOM CURSOR
+================================================================
+
+  Each series can have its own cursor that activates on the
+  series page and reader. No code changes needed — just drop
+  the file in the series folder.
+
+  Step 1 — Create the cursor image
+
+    See IMAGE-SPECS.txt Part 5 for size and design specs.
+    Recommended: 32×32 or 64×64 px PNG with transparency.
+    Design the "clicking point" at the top-left corner.
+
+  Step 2 — Name and place the file
+
+      comics/iagl/cursor.png
+      comics/melvin/cursor.png
+      comics/dio/cursor.png
+
+    For animated: cursor.gif instead of cursor.png.
+
+  Step 3 — Run the scanner
+
+      node scan.js
+
+  Step 4 — Push
+
+      git add .
+      git commit -m "iagl: add custom cursor"
+      git push
+
+
+================================================================
+  PART 7: WRITING A BLOG POST
+================================================================
+
+  Step 1 — Add the entry to the blog index
+
+    Open blog.html and find the posts-list div.
+    Copy this block and paste it at the TOP (newest first):
+
+      <a href="posts/your-slug.html" class="post-card">
+        <span class="post-date">Jul 1, 2026</span>
+        <div>
+          <div class="post-title">Your Post Title</div>
+          <div class="post-excerpt">One line teaser about the post.</div>
+        </div>
+      </a>
+
+    Replace:
+      your-slug.html  → the filename you'll create in the next step
+      Jul 1, 2026     → the publish date
+      Your Post Title → the post title
+      One line teaser → a short excerpt shown on the blog index
+
+  Step 2 — Create the post file
+
+    Duplicate  posts/welcome.html  and rename it to your slug:
+      posts/your-slug.html
+
+    Open it and edit:
+      - The <title> tag at the top
+      - The <h1> heading
+      - The <p class="post-meta"> date line
+      - The content between the <!-- YOUR POST CONTENT --> markers
+
+  Step 3 — Push
+
+      git add .
+      git commit -m "blog: Your Post Title"
+      git push
+
+
+================================================================
+  PART 8: UPDATING THE ABOUT PAGE
+================================================================
+
+  about.html is a static page — edit it directly, no scan needed.
+
+  What to fill in (each section is marked with a comment):
+
+  ── Artist photo ─────────────────────────────────────────────
+
+    Drop your photo at:   assets/artist.jpg
+    Recommended size:     400 × 400 px minimum (displays as 140px circle)
+    Format:               JPEG or WebP
+
+    The photo appears automatically once the file exists.
+    If the file is missing, a 🎨 emoji placeholder shows instead.
+
+  ── Bio paragraph ────────────────────────────────────────────
+
+    Find the comment: <!-- ADD YOUR BIO HERE -->
+    Replace the placeholder paragraph below it with your own text.
+
+  ── Series blurbs ────────────────────────────────────────────
+
+    Three clickable blurb cards, one per series.
+    Update the text inside each .series-blurb-desc span.
+    The accent bar colour is set by style="--blurb-accent:#hex"
+    — these already match the series accent colours.
+
+  ── Tools paragraph ──────────────────────────────────────────
+
+    Find the comment: <!-- UPDATE THIS to reflect your actual process -->
+    Replace the placeholder with what you actually use.
+
+  ── Links ────────────────────────────────────────────────────
+
+    Find the comment: <!-- ADD ANY SOCIAL / CONTACT LINKS HERE -->
+    Add your links in whatever format you want.
+
+  No scan.js needed — push directly after editing:
+
+      git add about.html
+      git commit -m "about: update bio"
+      git push
+
+
+================================================================
+  PART 9: ADDING FAVICON / SITE ASSETS
+================================================================
+
+  All files go in the assets/ folder.
+  The HTML link tags are already wired up on every page.
+
+  Favicon set (6 files to make):
+
+    assets/favicon.ico                  16+32 px multi-size
+    assets/favicon-16x16.png            16 × 16
+    assets/favicon-32x32.png            32 × 32
+    assets/apple-touch-icon.png         180 × 180
+    assets/android-chrome-192x192.png   192 × 192
+    assets/android-chrome-512x512.png   512 × 512
+
+    Quickest method:
+      Design at 512×512 → upload to https://favicon.io →
+      download the pack → rename to match above → drop in assets/.
+
+  Other site assets:
+
+    assets/logo.png     Site header logo. 72px tall PNG, transparent bg.
+                        Displays at 36px in the header bar.
+
+    assets/artist.jpg   About page photo. 400×400 px min, JPEG or WebP.
+                        Displays as a 140px circle on the about page.
+
+  After adding any asset file:
+
+      git add assets/
+      git commit -m "assets: add favicon set"
+      git push
+
+  No node scan.js needed for assets — they're referenced statically.
+
+
+================================================================
+  PART 10: FULL PUSH PIPELINE (checklist)
+================================================================
+
+  Run this every time you add or change comic content:
+
+  [ ] Export and rename images correctly (IMAGE-SPECS.txt)
+  [ ] Place files in the right folders
+  [ ] Check/update chapter.json or series.json if needed
+  [ ] node scan.js            ← always run this after file changes
+  [ ] Check scanner output for any [warn] or [skip] messages
+  [ ] manifest.json and sitemap.xml updated automatically ✓
+  [ ] git add .
+  [ ] git commit -m "short description of what changed"
+  [ ] git push
+
+  GitHub Pages rebuilds automatically after each push.
+  Your live site updates within 1–2 minutes.
+
+  For non-comic changes (about page, blog post, assets):
+  [ ] Make the change
+  [ ] git add [specific files]
+  [ ] git commit -m "description"
+  [ ] git push
+  (No scan.js needed for static page edits or asset drops)
+
+
+================================================================
+  PART 11: COMMON MISTAKES & FIXES
+================================================================
+
+  Problem: New pages not showing on the site
+  Fix: You forgot to run node scan.js, or forgot to push.
+       Always: scan → push, in that order.
+
+  Problem: Pages are out of order
+  Fix: File names are not zero-padded. Rename to 01, 02, 03...
+       not 1, 2, 3 (10 sorts before 2 alphabetically).
+
+  Problem: Chapter or series not appearing
+  Fix: Missing series.json or chapter.json in the folder.
+       The scanner skips folders without these files.
+
+  Problem: Background or cover image not showing
+  Fix: Check the filename exactly — cover.jpg, bg.jpg, header.png,
+       cursor.png. The scanner only looks for those exact names.
+       Filenames are case-sensitive on GitHub. Use lowercase.
+
+  Problem: Background shows but doesn't tile
+  Fix: Check "backgroundMode": "tile" is in series.json (or chapter.json).
+       Run node scan.js after editing the JSON.
+
+  Problem: Custom cursor not appearing
+  Fix: File must be named cursor.png (or cursor.gif) and placed
+       directly in the series folder (not the chapter folder).
+       Run node scan.js after adding it.
+
+  Problem: Wrong date on a chapter card
+  Fix: Edit the "date" field in chapter.json (use YYYY-MM-DD),
+       then run node scan.js and push.
+
+  Problem: Strip mode not triggering for a wide comic
+  Fix: The image width must be more than 2× the height.
+       A 1200×420 strip = 2.86:1 → strip mode activates. ✓
+       A 1200×700 image = 1.71:1 → treated as landscape, no scroll.
+
+  Problem: Favicon not showing in browser
+  Fix: Hard refresh (Ctrl+Shift+R). Favicons are aggressively
+       cached. Also check DevTools → Application → Manifest
+       to confirm the files are loading.
+
+  Problem: Site looks broken locally (fetch errors, blank page)
+  Fix: You're opening index.html directly as a file.
+       Use a local server: npx serve . -l 3000
+       Then open http://localhost:3000 instead.
+
+================================================================

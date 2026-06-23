@@ -1,0 +1,9 @@
+{
+  "name": "staytoonedgfx",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "scan": "node scan.js",
+    "dev": "npx serve . -l 3000"
+  }
+}

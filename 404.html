@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Stay Tooned GFX</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#0e0e0e">
+  <style>
+    .not-found {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      gap: 20px;
+    }
+    .not-found-code {
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: var(--border);
+    }
+    .not-found h1 {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .not-found p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+    .not-found-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .not-found-links a {
+      padding: 9px 20px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .not-found-links a:hover {
+      background: var(--surface);
+      border-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔝 SITE HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.png" alt="Stay Tooned GFX" onerror="this.style.display='none'">
+        <span class="logo-text">Stay Tooned GFX</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="#" class="nav-donate" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 🚫 404 CONTENT -->
+  <main class="not-found">
+    <div class="not-found-code">404</div>
+    <h1>Page not found.</h1>
+    <p>Whatever you were looking for wandered off. It does that.</p>
+    <div class="not-found-links">
+      <a href="index.html">← Home</a>
+      <a href="blog.html">Blog</a>
+    </div>
+  </main>
+
+  <!-- 🦶 FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+        Stay Tooned GFX
+      </div>
+      <p class="footer-copy">&copy; <span class="js-year"></span> Stay Tooned GFX. All characters and artwork are protected.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="archive.html">Archive</a>
+        <a href="#" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.js-year').forEach(el => el.textContent = new Date().getFullYear());
+  </script>
+</body>
+</html>

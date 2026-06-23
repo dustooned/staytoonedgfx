@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="News and updates from Stay Tooned GFX.">
+  <title>Blog — Stay Tooned GFX</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#0e0e0e">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.png" alt="Stay Tooned GFX" onerror="this.style.display='none'">
+        <span class="logo-text">Stay Tooned GFX</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="#" class="nav-donate" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="blog-hero section">
+      <h1>Blog</h1>
+      <p>Updates, thoughts, and behind-the-scenes from Stay Tooned GFX.</p>
+    </div>
+
+    <div class="section" style="padding-top: 0;">
+
+      <div class="posts-list">
+
+        <!-- ═══════════════════════════════════════════════════════
+             HOW TO ADD A NEW POST:
+             Copy one <a class="post-card"> block below, paste it
+             at the TOP of the list (newest first), and fill in:
+               - href="posts/your-post-slug.html"
+               - data-date (YYYY-MM-DD, used for display)
+               - post-title and post-excerpt text
+             Then create the matching HTML file in posts/.
+             ═══════════════════════════════════════════════════════ -->
+
+        <a href="posts/welcome.html" class="post-card">
+          <span class="post-date">Jun 22, 2026</span>
+          <div>
+            <div class="post-title">Welcome to the New Site</div>
+            <div class="post-excerpt">Fresh coat of paint, same weird comics. Here's what's new and what's coming.</div>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+        Stay Tooned GFX
+      </div>
+      <p class="footer-copy">&copy; <span class="js-year"></span> Stay Tooned GFX. All characters and artwork are protected.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="archive.html">Archive</a>
+        <a href="#" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.js-year').forEach(el => el.textContent = new Date().getFullYear());
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "series": [
+    {
+      "slug": "dio",
+      "title": "Dio La Damned",
+      "shortName": "Dio",
+      "description": "Dark, dramatic, and a little bit damned. Dio's world is not what it seems.",
+      "accentColor": "#c62828",
+      "theme": "dark",
+      "backgroundMode": "cover",
+      "cover": null,
+      "headerImage": null,
+      "background": null,
+      "cursor": null,
+      "chapterCount": 1,
+      "chapters": [
+        {
+          "slug": "chapter-01",
+          "title": "Chapter 1",
+          "date": "2024-01-01",
+          "backgroundMode": null,
+          "pageCount": 0,
+          "thumbnail": null,
+          "pages": [],
+          "background": null
+        }
+      ]
+    },
+    {
+      "slug": "iagl",
+      "title": "It's a Good Life",
+      "shortName": "IAGL",
+      "description": "A slice-of-life comic about the absurd little moments that make up every day.",
+      "accentColor": "#f0a500",
+      "theme": "warm",
+      "backgroundMode": "cover",
+      "cover": null,
+      "headerImage": null,
+      "background": null,
+      "cursor": null,
+      "chapterCount": 1,
+      "chapters": [
+        {
+          "slug": "chapter-01",
+          "title": "Chapter 1",
+          "date": "2024-01-01",
+          "backgroundMode": null,
+          "pageCount": 0,
+          "thumbnail": null,
+          "pages": [],
+          "background": null
+        }
+      ]
+    },
+    {
+      "slug": "melvin",
+      "title": "Melvin",
+      "shortName": "Melvin",
+      "description": "The misadventures of Melvin — everyone's favorite disaster.",
+      "accentColor": "#4fc3f7",
+      "theme": "cool",
+      "backgroundMode": "cover",
+      "cover": null,
+      "headerImage": null,
+      "background": null,
+      "cursor": null,
+      "chapterCount": 1,
+      "chapters": [
+        {
+          "slug": "chapter-01",
+          "title": "Chapter 1",
+          "date": "2024-01-01",
+          "backgroundMode": null,
+          "pageCount": 0,
+          "thumbnail": null,
+          "pages": [],
+          "background": null
+        }
+      ]
+    }
+  ]
+}

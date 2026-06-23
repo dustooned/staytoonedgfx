@@ -1,0 +1,1365 @@
+/* ┌─────────────────────────────────────────────────────┐
+   │  style.css — Stay Tooned GFX                        │
+   │                                                     │
+   │  Sections (Ctrl+F the emoji to jump):               │
+   │  🧹 RESET & ROOT VARIABLES                          │
+   │  🌡️  THEMES  (warm / cool / dark)                   │
+   │  🔲 BASE                                            │
+   │  📌 SITE HEADER                                     │
+   │  🦶 FOOTER                                          │
+   │  📐 SHARED: SECTION & BUTTONS                       │
+   │  🏠 HOME: HERO                                      │
+   │  📚 HOME: SERIES GRID                               │
+   │  📬 HOME: SUBSCRIBE / MAILCHIMP                     │
+   │  📝 BLOG PAGE                                       │
+   │  🎭 SERIES: TITLE CARD                              │
+   │  🗂️  SERIES: CHAPTERS GRID                          │
+   │  🔧 READER: TOOLBAR                                 │
+   │  📖 READER: PAGE DISPLAY                            │
+   │  ⬇️  READER: BOTTOM NAV                             │
+   │  🛠️  UTILITY                                        │
+   │  📱 RESPONSIVE                                      │
+   └─────────────────────────────────────────────────────┘ */
+
+/* ─────────────────────────────────────────────────────
+   🧹 RESET & ROOT VARIABLES
+   ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:            #0e0e0e;
+  --surface:       #181818;
+  --surface-alt:   #222;
+  --border:        #2a2a2a;
+  --text:          #e8e8e8;
+  --text-muted:    #888;
+  --header-height: 60px;
+  --series-accent: #ffffff;
+  --series-bg:     none;
+  /* Theme defaults — overridden per [data-theme] below */
+  --theme-overlay:        linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.88) 100%);
+  --theme-glow:           none;
+  --theme-line:           rgba(255,255,255,0.25);
+  --theme-title-style:    normal;
+  --theme-title-transform: none;
+  --theme-title-spacing:  -0.02em;
+}
+
+/* ─────────────────────────────────────────────────────
+   🌡️ THEMES
+   Applied via <body data-theme="warm|cool|dark">
+   Sets the visual personality for the title card header,
+   title text glow, bottom border line, and button accents.
+   ───────────────────────────────────────────────────── */
+
+/* 🔥 WARM — It's a Good Life (amber / golden) */
+[data-theme="warm"] {
+  --theme-overlay:         linear-gradient(135deg, rgba(240,165,0,0.4) 0%, rgba(8,5,0,0.92) 65%);
+  --theme-glow:            0 0 50px rgba(240,165,0,0.35), 0 2px 10px rgba(0,0,0,0.9);
+  --theme-line:            rgba(240,165,0,0.7);
+  --theme-title-style:     italic;
+  --theme-title-transform: none;
+  --theme-title-spacing:   -0.02em;
+}
+
+/* 🧊 COOL — Melvin (cyan / blue) */
+[data-theme="cool"] {
+  --theme-overlay:         linear-gradient(180deg, rgba(79,195,247,0.18) 0%, rgba(4,8,14,0.93) 68%);
+  --theme-glow:            0 0 30px rgba(79,195,247,0.25), 0 2px 8px rgba(0,0,0,0.9);
+  --theme-line:            rgba(79,195,247,0.65);
+  --theme-title-style:     normal;
+  --theme-title-transform: none;
+  --theme-title-spacing:   -0.03em;
+}
+
+/* 🩸 DARK — Dio La Damned (red / dramatic) */
+[data-theme="dark"] {
+  --theme-overlay:         radial-gradient(ellipse at 50% 0%, rgba(198,40,40,0.38) 0%, rgba(0,0,0,0.98) 60%);
+  --theme-glow:            0 0 60px rgba(198,40,40,0.4), 0 0 20px rgba(198,40,40,0.2), 0 2px 6px rgba(0,0,0,1);
+  --theme-line:            rgba(198,40,40,0.85);
+  --theme-title-style:     normal;
+  --theme-title-transform: uppercase;
+  --theme-title-spacing:   0.08em;
+}
+
+/* ─────────────────────────────────────────────────────
+   🔲 BASE
+   ───────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Applied by JS when a series background image exists */
+body.has-series-bg {
+  background-image: var(--series-bg);
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+/* 🔲 TILE MODE — repeating pattern/texture background
+   backgroundMode: "tile" in series.json activates this.
+   Uses auto size (natural image dimensions) and scrolls
+   with the page instead of fixing in place.              */
+body.has-series-bg.bg-tile {
+  background-size: auto;
+  background-repeat: repeat;
+  background-position: top left;
+  background-attachment: scroll;
+}
+
+main { flex: 1; }
+
+/* ─────────────────────────────────────────────────────
+   📌 SITE HEADER
+   ───────────────────────────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* 🔤 Logo — image + text, image hidden via onerror if missing */
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.site-logo img { height: 36px; width: auto; }
+
+.logo-text {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* 🔗 Nav links */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.site-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.site-nav a:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+
+/* 💸 Donate — outlined pill to stand out from regular links */
+.nav-donate {
+  color: var(--text) !important;
+  background: rgba(255,255,255,0.1) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+.nav-donate:hover {
+  background: rgba(255,255,255,0.18) !important;
+  border-color: rgba(255,255,255,0.3) !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   🦶 FOOTER
+   ───────────────────────────────────────────────────── */
+.site-footer {
+  background: #000;
+  border-top: 1px solid var(--border);
+  padding: 36px 24px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.footer-brand img { height: 28px; opacity: 0.6; }
+
+/* ©️ Copyright line — year filled by .js-year via JS */
+.footer-copy { color: var(--text-muted); font-size: 0.8rem; }
+
+.footer-nav { display: flex; gap: 20px; }
+
+.footer-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.footer-nav a:hover { color: var(--text); }
+
+/* ─────────────────────────────────────────────────────
+   📐 SHARED: SECTION & BUTTONS
+   ───────────────────────────────────────────────────── */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+.section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+/* 🔘 NAV BUTTONS — used in reader toolbar and bottom nav */
+.nav-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Hover colour follows the series accent variable */
+.nav-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--series-accent);
+  color: var(--series-accent);
+}
+
+.nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* Smaller square variant for ⏮ / ⏭ icon buttons */
+.nav-btn--icon { padding: 8px 12px; font-size: 0.95rem; }
+
+/* ─────────────────────────────────────────────────────
+   🏠 HOME: HERO
+   ───────────────────────────────────────────────────── */
+.home-hero {
+  text-align: center;
+  padding: 96px 24px 72px;
+}
+
+.home-hero h1 {
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 18px;
+}
+
+.home-hero p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────────────────────────────
+   📚 HOME: SERIES GRID
+   ───────────────────────────────────────────────────── */
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.series-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s;
+}
+
+/* Hover border colour driven by --card-accent set inline by JS */
+.series-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--card-accent, var(--series-accent));
+}
+
+/* Cover wrap link — fills the image area, no text decoration */
+.series-card-cover-wrap {
+  display: block;
+  text-decoration: none;
+}
+
+/* Title link inside card body */
+.series-card-title-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.series-card-title-link:hover .series-card-title {
+  text-decoration: underline;
+}
+
+.series-card-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  background: var(--surface-alt);
+  display: block;
+}
+
+.series-card-cover-placeholder {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: var(--border);
+}
+
+.series-card-body {
+  padding: 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.series-card-title  { font-size: 1rem; font-weight: 700; }
+
+.series-card-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  flex: 1;
+}
+
+.series-card-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─────────────────────────────────────────────────────
+   📬 HOME: SUBSCRIBE / MAILCHIMP
+   ───────────────────────────────────────────────────── */
+.subscribe-section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.subscribe-inner {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.subscribe-inner h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 10px; }
+.subscribe-inner p  { color: var(--text-muted); margin-bottom: 36px; font-size: 0.95rem; }
+
+/* Force Mailchimp embed to match the dark theme */
+#mc_embed_signup { background: transparent !important; }
+
+#mc_embed_signup input[type="email"] {
+  background: var(--bg) !important;
+  border: 1px solid #444 !important;
+  color: var(--text) !important;
+  border-radius: 4px !important;
+  padding: 11px 14px !important;
+  font-size: 0.95rem !important;
+  width: 100% !important;
+  margin-bottom: 10px !important;
+  font-family: inherit !important;
+}
+
+#mc_embed_signup .button {
+  background: var(--series-accent) !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 11px 28px !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  font-family: inherit !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   📝 BLOG PAGE
+   ───────────────────────────────────────────────────── */
+.blog-hero { padding: 72px 24px 0; }
+.blog-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.blog-hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+/* Posts are a flat stacked list */
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.post-card {
+  background: var(--surface);
+  padding: 22px 28px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-card:last-child { border-bottom: none; }
+.post-card:hover { background: var(--surface-alt); }
+
+.post-date {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+.post-title   { font-size: 1rem; font-weight: 600; }
+.post-excerpt { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+/* ─────────────────────────────────────────────────────
+   📦 CONTENT PANEL
+   When a series background image is active, the content
+   below the title card floats in a centered dark panel
+   so the background shows around the sides.
+   No styles when there's no background — invisible div.
+   ───────────────────────────────────────────────────── */
+body.has-series-bg .content-panel {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: rgba(10, 10, 10, 0.88);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 8px 8px;
+}
+
+/* ─────────────────────────────────────────────────────
+   🎭 SERIES: TITLE CARD
+   The big branded header on series.html and reader.html.
+   Background = series bg image (or black).
+   Overlay    = themed gradient (--theme-overlay).
+   Bottom edge = glowing themed line (::after pseudo).
+   ───────────────────────────────────────────────────── */
+.title-card {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background-color: #000;
+  background-image: var(--series-bg);   /* set by JS if bg image exists */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Smaller variant used on the reader page */
+.title-card--reader { min-height: 240px; }
+
+/* Themed gradient overlay — personality lives here */
+.title-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--theme-overlay);
+}
+
+/* Glowing themed line at the bottom edge */
+.title-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--theme-line) 40%, var(--theme-line) 60%, transparent 100%);
+  box-shadow: 0 0 20px var(--theme-line), 0 0 40px var(--theme-line);
+  opacity: 0.9;
+}
+
+.title-card-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px 44px;
+}
+
+/* Reader variant — centred layout */
+.title-card--reader .title-card-content {
+  padding: 28px 24px 34px;
+  text-align: center;
+}
+
+/* 🖼️ Header image (logo / title treatment graphic) */
+.series-header-img {
+  max-height: 120px;
+  width: auto;
+  max-width: 500px;
+  display: block;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.8));
+}
+
+.title-card--reader .series-header-img {
+  max-height: 80px;
+  margin: 0 auto 10px;
+}
+
+/* 🔤 Series title text (used when no header image exists) */
+.title-card-series-name {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.05;
+  font-style:       var(--theme-title-style);       /* italic for warm */
+  text-transform:   var(--theme-title-transform);   /* uppercase for dark */
+  letter-spacing:   var(--theme-title-spacing);
+  text-shadow:      var(--theme-glow);              /* per-theme glow */
+  margin-bottom: 12px;
+}
+
+.title-card--reader .title-card-series-name {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin-bottom: 6px;
+}
+
+/* Chapter name shown below series title in the reader */
+.title-card-chapter-name {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.title-card-desc {
+  margin-top: 12px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.95rem;
+  max-width: 540px;
+  line-height: 1.55;
+}
+
+/* ─────────────────────────────────────────────────────
+   🗂️ SERIES: CHAPTERS GRID
+   ───────────────────────────────────────────────────── */
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.chapter-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s ease, border-color 0.2s;
+}
+
+.chapter-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--series-accent);
+}
+
+.chapter-thumb {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  background: var(--surface-alt);
+}
+
+.chapter-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border);
+  font-size: 2.5rem;
+}
+
+.chapter-card-body { padding: 12px 14px; }
+.chapter-card-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+.chapter-card-meta  { font-size: 0.76rem; color: var(--text-muted); }
+
+/* ─────────────────────────────────────────────────────
+   🔧 READER: TOOLBAR
+   Back link | Chapter dropdown | ⏮ ‹ [count] › ⏭
+   ───────────────────────────────────────────────────── */
+.reader-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.back-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.back-link:hover { color: var(--text); }
+
+.chapter-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  flex: 1;
+  min-width: 140px;
+  max-width: 260px;
+}
+
+/* Pushes the ⏮ ‹ [count] › ⏭ group to the right */
+.reader-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.page-count {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 56px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ─────────────────────────────────────────────────────
+   📖 READER: PAGE DISPLAY
+   ───────────────────────────────────────────────────── */
+.reader-page-display {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 20px 8px;
+}
+
+/* Click cursor shows it's interactive (click to navigate) */
+.comic-page-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.comic-page-placeholder {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  border-radius: 3px;
+  font-size: 0.88rem;
+}
+
+/* ─────────────────────────────────────────────────────
+   ⬇️ READER: BOTTOM NAV
+   Mirrors the toolbar nav so readers don't scroll up
+   ───────────────────────────────────────────────────── */
+.reader-nav-bottom {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 20px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.reader-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─────────────────────────────────────────────────────
+   💾 CONTINUE READING BADGE
+   Small pill shown on chapter cards when the reader
+   has localStorage progress saved for that chapter.
+   ───────────────────────────────────────────────────── */
+.progress-badge {
+  display: inline-block;
+  background: var(--series-accent);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  vertical-align: middle;
+  margin-left: 6px;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────
+   🖼️ STRIP MODE
+   Applied by JS when a comic image is wider than 2:1
+   (e.g. IAGL newspaper strips, 2-page Dio spreads).
+   On mobile: scrolls horizontally at a readable height
+   instead of squashing to an unreadable thumbnail.
+   On desktop: fills the container normally.
+   ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .reader-page-display.strip-mode {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-left: 0;
+    padding-right: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .reader-page-display.strip-mode .comic-page-img {
+    width: auto;
+    height: 220px;       /* fixed height so it's comfortably readable */
+    max-width: none;     /* override the 100% width so it can extend past viewport */
+    border-radius: 0;
+    cursor: grab;
+    display: block;
+  }
+
+  .reader-page-display.strip-mode .comic-page-img:active {
+    cursor: grabbing;
+  }
+
+  /* Hint bar shown below the strip telling users to scroll */
+  .reader-page-display.strip-mode::after {
+    content: '← scroll →';
+    display: block;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    padding: 6px 0 2px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   📐 ORIENTATION OVERLAY
+   Shown on mobile portrait when viewing a landscape
+   image. Prompts the user to rotate for a better view.
+   Dismissed by rotating OR tapping "Keep portrait".
+   ───────────────────────────────────────────────────── */
+.orientation-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.93);
+  z-index: 500;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  padding: 40px 32px;
+}
+
+.orientation-overlay.show { display: flex; }
+
+.orientation-icon {
+  font-size: 3.5rem;
+  animation: rotate-hint 2.4s ease-in-out infinite;
+  display: block;
+}
+
+@keyframes rotate-hint {
+  0%, 40%, 100% { transform: rotate(0deg); }
+  65%, 85%      { transform: rotate(90deg); }
+}
+
+.orientation-overlay p {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.95rem;
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────
+   📊 READER: CHAPTER PROGRESS BAR
+   Thin bar above the page — fills left to right as you
+   read. Color follows --series-accent.
+   ───────────────────────────────────────────────────── */
+.chapter-progress-bar {
+  height: 3px;
+  background: var(--border);
+  max-width: 960px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter-progress-fill {
+  height: 100%;
+  background: var(--series-accent);
+  transition: width 0.35s ease;
+  box-shadow: 0 0 8px var(--series-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   🔍 READER: LIGHTBOX / ZOOM
+   Full-screen overlay for viewing a page at full size.
+   Opened via the ⤢ toolbar button or Z key.
+   Click outside or press Esc to close.
+   ───────────────────────────────────────────────────── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.97);
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lightbox.show { display: flex; }
+
+.lightbox img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 2px;
+  cursor: default;
+  box-shadow: 0 0 60px rgba(0,0,0,1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.lightbox-close:hover { background: rgba(255,255,255,0.2); }
+
+/* ─────────────────────────────────────────────────────
+   ⌨️ READER: SHORTCUT OVERLAY
+   Small reference panel shown by pressing ? or the
+   ? toolbar button. Click outside or press Esc to close.
+   ───────────────────────────────────────────────────── */
+.shortcut-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 550;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcut-overlay.show { display: flex; }
+
+.shortcut-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  min-width: 280px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+}
+
+.shortcut-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.shortcut-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.shortcut-table tr { border-bottom: 1px solid var(--border); }
+.shortcut-table tr:last-child { border-bottom: none; }
+.shortcut-table td { padding: 10px 0; }
+.shortcut-table td:last-child { color: var(--text-muted); padding-left: 16px; }
+
+kbd {
+  display: inline-block;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.shortcut-hint {
+  margin-top: 18px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────
+   🕐 HOME: LATEST UPDATES
+   Chronological feed of recent chapters across all series,
+   shown on the homepage below the series grid.
+   ───────────────────────────────────────────────────── */
+.update-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.update-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.update-row:last-child { border-bottom: none; }
+.update-row:hover { background: var(--surface-alt); }
+
+/* Accent colour dot matching the series */
+.update-series-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.update-series {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  min-width: 52px;
+}
+
+.update-chapter { font-size: 0.88rem; font-weight: 500; flex: 1; }
+
+.update-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.update-pages {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ─────────────────────────────────────────────────────
+   🔗 SERIES CARD: START READING CTA
+   Action links at the bottom of each series card.
+   ───────────────────────────────────────────────────── */
+.series-card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.start-reading-btn {
+  display: inline-block;
+  background: var(--card-accent, var(--series-accent));
+  color: #000;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.start-reading-btn:hover { opacity: 0.85; }
+
+.series-archive-link {
+  display: inline-block;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.series-archive-link:hover { color: var(--text); border-color: var(--text-muted); }
+
+/* ─────────────────────────────────────────────────────
+   ℹ️ ABOUT PAGE
+   ───────────────────────────────────────────────────── */
+.about-hero { padding: 72px 24px 0; }
+.about-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.about-hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+.about-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
+/* 🖼️ Artist photo or placeholder */
+.about-photo-wrap {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 36px;
+  background: var(--surface-alt);
+  border: 2px solid var(--border);
+}
+
+.about-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-photo-placeholder {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--border);
+}
+
+.about-content h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 40px 0 12px;
+  color: var(--text);
+}
+
+.about-content h2:first-child { margin-top: 0; }
+
+.about-content p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.series-blurbs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.series-blurb {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--blurb-accent, var(--border));
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.15s;
+  display: block;
+}
+
+.series-blurb:hover { background: var(--surface-alt); }
+
+.series-blurb-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.series-blurb-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ─────────────────────────────────────────────────────
+   🗂️ ARCHIVE PAGE
+   Full chapter listing, grouped by series.
+   ───────────────────────────────────────────────────── */
+.archive-hero { padding: 72px 24px 0; }
+.archive-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.archive-hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+.archive-series {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.archive-series-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.archive-series-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.archive-series-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.archive-series-link {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+
+.archive-series-link:hover { color: var(--text); }
+
+.archive-chapter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.archive-chapter-row:last-child { border-bottom: none; }
+.archive-chapter-row:hover { background: var(--surface-alt); }
+
+.archive-chapter-num {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+  flex-shrink: 0;
+}
+
+.archive-chapter-title { font-size: 0.9rem; font-weight: 500; flex: 1; }
+
+.archive-chapter-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.archive-chapter-pages {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  min-width: 44px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   🛠️ UTILITY
+   ───────────────────────────────────────────────────── */
+.loading, .empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.error {
+  text-align: center;
+  padding: 48px 24px;
+  color: #e05;
+  font-size: 0.88rem;
+}
+
+/* ─────────────────────────────────────────────────────
+   📱 RESPONSIVE
+   ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .header-inner  { padding: 0 16px; }
+  .logo-text     { display: none; }
+  .site-nav a    { padding: 5px 10px; font-size: 0.76rem; }
+  .section       { padding: 44px 16px; }
+  .home-hero     { padding: 68px 16px 52px; }
+  .title-card           { min-height: 240px; }
+  .title-card--reader   { min-height: 180px; }
+  .title-card-content   { padding: 24px 16px 32px; }
+  .reader-toolbar       { padding: 10px 14px; gap: 8px; }
+  .reader-nav-controls  { gap: 4px; }
+  .nav-btn              { padding: 7px 10px; font-size: 0.76rem; }
+  .nav-btn--icon        { padding: 7px 9px; }
+  .chapter-select       { max-width: 180px; }
+  .reader-page-display  { padding: 12px 14px 6px; }
+  .reader-nav-bottom    { padding: 10px 14px 32px; }
+  .post-card            { flex-direction: column; gap: 4px; }
+  .subscribe-inner      { padding: 56px 16px; }
+}

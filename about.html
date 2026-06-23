@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About Stay Tooned GFX — the artist, the comics, the process.">
+  <title>About — Stay Tooned GFX</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#0e0e0e">
+</head>
+<body>
+
+  <!-- 🔝 SITE HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.png" alt="Stay Tooned GFX" onerror="this.style.display='none'">
+        <span class="logo-text">Stay Tooned GFX</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="#" class="nav-donate" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 🏷️ PAGE HEADER -->
+    <div class="about-hero section">
+      <h1>About</h1>
+      <p>The artist, the comics, and how this thing came to be.</p>
+    </div>
+
+    <!-- 📝 ABOUT CONTENT -->
+    <div class="about-content">
+
+      <!-- 🖼️ ARTIST PHOTO — replace src with your image, e.g. assets/artist.jpg -->
+      <div class="about-photo-wrap">
+        <img src="assets/artist.jpg" alt="Artist photo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="about-photo-placeholder">🎨</div>
+      </div>
+
+      <h2>Who made this?</h2>
+      <p>
+        Hey — I'm the artist behind Stay Tooned GFX. I make comics that wander freely
+        and laugh strangely. This site is hand-built from scratch to be exactly what a
+        webcomic site should be: no ads, no algorithm, no nonsense — just the work.
+      </p>
+      <p>
+        <!-- ADD YOUR BIO HERE — replace this paragraph with your own words. -->
+        More about me goes here. Where you're from, what drives the work,
+        how long you've been drawing, what you do outside of comics. Keep it personal.
+      </p>
+
+      <h2>The Series</h2>
+
+      <!-- 📚 Series blurbs — update these to match your actual descriptions -->
+      <div class="series-blurbs">
+        <a href="series.html?s=iagl" class="series-blurb" style="--blurb-accent:#f0a500">
+          <div class="series-blurb-name">It's a Good Life</div>
+          <div class="series-blurb-desc">
+            A newspaper-strip style comic about the absurd little moments that make up every day.
+            Dry, warm, and frequently bewildered.
+          </div>
+        </a>
+        <a href="series.html?s=melvin" class="series-blurb" style="--blurb-accent:#4fc3f7">
+          <div class="series-blurb-name">Melvin</div>
+          <div class="series-blurb-desc">
+            The misadventures of Melvin — everyone's favorite disaster.
+            Full-page story comics about being a mess and somehow surviving it.
+          </div>
+        </a>
+        <a href="series.html?s=dio" class="series-blurb" style="--blurb-accent:#c62828">
+          <div class="series-blurb-name">Dio La Damned</div>
+          <div class="series-blurb-desc">
+            Dark, dramatic, and a little bit damned. Dio's world is not what it seems.
+            Horror-adjacent graphic novel told in chapters.
+          </div>
+        </a>
+      </div>
+
+      <h2>How to follow</h2>
+      <p>
+        The best way to keep up is the newsletter — drop your email on the
+        <a href="index.html" style="color:var(--text);text-decoration:underline;">homepage</a>
+        and you'll hear about new chapters directly. No spam, no algorithm, just updates.
+      </p>
+      <p>
+        <!-- ADD ANY SOCIAL / CONTACT LINKS HERE -->
+        You can also find me at: [your links here].
+      </p>
+
+      <h2>Tools</h2>
+      <p>
+        <!-- UPDATE THIS to reflect your actual process -->
+        Comics are drawn digitally in Clip Studio Paint, lettered by hand,
+        and exported as WebP for the web. This site is hand-coded HTML, CSS, and JavaScript
+        — no frameworks, no CMS. It lives on GitHub Pages.
+      </p>
+
+    </div>
+
+  </main>
+
+  <!-- 🦶 FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+        Stay Tooned GFX
+      </div>
+      <p class="footer-copy">&copy; <span class="js-year"></span> Stay Tooned GFX. All characters and artwork are protected.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="archive.html">Archive</a>
+        <a href="#" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // 📅 AUTO YEAR
+    document.querySelectorAll('.js-year').forEach(el => el.textContent = new Date().getFullYear());
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+================================================================
+  STAY TOONED GFX — IMAGE DIMENSION SPECS
+  Comic page sizes, web export targets, and strip thresholds
+================================================================
+
+
+----------------------------------------------------------------
+  PART 1: MASTER FILE SIZES (what you work at in Clip Studio)
+----------------------------------------------------------------
+
+These are standard sizes for your source/print-quality files.
+Export at these sizes while you're drawing.
+Web export (Part 2) is a separate resize step.
+
+
+  [ AMERICAN COMIC — STANDARD ]
+
+    Format              Full bleed          Live area
+    US Comic Page       6.875" × 10.5"      6.625" × 10.0"
+    US Comic Splash     6.875" × 10.5"      same
+    US Comic 2-page     13.75" × 10.5"      13.25" × 10.0"
+
+    At 600 dpi:
+      Single page       4125 × 6300 px
+      2-page spread     8250 × 6300 px
+
+    At 300 dpi:
+      Single page       2063 × 3150 px
+      2-page spread     4125 × 3150 px
+
+    Clip Studio preset: "Comic (US Comics)" — 6.9" × 10.4" @ 600 dpi
+
+
+  [ MANGA ]
+
+    Format              Dimensions (mm)     Dimensions (in)
+    Tankobon B6         128 × 182 mm        5.04" × 7.17"
+    A5 pocket           148 × 210 mm        5.83" × 8.27"
+    B5 standard         182 × 257 mm        7.17" × 10.12"
+    B4 large            250 × 353 mm        9.84" × 13.90"
+
+    At 600 dpi (Clip Studio manga mode):
+      B6 (Tankobon)     3024 × 4299 px
+      A5                3508 × 4961 px
+      B5                4299 × 6071 px
+      B4                5906 × 8346 px
+
+    At 350 dpi (Clip Studio default manga):
+      A5                2044 × 2894 px
+      B5                2507 × 3541 px
+      B4                3441 × 4862 px
+
+    Clip Studio preset: "Manga (B5 portrait)" etc. under Document Settings
+
+
+  [ EUROPEAN ALBUM / BD ]
+
+    Format              Dimensions
+    A4 album            210 × 297 mm  (8.27" × 11.69")
+
+    At 300 dpi:         2480 × 3508 px
+    At 600 dpi:         4961 × 7016 px
+
+
+  [ NEWSPAPER COMIC STRIP — TRADITIONAL ]
+
+    This is the format used by IAGL.
+
+    Daily strip (broadsheet):
+      Width × Height    13.5" × 1.875"     (7.2:1 ratio)
+      At 300 dpi:       4050 × 563 px
+
+    Daily strip (tabloid):
+      Width × Height    10.5" × 1.5"       (7:1 ratio)
+      At 300 dpi:       3150 × 450 px
+
+    3-panel Sunday mini:
+      Width × Height    10.5" × 3.5"       (3:1 ratio)
+      At 300 dpi:       3150 × 1050 px
+
+    Sunday half-page:
+      Width × Height    10.5" × 7.5"       (1.4:1 ratio)
+      At 300 dpi:       3150 × 2250 px
+
+    Sunday full-page:
+      Width × Height    14" × 21"          (0.67:1 ratio, portrait)
+      At 300 dpi:       4200 × 6300 px
+
+    Clip Studio preset: There is no direct newspaper preset.
+    Recommended custom setup: 13.5" × 1.875" @ 300–400 dpi
+    Or use: 4050 × 563 px canvas at 300 dpi
+
+
+  [ WEBTOON / SCROLL FORMAT ]
+
+    Width:              800 px (fixed)
+    Height:             variable (2400–6000 px per episode typical)
+    DPI:                72–96 dpi (screen only, not for print)
+
+    Clip Studio preset: "Webtoon" under New Document
+
+
+  [ 4-PANEL GAG STRIP — VERTICAL ]
+
+    US magazine format: 2.5" × 10"  (portrait, 0.25:1 ratio)
+    At 300 dpi:         750 × 3000 px
+
+    Japanese 4-koma:    B6 width × 4 panels tall
+    At 600 dpi:         3024 × ~6000 px (portrait)
+
+
+----------------------------------------------------------------
+  PART 2: WEB EXPORT SIZES (resize to these before uploading)
+----------------------------------------------------------------
+
+These are your export targets for the website.
+Always resize down from your master file — never up.
+
+
+  [ COMIC PAGES (portrait — any series) ]
+
+    Portrait single page (US comic, manga, etc.):
+      Export width:     900 px
+      Height:           auto (maintain aspect ratio)
+      Format:           WebP (preferred) or JPEG
+      Quality:          85%
+      Expected size:    80–250 KB for B&W ink art
+
+    2-page spread (landscape):
+      Export width:     1400 px
+      Height:           auto
+      Format:           WebP / JPEG 85%
+      Expected size:    150–350 KB
+
+
+  [ COMIC STRIPS (horizontal) ]
+
+    Daily strip, 3-panel mini, or any image wider than 2:1:
+      Export width:     1200 px
+      Height:           auto (will be short — that's correct)
+      Format:           WebP / JPEG 85%
+      Expected size:    60–180 KB
+
+    NOTE: The website reader auto-detects strips (width:height > 2:1)
+    and switches to horizontal scroll mode on mobile automatically.
+    No extra setup needed — just export at 1200px wide and upload.
+
+
+  [ SITE ASSETS ]
+
+    Series cover (homepage card):
+      Size:             600 × 800 px  (3:4)
+      Format:           WebP / JPEG 85%
+      Filename:         cover.jpg  (in the series folder)
+
+    Series header / title treatment:
+      Max width:        500 px
+      Format:           PNG  (keep transparency for drop shadow effect)
+      Filename:         header.png  (in the series folder)
+
+    Series / chapter background — COVER mode (default):
+      Width:            1920 px
+      Height:           ~1080 px (16:9 — or taller for portrait screens)
+      Format:           WebP / JPEG 80%
+      Filename:         bg.jpg  (in series or chapter folder)
+      series.json:      "backgroundMode": "cover"  (or omit — cover is default)
+
+      Scales to fill the entire screen behind the content panel.
+      Good for: character illustrations, atmosphere shots, splash art,
+      any single image you want to bleed edge to edge.
+
+    Series / chapter background — TILE mode:
+      Size:             200–800 px square  (seamless, any square works)
+      Format:           WebP / JPEG / PNG
+      Filename:         bg.jpg  (same filename — mode set in series.json)
+      series.json:      "backgroundMode": "tile"
+
+      Repeats in all directions to fill the screen.
+      The tile scrolls with the page (not fixed).
+      Good for: textures, graph paper, dot grids, crosshatch,
+      halftone patterns, newsprint, lined paper, wood grain,
+      brick, any repeating motif.
+
+      Tile design tips:
+        — The left edge must match the right edge seamlessly.
+          The top edge must match the bottom edge seamlessly.
+        — Design at 2× the final size, then scale down
+          (e.g. design at 600×600, export at 300×300).
+        — Smaller tiles (200–300 px) feel denser and more textured.
+          Larger tiles (600–800 px) give more breathing room between repeats.
+        — Photoshop: Filter → Other → Offset (wrap) to check seams.
+          Clip Studio: use the Seamless Pattern canvas type.
+        — File size matters less — a 30 KB seamless PNG tiling
+          looks the same as a 500 KB cover image, but loads 10× faster.
+
+      Per-chapter override:
+        Drop a different bg.jpg in the chapter folder AND add
+        "backgroundMode": "tile" (or "cover") to that chapter.json
+        to use a different background style for just that chapter.
+
+    Site logo (header bar):
+      Height:           72 px  (displays at 36px, 2× for Retina)
+      Width:            auto
+      Format:           PNG (transparency required)
+      Filename:         assets/logo.png
+
+    Artist photo (About page):
+      Size:             400 × 400 px minimum  (displays as 140px circle)
+      Format:           JPEG or WebP
+      Filename:         assets/artist.jpg
+
+
+  [ FAVICON & APP ICONS ]
+
+    Drop all of these in the assets/ folder.
+    All browsers and platforms are covered by this set.
+
+    File                           Size        Notes
+    ─────────────────────────────────────────────────────────────
+    favicon.ico                    16+32 px    Multi-size ICO.
+                                               Legacy browsers,
+                                               bookmark bars.
+                                               Required.
+
+    favicon-16x16.png              16 × 16     Tabs, small spots.
+
+    favicon-32x32.png              32 × 32     Standard browser tab.
+                                               Most common use.
+
+    apple-touch-icon.png           180 × 180   iOS "Add to Home Screen"
+                                               icon. No rounded corners —
+                                               iOS does that automatically.
+
+    android-chrome-192x192.png     192 × 192   Android home screen icon.
+
+    android-chrome-512x512.png     512 × 512   Android splash / high-DPI.
+                                               Best quality source.
+
+    site.webmanifest               —           Already created. Do not edit
+                                               unless you change the site name.
+
+    TOTAL files to make: 6 images + the webmanifest (already done).
+
+    Design tips:
+      - Design at 512 × 512, then scale down — never up.
+      - Simple bold shapes. At 16px detail is invisible.
+      - The duck head, a grinning face, initials, or the logo mark
+        all work well. Keep it recognizable at tiny size.
+      - Dark background (#0e0e0e) or transparent both work.
+      - Transparent PNG is fine for all except the ICO.
+
+    How to generate the full set from one image:
+
+      Easiest:  https://favicon.io  or  https://realfavicongenerator.net
+        Upload your 512×512 PNG → download the full set → drop in assets/.
+
+      Manual (Photoshop / GIMP):
+        Export each PNG at the sizes above.
+        For .ico: use IcoFX (free), GIMP's ICO export,
+        or convert via https://cloudconvert.com/png-to-ico
+        Include both 16×16 and 32×32 layers in the ICO file.
+
+    Quick test after uploading:
+      Open the site in Chrome → open DevTools (F12) →
+      Application tab → Manifest — should show your icons listed.
+
+
+----------------------------------------------------------------
+  PART 3: STRIP MODE THRESHOLDS (how the reader detects format)
+----------------------------------------------------------------
+
+The reader measures each image's width ÷ height automatically.
+Based on that ratio it applies the right display mode:
+
+  Ratio           Display mode
+  ─────────────────────────────────────────────────────
+  < 1.0           Portrait  — normal vertical fit, full width
+  1.0 – 2.0       Landscape — normal fit, full width (spreads, Sunday halves)
+  > 2.0           STRIP     — horizontal scroll on mobile, fixed height
+
+  Common sizes and their ratios:
+    US comic single page        0.66:1   → Portrait
+    Manga B5 single page        0.71:1   → Portrait
+    US comic 2-page spread      1.31:1   → Landscape (normal)
+    Sunday half-page strip      1.40:1   → Landscape (normal)
+    3-panel Sunday mini strip   3.00:1   → STRIP ✓
+    Daily strip (tabloid)       7.00:1   → STRIP ✓
+    Daily strip (broadsheet)    7.20:1   → STRIP ✓
+    IAGL (approx)               3.5:1    → STRIP ✓
+
+  You do not need to tag or configure anything.
+  Just export at the right width and the reader handles it.
+
+
+----------------------------------------------------------------
+  PART 4: NAMING CONVENTION
+----------------------------------------------------------------
+
+Always use zero-padded numbers so files sort correctly:
+
+  CORRECT:   01.jpg  02.jpg  09.jpg  10.jpg  11.jpg
+  WRONG:     1.jpg   2.jpg   9.jpg   10.jpg  (sorts as 1,10,11,2...)
+
+  Cover:     cover.jpg
+  Header:    header.png
+  Background: bg.jpg
+
+
+----------------------------------------------------------------
+  PART 5: CUSTOM CURSORS (per-series)
+----------------------------------------------------------------
+
+Each series can have a custom cursor that activates when the
+reader enters the series page or reader. Drop a cursor file in
+the series folder and scan.js picks it up automatically.
+
+  Filename:   cursor.png   (preferred)
+              cursor.gif   (for animated cursors)
+              cursor.cur   (Windows format — less compatible, avoid)
+
+  Recommended canvas size:
+
+    32 × 32 px    Standard. Works in all browsers, crisp.
+    64 × 64 px    HiDPI / Retina screens. More visible.
+    128 × 128 px  Maximum practical size. Chrome/Firefox support.
+
+    Windows historically limited cursors to 32×32.
+    Most modern browsers support up to 128×128 PNG.
+    Stick to 32×32 or 64×64 for widest compatibility.
+
+  Format notes:
+
+    PNG (cursor.png):
+      Best compatibility. Supports transparency — use it.
+      Export as PNG-24 or PNG-32 with alpha channel.
+      Design on transparent canvas. No background.
+      The outline/shape IS the cursor.
+
+    GIF (cursor.gif):
+      Animated cursors (blinking, wiggling, etc.).
+      256 colours only. Use for simple animations.
+      Keep under 8–12 frames for best performance.
+      Transparent GIF requires "binary transparency" (no partial
+      alpha) — design with hard edges, no anti-aliasing on edges.
+
+  Hotspot (click point):
+
+    The hotspot is the pixel that registers as the click.
+    The site sets it to 0,0 (top-left corner) by default.
+    For a pen/quill cursor: design with the tip at top-left.
+    For a hand cursor: design with the fingertip at top-left.
+    For a crosshair: design with the center at 16,16 and change
+    the JS hotspot values in series.js and reader.js accordingly:
+      document.body.style.cursor = `url(${s.cursor}) 16 16, auto`;
+
+  Design tips:
+
+    - Keep it simple and readable at small sizes.
+    - Test at 32×32 even if you design at 64×64.
+    - High-contrast outline or drop shadow helps it stand out
+      on both light and dark backgrounds.
+    - Include a fallback `auto` (already wired in) for unsupported
+      formats so the default cursor shows instead of nothing.
+    - Suggested themes:
+        IAGL     — a retro quill pen, smiley face, or small character
+        Melvin   — something goofy (Melvin's face, a rubber duck)
+        Dio      — a candle, skull, crescent moon, or clawed hand
+
+  Folder placement:
+
+    comics/iagl/cursor.png
+    comics/melvin/cursor.png
+    comics/dio/cursor.png
+
+    Run node scan.js after adding the file. No other changes needed.
+
+
+----------------------------------------------------------------
+  PART 6: RECOMMENDED TOOLS
+----------------------------------------------------------------
+
+  Squoosh (free, browser):    https://squoosh.app
+    Drag and drop. Convert to WebP, compare quality live.
+    Great for one-off images.
+
+  XnConvert (free, desktop):  https://www.xnview.com/en/xnconvert/
+    Batch resize + convert an entire folder.
+    Best for converting a full chapter at once.
+
+  Photoshop:
+    File → Export → Export As → choose WebP or JPEG, set quality 85
+
+  GIMP (free):
+    File → Export As → choose .webp
+
+  Clip Studio Paint:
+    File → Export (Single Layer) → choose format and resize
+
+================================================================

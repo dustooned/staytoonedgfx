@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stay Tooned GFX — webcomics that wander freely, laugh strangely.">
+  <title>Reader — Stay Tooned GFX</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#0e0e0e">
+</head>
+<body>
+
+  <!-- 🔝 SITE HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.png" alt="Stay Tooned GFX" onerror="this.style.display='none'">
+        <span class="logo-text">Stay Tooned GFX</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="#" class="nav-donate" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 📐 ORIENTATION OVERLAY — mobile portrait + wide image -->
+  <div id="orientation-overlay" class="orientation-overlay" role="dialog" aria-modal="true">
+    <span class="orientation-icon">📱</span>
+    <p>Rotate your device for a better view of this page.</p>
+    <button id="orientation-dismiss" class="nav-btn">Keep portrait</button>
+  </div>
+
+  <!-- 🔍 LIGHTBOX — full-screen zoom overlay -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Page zoom">
+    <img id="lightbox-img" src="" alt="">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Close zoom">✕</button>
+  </div>
+
+  <!-- ⌨️ SHORTCUT OVERLAY — press ? to toggle -->
+  <div id="shortcut-overlay" class="shortcut-overlay" role="dialog" aria-modal="true">
+    <div class="shortcut-card">
+      <p class="shortcut-title">Keyboard Shortcuts</p>
+      <table class="shortcut-table">
+        <tr><td><kbd>→</kbd> / <kbd>Space</kbd></td><td>Next page</td></tr>
+        <tr><td><kbd>←</kbd></td><td>Previous page</td></tr>
+        <tr><td><kbd>Z</kbd></td><td>Zoom / lightbox</td></tr>
+        <tr><td><kbd>?</kbd></td><td>Toggle this panel</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Close zoom or panel</td></tr>
+      </table>
+      <p class="shortcut-hint">Click anywhere outside to close.</p>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- 🎭 CHAPTER TITLE CARD -->
+    <div id="title-card" class="title-card title-card--reader">
+      <div class="title-card-overlay"></div>
+      <div class="title-card-content">
+        <div id="titlecard-series"></div>
+        <p id="titlecard-chapter" class="title-card-chapter-name"></p>
+      </div>
+    </div>
+
+    <!-- 📦 CONTENT PANEL — gets backdrop when a series bg image is active -->
+    <div class="content-panel">
+
+    <!-- 🔧 READER TOOLBAR — back | chapter | ⏮ ‹ [n/total] › ⏭ 🔍 ? -->
+    <div class="reader-toolbar">
+      <a id="back-link" href="index.html" class="back-link">← Series</a>
+      <select id="chapter-select" class="chapter-select" aria-label="Jump to chapter"></select>
+      <div class="reader-nav-controls">
+        <button id="btn-first"  class="nav-btn nav-btn--icon" title="First page">⏮</button>
+        <button id="btn-prev"   class="nav-btn">‹ Prev</button>
+        <span   id="page-count" class="page-count">— / —</span>
+        <button id="btn-next"   class="nav-btn">Next ›</button>
+        <button id="btn-latest" class="nav-btn nav-btn--icon" title="Latest page">⏭</button>
+        <button id="btn-zoom"   class="nav-btn nav-btn--icon" title="Zoom page (Z)">⤢</button>
+        <button id="btn-help"   class="nav-btn nav-btn--icon" title="Keyboard shortcuts (?)">?</button>
+      </div>
+    </div>
+
+    <!-- 📊 CHAPTER PROGRESS BAR -->
+    <div class="chapter-progress-bar" aria-hidden="true">
+      <div id="progress-fill" class="chapter-progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- 📖 COMIC PAGE DISPLAY -->
+    <div class="reader-page-display">
+      <div id="page-display" class="comic-page-placeholder">Loading…</div>
+    </div>
+
+    <!-- ⬇️ BOTTOM NAV — mirrors toolbar -->
+    <div class="reader-nav-bottom">
+      <div class="reader-nav-row">
+        <button id="btn-first-b"  class="nav-btn" title="First page">⏮ First</button>
+        <button id="btn-prev-b"   class="nav-btn">‹ Prev</button>
+        <span   id="page-count-b" class="page-count">— / —</span>
+        <button id="btn-next-b"   class="nav-btn">Next ›</button>
+        <button id="btn-latest-b" class="nav-btn" title="Latest page">Latest ⏭</button>
+      </div>
+    </div>
+
+    </div><!-- /content-panel -->
+
+  </main>
+
+  <!-- 🦶 FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+        Stay Tooned GFX
+      </div>
+      <p class="footer-copy">&copy; <span class="js-year"></span> Stay Tooned GFX. All characters and artwork are protected.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="archive.html">Archive</a>
+        <a href="#" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/reader.js"></script>
+</body>
+</html>
