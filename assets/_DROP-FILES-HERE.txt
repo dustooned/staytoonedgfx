@@ -1,0 +1,45 @@
+================================================================
+  assets/  —  SITE-WIDE FILES
+================================================================
+
+Drop these files directly in this folder (assets/).
+The HTML is already wired up — just drop and push.
+
+
+  FAVICON SET  (generate all 6 from one image at favicon.io)
+  ─────────────────────────────────────────────────────────────
+  favicon.ico                   16 + 32 px multi-size ICO
+  favicon-16x16.png             16 × 16 px
+  favicon-32x32.png             32 × 32 px
+  apple-touch-icon.png          180 × 180 px  (iOS home screen)
+  android-chrome-192x192.png    192 × 192 px
+  android-chrome-512x512.png    512 × 512 px  (design at this size)
+
+  Quickest method:
+    Design at 512×512 → upload to https://favicon.io
+    Download the pack → rename to match above → drop here.
+
+
+  SITE LOGO
+  ─────────────────────────────────────────────────────────────
+  logo.png
+    Height:   72 px  (displays at 36 px, 2× for Retina)
+    Width:    auto (no fixed width)
+    Format:   PNG with transparent background
+    Shows in the top-left corner of the site header bar.
+
+
+  ARTIST PHOTO  (About page)
+  ─────────────────────────────────────────────────────────────
+  artist.jpg
+    Size:     400 × 400 px minimum
+    Format:   JPEG or WebP
+    Displays as a 140 px circle on the About page.
+    If this file is missing, a 🎨 emoji placeholder shows instead.
+
+
+  DO NOT EDIT:
+  ─────────────────────────────────────────────────────────────
+  site.webmanifest    ← already set up, leave it alone
+
+================================================================

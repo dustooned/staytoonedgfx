@@ -1,0 +1,53 @@
+================================================================
+  comics/dio/  —  DIO LA DAMNED  (series assets)
+  Theme: dark  |  Accent: #c62828
+================================================================
+
+Drop these files directly in this folder (comics/dio/).
+All filenames are exact — case sensitive on GitHub, use lowercase.
+After dropping any file, run:  node scan.js  then push.
+
+
+  cover.jpg
+    Series card image shown on the homepage grid.
+    Size:     600 × 800 px  (portrait, 3:4 ratio)
+    Format:   JPEG or WebP at 85% quality
+
+  header.png
+    Title treatment / logo shown in the series title card banner.
+    Max width:  500 px  (height auto)
+    Format:     PNG with transparent background
+    This replaces the plain text title in the header.
+
+  bg.jpg
+    Background image for all Dio series and reader pages.
+    Mode is set to "cover" in series.json by default.
+
+    COVER mode  (current default):
+      Size:   1920 × 1080 px or larger
+      Format: JPEG or WebP at 80% quality
+      Scales to fill the screen, fixed while scrolling.
+
+    TILE mode  (change "backgroundMode": "tile" in series.json):
+      Size:   200–800 px square, seamless pattern
+      Format: JPEG / WebP / PNG
+      Repeats in all directions, scrolls with the page.
+
+  cursor.png
+    Custom cursor active on all Dio pages.
+    Size:     32 × 32 px (standard) or 64 × 64 px (HiDPI)
+    Format:   PNG with transparent background
+    Design the click point at the TOP-LEFT corner of the image.
+    Animated option: cursor.gif (256 colours, 8–12 frames max)
+
+    Suggested theme: candle, skull, crescent moon, clawed hand,
+    bat, coffin, or any Dio La Damned motif.
+
+
+  AFTER DROPPING FILES:
+    node scan.js
+    git add .
+    git commit -m "dio: add series assets"
+    git push
+
+================================================================
