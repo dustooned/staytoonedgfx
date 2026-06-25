@@ -1,3 +1,12 @@
+/* ─────────────────────────────────────────────────────
+   🔤 GOOGLE FONTS
+   DM Sans       — site default (body, nav, ui)
+   Libre Baskerville — IAGL / warm (editorial, newspaper)
+   Caveat        — Melvin / cool (nervous handwriting)
+   UnifrakturMaguntia — Dio / dark (gothic blackletter)
+   ───────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=UnifrakturMaguntia&display=swap');
+
 /* ┌─────────────────────────────────────────────────────┐
    │  style.css — Stay Tooned GFX                        │
    │                                                     │
@@ -60,6 +69,7 @@
   --theme-title-style:     italic;
   --theme-title-transform: none;
   --theme-title-spacing:   -0.02em;
+  --theme-font:            'Libre Baskerville', Georgia, serif;
 }
 
 /* 🧊 COOL — Melvin (cyan / blue) */
@@ -70,6 +80,7 @@
   --theme-title-style:     normal;
   --theme-title-transform: none;
   --theme-title-spacing:   -0.03em;
+  --theme-font:            'Caveat', cursive;
 }
 
 /* 🩸 DARK — Dio La Damned (red / dramatic) */
@@ -80,7 +91,26 @@
   --theme-title-style:     normal;
   --theme-title-transform: uppercase;
   --theme-title-spacing:   0.08em;
+  --theme-font:            'UnifrakturMaguntia', cursive;
 }
+
+/* 🔤 SERIES FONTS — apply themed font to titles and headings */
+[data-theme] .title-card-series-name,
+[data-theme] .series-header-img + *,
+[data-theme] .chapter-card-title,
+[data-theme] .reader-chapter-name,
+[data-theme] h1,
+[data-theme] h2 {
+  font-family: var(--theme-font, inherit);
+}
+
+/* Caveat needs a size boost — it runs visually small */
+[data-theme="cool"] .title-card-series-name,
+[data-theme="cool"] h1 { font-size: 2.8rem; }
+
+/* UnifrakturMaguntia is display-only — keep it to big titles */
+[data-theme="dark"] .chapter-card-title,
+[data-theme="dark"] h2 { font-family: 'DM Sans', system-ui, sans-serif; }
 
 /* ─────────────────────────────────────────────────────
    🔲 BASE
@@ -90,7 +120,7 @@ html { scroll-behavior: smooth; }
 body {
   background-color: var(--bg);
   color: var(--text);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
