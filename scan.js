@@ -69,15 +69,19 @@ function scanComics() {
       continue;
     }
 
-    // 🖼️ SERIES ASSETS — cover, header image, background (first match wins)
-    const cover       = firstExisting(seriesDir, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
-    const headerImage = firstExisting(seriesDir, ['header.png', 'header.jpg', 'header.webp']);
-    const background  = firstExisting(seriesDir, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
-    const cursor      = firstExisting(seriesDir, ['cursor.png', 'cursor.gif', 'cursor.cur']);
+    // 🖼️ SERIES ASSETS — looks in assets/ subfolder first, falls back to series root
+    const assetsDir    = path.join(seriesDir, 'assets');
+    const assetBase    = fs.existsSync(assetsDir) ? assetsDir : seriesDir;
+    const assetPrefix  = fs.existsSync(assetsDir) ? `comics/${slug}/assets` : `comics/${slug}`;
 
-    // 📁 LIST CHAPTER FOLDERS — sorted alphabetically
+    const cover       = firstExisting(assetBase, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
+    const headerImage = firstExisting(assetBase, ['header.png', 'header.jpg', 'header.webp']);
+    const background  = firstExisting(assetBase, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
+    const cursor      = firstExisting(assetBase, ['cursor.png', 'cursor.gif', 'cursor.cur']);
+
+    // 📁 LIST CHAPTER FOLDERS — sorted alphabetically (skip assets/ subfolder)
     const chapterSlugs = fs.readdirSync(seriesDir)
-      .filter(f => fs.statSync(path.join(seriesDir, f)).isDirectory())
+      .filter(f => f !== 'assets' && fs.statSync(path.join(seriesDir, f)).isDirectory())
       .sort();
 
     // ───────────────────────────────────────────────
@@ -123,10 +127,10 @@ function scanComics() {
       accentColor:    seriesData.accentColor    ?? '#ffffff',
       theme:          seriesData.theme          ?? null,   // 🎨 warm | cool | dark
       backgroundMode: seriesData.backgroundMode ?? 'cover', // 🖼️ "cover" | "tile"
-      cover:        cover       ? `comics/${slug}/${cover}`       : null,
-      headerImage:  headerImage ? `comics/${slug}/${headerImage}` : null,
-      background:   background  ? `comics/${slug}/${background}`  : null,
-      cursor:       cursor      ? `comics/${slug}/${cursor}`      : null,
+      cover:        cover       ? `${assetPrefix}/${cover}`       : null,
+      headerImage:  headerImage ? `${assetPrefix}/${headerImage}` : null,
+      background:   background  ? `${assetPrefix}/${background}`  : null,
+      cursor:       cursor      ? `${assetPrefix}/${cursor}`      : null,
       chapterCount: chapters.length,
       chapters,
     });

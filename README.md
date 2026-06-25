@@ -46,12 +46,14 @@ v1/
 ├── comics/             📚 Your content lives here
 │   ├── iagl/           🟡 It's a Good Life  (theme: warm)
 │   │   ├── series.json
-│   │   ├── cover.jpg       ← series card image
-│   │   ├── header.png      ← title card logo/treatment
-│   │   ├── bg.jpg          ← series background
-│   │   ├── cursor.png      ← custom series cursor
+│   │   ├── assets/         ← all series visual files go here
+│   │   │   ├── cover.jpg       ← series card image
+│   │   │   ├── header.png      ← title card logo/treatment
+│   │   │   ├── bg.jpg          ← series background
+│   │   │   └── cursor.png      ← custom series cursor
 │   │   └── chapter-01/
 │   │       ├── chapter.json
+│   │       ├── bg.jpg          ← chapter bg override (optional)
 │   │       └── 01.jpg, 02.jpg...
 │   ├── melvin/         🔵 Melvin  (theme: cool)
 │   └── dio/            🔴 Dio La Damned  (theme: dark)

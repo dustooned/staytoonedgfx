@@ -1,53 +1,46 @@
 ================================================================
-  comics/iagl/  —  IT'S A GOOD LIFE  (series assets)
-  Theme: warm  |  Accent: #f0a500
+  comics/iagl/  —  IT'S A GOOD LIFE
 ================================================================
 
-Drop these files directly in this folder (comics/iagl/).
-All filenames are exact — case sensitive on GitHub, use lowercase.
-After dropping any file, run:  node scan.js  then push.
+  This folder holds two things only:
 
+    series.json          ← series metadata (edit this)
+    assets/              ← all visual files for this series
+    chapter-01/          ← chapter folders
+    chapter-02/          ← (add more as you go)
 
-  cover.jpg
-    Series card image shown on the homepage grid.
-    Size:     600 × 800 px  (portrait, 3:4 ratio)
-    Format:   JPEG or WebP at 85% quality
+  ── series.json ──────────────────────────────────────────────
 
-  header.png
-    Title treatment / logo shown in the series title card banner.
-    Max width:  500 px  (height auto)
-    Format:     PNG with transparent background
-    This replaces the plain text title in the header.
+  Already created. Edit it to change the series title,
+  description, accent colour, theme, or background mode.
+  See WORKFLOW.txt Part 2 for all available fields.
 
-  bg.jpg
-    Background image for all IAGL series and reader pages.
-    Mode is set to "cover" in series.json by default.
+  ── Visual assets ────────────────────────────────────────────
 
-    COVER mode  (current default):
-      Size:   1920 × 1080 px or larger
-      Format: JPEG or WebP at 80% quality
-      Scales to fill the screen, fixed while scrolling.
+  Drop cover, header, background, and cursor files in:
 
-    TILE mode  (change "backgroundMode": "tile" in series.json):
-      Size:   200–800 px square, seamless pattern
-      Format: JPEG / WebP / PNG
-      Repeats in all directions, scrolls with the page.
+      comics/iagl/assets/
 
-  cursor.png
-    Custom cursor active on all IAGL pages.
-    Size:     32 × 32 px (standard) or 64 × 64 px (HiDPI)
-    Format:   PNG with transparent background
-    Design the click point at the TOP-LEFT corner of the image.
-    Animated option: cursor.gif (256 colours, 8–12 frames max)
+  See the _DROP-FILES-HERE.txt inside that folder for
+  exact filenames, sizes, and format specs.
 
-    Suggested theme: retro quill pen, small character face,
-    smiley, star, or any IAGL motif.
+  ── Adding chapters ──────────────────────────────────────────
 
+  Create a new numbered folder here:
 
-  AFTER DROPPING FILES:
-    node scan.js
-    git add .
-    git commit -m "iagl: add series assets"
-    git push
+      comics/iagl/chapter-02/
+        chapter.json
+        01.jpg
+        02.jpg
+        ...
+
+  See WORKFLOW.txt Part 4 for the full chapter setup guide.
+
+  ── After any change ─────────────────────────────────────────
+
+      node scan.js
+      git add .
+      git commit -m "iagl: description of what changed"
+      git push
 
 ================================================================

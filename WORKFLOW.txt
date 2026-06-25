@@ -30,8 +30,8 @@
   ├── sitemap.xml             ← AUTO-GENERATED — do not edit
   ├── CNAME                   ← custom domain (staytoonedgfx.com)
   │
-  ├── assets/
-  │   ├── site.webmanifest    ← PWA/Android app manifest (already created)
+  ├── assets/                 ← site-wide files only
+  │   ├── site.webmanifest    ← already created, do not edit
   │   ├── favicon.ico         ← drop in (16+32px multi-size)
   │   ├── favicon-16x16.png   ← drop in
   │   ├── favicon-32x32.png   ← drop in
@@ -43,14 +43,15 @@
   │
   ├── comics/
   │   └── [series-slug]/
-  │       ├── series.json     ← series metadata (edit this)
-  │       ├── cover.jpg       ← homepage card image
-  │       ├── header.png      ← title card logo / treatment
-  │       ├── bg.jpg          ← page background (cover or tile)
-  │       ├── cursor.png      ← custom cursor for this series
+  │       ├── series.json       ← series metadata (edit this)
+  │       ├── assets/           ← ALL visual files for this series
+  │       │   ├── cover.jpg     ← homepage card image
+  │       │   ├── header.png    ← title card logo / treatment
+  │       │   ├── bg.jpg        ← page background (cover or tile)
+  │       │   └── cursor.png    ← custom cursor for this series
   │       └── [chapter-slug]/
   │           ├── chapter.json  ← chapter metadata (edit this)
-  │           ├── bg.jpg        ← chapter-specific bg (optional)
+  │           ├── bg.jpg        ← chapter bg override (optional)
   │           ├── 01.jpg
   │           ├── 02.jpg
   │           └── ...
@@ -81,7 +82,7 @@
                                      "tile"  — repeats as a seamless pattern
   }
 
-  Optional files — drop in the series folder, scan.js picks them up:
+  Optional files — drop in comics/[series]/assets/, scan.js picks them up:
 
     cover.jpg    ← series card image on the homepage   (600 × 800 px)
     header.png   ← title treatment / logo in the banner (500 px wide, PNG)
@@ -224,11 +225,11 @@
 
   Step 3 — Add series assets (all optional but recommended)
 
-    Drop these directly in the series folder:
-      cover.jpg    → homepage card image        (600 × 800 px)
-      header.png   → title treatment / logo     (500 px wide max, PNG)
-      bg.jpg       → page background            (1920 px wide for cover mode)
-      cursor.png   → custom series cursor       (32–64 px square, PNG)
+    Drop these in the series assets folder:
+      comics/my-new-series/assets/cover.jpg    → homepage card image   (600 × 800 px)
+      comics/my-new-series/assets/header.png   → title treatment / logo (500 px wide, PNG)
+      comics/my-new-series/assets/bg.jpg       → page background        (1920 px wide)
+      comics/my-new-series/assets/cursor.png   → custom cursor          (32–64 px, PNG)
 
   Step 4 — Create the first chapter
 
@@ -266,9 +267,9 @@
 
   Step 2 — Name and place the file
 
-      comics/iagl/cursor.png
-      comics/melvin/cursor.png
-      comics/dio/cursor.png
+      comics/iagl/assets/cursor.png
+      comics/melvin/assets/cursor.png
+      comics/dio/assets/cursor.png
 
     For animated: cursor.gif instead of cursor.png.
 

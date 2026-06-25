@@ -1,0 +1,80 @@
+================================================================
+  comics/dio/assets/  —  DIO LA DAMNED  (visual assets)
+  Theme: dark  |  Accent: #c62828  |  Font: UnifrakturMaguntia
+================================================================
+
+Drop your visual files directly in this folder.
+Filenames are exact — case sensitive on GitHub, use lowercase.
+After adding any file:  node scan.js  then push.
+
+
+  cover.jpg
+  ─────────────────────────────────────────────────────────────
+  Series card image on the homepage grid.
+
+    Size:     600 × 800 px  (portrait, 3:4 ratio)
+    Format:   JPEG or WebP at 85% quality
+    Content:  Key art, character illustration, or title card.
+              This is the first impression — make it count.
+
+
+  header.png
+  ─────────────────────────────────────────────────────────────
+  Title treatment / logo shown in the series banner.
+  Replaces the plain text series name in the header.
+
+    Max width:  500 px  (height auto — no fixed height)
+    Format:     PNG with transparent background  (required)
+    Content:    Stylised series title, logo, or wordmark.
+                Will sit on top of the banner overlay gradient.
+
+
+  bg.jpg
+  ─────────────────────────────────────────────────────────────
+  Background image behind the series and reader pages.
+  Current mode in series.json: "cover" (default)
+
+    COVER mode  (large illustration, fills the screen):
+      Size:     1920 × 1080 px minimum
+      Format:   JPEG or WebP at 80% quality
+      Content:  Character art, scene, or atmospheric image.
+                Fixed while scrolling. Content sits in a dark
+                panel over the top of it.
+
+    TILE mode  (change "backgroundMode": "tile" in series.json):
+      Size:     200–800 px square, seamless on all 4 edges
+      Format:   JPEG / WebP / PNG
+      Content:  Texture, pattern, crosshatch, aged paper,
+                stone, brick, or any dark repeating motif.
+                Repeats to fill the screen, scrolls with the page.
+
+    See IMAGE-SPECS.txt Part 2 for tile design tips.
+
+
+  cursor.png  (or cursor.gif for animated)
+  ─────────────────────────────────────────────────────────────
+  Custom cursor active on all Dio La Damned pages.
+
+    Size:     32 × 32 px standard  /  64 × 64 px HiDPI
+    Format:   PNG with transparent background
+    Hotspot:  Design the click point at the TOP-LEFT corner.
+    Content:  Candle, skull, crescent moon, clawed hand,
+              bat, coffin, dagger, or any Dio motif.
+              High-contrast design reads well on dark backgrounds.
+
+    Animated option: cursor.gif
+      256 colours max. 8–12 frames. Hard edges only
+      (no anti-aliasing) — GIF transparent requires binary alpha.
+      A flickering candle flame would work great here.
+
+    See IMAGE-SPECS.txt Part 5 for full cursor specs.
+
+
+  AFTER ADDING FILES:
+  ─────────────────────────────────────────────────────────────
+    node scan.js
+    git add .
+    git commit -m "dio: add [cover / header / bg / cursor]"
+    git push
+
+================================================================
