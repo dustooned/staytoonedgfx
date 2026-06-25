@@ -304,6 +304,24 @@ All pages include a full modern favicon set. Drop these 6 files into `assets/`:
 
 ---
 
+## 🚧 Under Construction Overlay
+
+A modal appears on every page until you turn it off. When you're ready to launch:
+
+1. Open [`js/construction.js`](js/construction.js)
+2. Change line 11: `const SHOW = false;`
+3. Commit and push — overlay is gone site-wide
+
+To re-enable it: set `SHOW = true` and push again.
+
+**Wiring up Mailchimp:** find the `<!-- MAILCHIMP EMBED -->` comment block inside `construction.js` and replace the placeholder `<form>` with your Mailchimp embedded form code. Then delete the placeholder submit handler at the bottom of the file (also marked with a comment).
+
+**Editing the message:** find `#stg-ob-title` and `#stg-ob-body` in the `backdrop.innerHTML` block inside `construction.js`.
+
+See WORKFLOW.txt Part 7 for the full step-by-step.
+
+---
+
 ## 📬 Mailchimp Setup
 
 1. Log into Mailchimp → **Audience → Signup forms → Embedded forms**

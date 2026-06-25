@@ -284,7 +284,72 @@
 
 
 ================================================================
-  PART 7: WRITING A BLOG POST
+  PART 7: UNDER CONSTRUCTION OVERLAY
+================================================================
+
+  The site shows an "under construction" modal on every page
+  until you turn it off. One line to toggle it.
+
+  ── Toggle on / off ──────────────────────────────────────────
+
+  Open:   js/construction.js
+  Line:   const SHOW = true;   ← change to false to hide it
+
+  That's the only change needed. Then:
+
+      git add js/construction.js
+      git commit -m "launch: disable construction overlay"
+      git push
+
+  ── What it does ─────────────────────────────────────────────
+
+  - Appears on every page load, every page on the site
+  - Dark overlay behind a centred modal card
+  - Eases in with a scale + fade animation
+  - Has a friendly "we're rebuilding" message
+  - Email subscribe form (Mailchimp placeholder — see below)
+  - "I'll poke around anyway →" dismiss button so visitors
+    can still browse if they want
+  - Returns on every page refresh while SHOW = true
+
+  ── Wiring up the real Mailchimp form ────────────────────────
+
+  1. Log into Mailchimp → Audience → Signup forms
+     → Embedded forms → copy the embed code
+
+  2. Open js/construction.js
+
+  3. Find this comment block:
+       <!-- MAILCHIMP EMBED -->
+       <form id="stg-ob-form" ...>
+         ...
+       </form>
+       <!-- END MAILCHIMP EMBED -->
+
+  4. Replace everything between those two comments
+     with your Mailchimp embed code
+
+  5. Delete the placeholder form submit handler at the
+     bottom of the file (marked with a comment)
+
+  6. Push:
+       git add js/construction.js
+       git commit -m "overlay: wire up Mailchimp form"
+       git push
+
+  ── Editing the message ──────────────────────────────────────
+
+  The copy is inside the backdrop.innerHTML block in
+  js/construction.js. Look for:
+
+    <div id="stg-ob-title">Hey, we're rebuilding!</div>
+    <div id="stg-ob-body">...</div>
+
+  Edit those two elements to change the heading and body text.
+
+
+================================================================
+  PART 8: WRITING A BLOG POST
 ================================================================
 
   Step 1 — Add the entry to the blog index
