@@ -952,6 +952,7 @@ body.has-series-bg .content-panel {
   align-items: center;
   justify-content: center;
   cursor: zoom-out;
+  overflow: hidden;
 }
 
 .lightbox.show { display: flex; }
@@ -963,7 +964,14 @@ body.has-series-bg .content-panel {
   border-radius: 2px;
   cursor: default;
   box-shadow: 0 0 60px rgba(0,0,0,1);
+  touch-action: none;
+  user-select: none;
+  will-change: transform;
+  transform-origin: center center;
 }
+
+.lightbox.is-zoomed { cursor: grab; }
+.lightbox.is-zoomed.is-dragging { cursor: grabbing; }
 
 .lightbox-close {
   position: absolute;

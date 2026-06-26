@@ -222,11 +222,35 @@
     // 🔍 LIGHTBOX / ZOOM
     //    Opens the current page full-screen for detailed viewing.
     //    Triggered by the ⤢ toolbar button or Z key.
-    //    Close via ✕ button, click-outside, Esc, or Z.
+    //    Supports pinch-to-zoom and pan (drag) when zoomed.
+    //    Close via ✕ button, click-outside (at 1×), Esc, or Z.
     // ─────────────────────────────────────────────────────
+    let lbScale     = 1;
+    let lbPanX      = 0;
+    let lbPanY      = 0;
+    let lbPinchDist = 0;
+    let lbScaleBase = 1;
+    let lbDragX     = 0;
+    let lbDragY     = 0;
+    let lbPanBaseX  = 0;
+    let lbPanBaseY  = 0;
+    let lbDragging  = false;
+
+    function lbApplyTransform() {
+      lightboxImg.style.transform =
+        `scale(${lbScale}) translate(${lbPanX / lbScale}px, ${lbPanY / lbScale}px)`;
+    }
+
+    function lbReset() {
+      lbScale = 1; lbPanX = 0; lbPanY = 0; lbDragging = false;
+      lightboxImg.style.transform = '';
+      lightbox.classList.remove('is-zoomed', 'is-dragging');
+    }
+
     function openLightbox() {
       const img = pageDisplay.querySelector('.comic-page-img');
       if (!img) return;
+      lbReset();
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
       lightbox.classList.add('show');
@@ -236,11 +260,60 @@
     function closeLightbox() {
       lightbox.classList.remove('show');
       document.body.style.overflow = '';
+      lbReset();
     }
+
+    // Pinch to zoom
+    lightbox.addEventListener('touchstart', e => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        lbPinchDist = Math.hypot(
+          e.touches[1].clientX - e.touches[0].clientX,
+          e.touches[1].clientY - e.touches[0].clientY
+        );
+        lbScaleBase = lbScale;
+        lbDragging  = false;
+      } else if (e.touches.length === 1 && lbScale > 1) {
+        lbDragging  = true;
+        lbDragX     = e.touches[0].clientX;
+        lbDragY     = e.touches[0].clientY;
+        lbPanBaseX  = lbPanX;
+        lbPanBaseY  = lbPanY;
+        lightbox.classList.add('is-dragging');
+      }
+    }, { passive: false });
+
+    lightbox.addEventListener('touchmove', e => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[1].clientX - e.touches[0].clientX,
+          e.touches[1].clientY - e.touches[0].clientY
+        );
+        lbScale = Math.min(5, Math.max(1, lbScaleBase * (dist / lbPinchDist)));
+        if (lbScale <= 1) { lbPanX = 0; lbPanY = 0; }
+        lightbox.classList.toggle('is-zoomed', lbScale > 1);
+        lbApplyTransform();
+      } else if (e.touches.length === 1 && lbDragging && lbScale > 1) {
+        e.preventDefault();
+        lbPanX = lbPanBaseX + (e.touches[0].clientX - lbDragX);
+        lbPanY = lbPanBaseY + (e.touches[0].clientY - lbDragY);
+        lbApplyTransform();
+      }
+    }, { passive: false });
+
+    lightbox.addEventListener('touchend', e => {
+      lightbox.classList.remove('is-dragging');
+      if (e.touches.length < 2) lbDragging = false;
+      if (lbScale < 1.05) { lbScale = 1; lbPanX = 0; lbPanY = 0; lbApplyTransform(); }
+    }, { passive: true });
 
     btnZoom.addEventListener('click', openLightbox);
     lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    // Only close on click-outside when not zoomed in (avoids closing mid-pan)
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox && lbScale <= 1) closeLightbox();
+    });
 
     // ─────────────────────────────────────────────────────
     // ⌨️ SHORTCUT OVERLAY — press ? or the ? button to toggle
@@ -343,11 +416,13 @@
     let touchStartY = 0;
 
     pageDisplay.addEventListener('touchstart', e => {
+      if (e.touches.length > 1) { touchStartX = NaN; return; } // pinch — skip swipe
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
     }, { passive: true });
 
     pageDisplay.addEventListener('touchend', e => {
+      if (isNaN(touchStartX)) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
