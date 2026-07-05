@@ -125,6 +125,14 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  cursor: url(../assets/cursor.png) 0 0, auto;
+}
+
+/* 🖱️ SITE CURSOR — animated on interactive elements
+   Drop cursor.png + cursor.gif into assets/ to activate.
+   Per-series cursors override these via injected <style> tags. */
+a, button, select, input, label, [role="button"], [tabindex] {
+  cursor: url(../assets/cursor.gif) 0 0, auto;
 }
 
 /* Applied by JS when a series background image exists */
