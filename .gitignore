@@ -5,3 +5,7 @@ Thumbs.db
 *.tmp
 .env
 *.afdesign~lock~
+*.af~lock~
+*.clip
+*.zip
+assets/favicon_io/
