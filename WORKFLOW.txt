@@ -38,8 +38,10 @@
   │   ├── apple-touch-icon.png ← drop in (180×180)
   │   ├── android-chrome-192x192.png  ← drop in
   │   ├── android-chrome-512x512.png  ← drop in
-  │   ├── logo.png            ← drop in (site header logo)
-  │   └── artist.jpg          ← drop in (about page photo)
+  │   ├── logo.svg            ← site header logo (SVG, transparent bg)
+  │   ├── cursor.png          ← site-wide idle cursor (32–64px PNG)
+  │   ├── cursor.gif          ← site-wide hover/animated cursor (GIF)
+  │   └── artist.png          ← about page photo
   │
   ├── comics/
   │   └── [series-slug]/
@@ -48,7 +50,8 @@
   │       │   ├── cover.jpg     ← homepage card image
   │       │   ├── header.png    ← title card logo / treatment
   │       │   ├── bg.jpg        ← page background (cover or tile)
-  │       │   └── cursor.png    ← custom cursor for this series
+  │       │   ├── cursor.png    ← custom cursor, idle state (PNG)
+  │       │   └── cursor.gif    ← custom cursor, hover/animated (GIF)
   │       └── [chapter-slug]/
   │           ├── chapter.json  ← chapter metadata (edit this)
   │           ├── bg.jpg        ← chapter bg override (optional)
@@ -87,8 +90,8 @@
     cover.jpg    ← series card image on the homepage   (600 × 800 px)
     header.png   ← title treatment / logo in the banner (500 px wide, PNG)
     bg.jpg       ← background for series and reader pages
-    cursor.png   ← custom cursor active on this series' pages
-    cursor.gif   ← animated cursor (alternative to cursor.png)
+    cursor.png   ← custom cursor, idle state (shown everywhere on this series)
+    cursor.gif   ← custom cursor, animated (plays when hovering links/buttons)
 
   Background mode guide:
 
@@ -229,7 +232,8 @@
       comics/my-new-series/assets/cover.jpg    → homepage card image   (600 × 800 px)
       comics/my-new-series/assets/header.png   → title treatment / logo (500 px wide, PNG)
       comics/my-new-series/assets/bg.jpg       → page background        (1920 px wide)
-      comics/my-new-series/assets/cursor.png   → custom cursor          (32–64 px, PNG)
+      comics/my-new-series/assets/cursor.png   → custom cursor, idle    (32–64 px, PNG)
+      comics/my-new-series/assets/cursor.gif   → custom cursor, animated (plays on links/buttons)
 
   Step 4 — Create the first chapter
 
@@ -255,23 +259,52 @@
   PART 6: ADDING A CUSTOM CURSOR
 ================================================================
 
-  Each series can have its own cursor that activates on the
-  series page and reader. No code changes needed — just drop
-  the file in the series folder.
+  How the cursor system works
+  ──────────────────────────────────────────────────────────────
+  Browsers do not animate GIFs when used as CSS cursors — they
+  fall back silently to a plain arrow. To get animated cursors,
+  the site uses a fake cursor: a hidden <div> that follows the
+  mouse via JS and shows the GIF as a background-image (which
+  does animate). The native cursor is hidden with CSS.
 
-  Step 1 — Create the cursor image
+  Two files, two states:
+    cursor.png  — idle state, shown as the cursor everywhere
+    cursor.gif  — animated state, plays when hovering over any
+                  link, button, or interactive element
+
+  Both are optional individually: if you only have a PNG the
+  cursor will be static; if you only have a GIF it will be used
+  for both states.
+
+  Touch devices (phones/tablets) are automatically skipped — they
+  use the OS default tap behaviour.
+
+  ── Site-wide cursors ────────────────────────────────────────
+
+  Drop files at:
+      assets/cursor.png    ← idle, shown everywhere
+      assets/cursor.gif    ← hover, plays on interactive elements
+
+  No scan needed — these are referenced statically.
+
+  ── Per-series cursors ───────────────────────────────────────
+
+  Each series can override the site-wide cursor on its series
+  page and reader.
+
+  Step 1 — Create the cursor image(s)
 
     See IMAGE-SPECS.txt Part 5 for size and design specs.
-    Recommended: 32×32 or 64×64 px PNG with transparency.
+    Recommended: 32×32 or 64×64 px with transparency.
     Design the "clicking point" at the top-left corner.
 
-  Step 2 — Name and place the file
+  Step 2 — Name and place the file(s)
 
-      comics/iagl/assets/cursor.png
-      comics/melvin/assets/cursor.png
-      comics/dio/assets/cursor.png
+      comics/iagl/assets/cursor.png    ← idle state
+      comics/iagl/assets/cursor.gif    ← animated hover state
 
-    For animated: cursor.gif instead of cursor.png.
+    You can supply one or both. cursor.gif is the animated
+    version that plays when hovering links/buttons.
 
   Step 3 — Run the scanner
 
@@ -458,10 +491,14 @@
 
   Other site assets:
 
-    assets/logo.png     Site header logo. 72px tall PNG, transparent bg.
-                        Displays at 36px in the header bar.
+    assets/logo.svg     Site header logo. SVG format, transparent bg.
+                        Displays at 36px tall in the header bar.
 
-    assets/artist.jpg   About page photo. 400×400 px min, JPEG or WebP.
+    assets/cursor.png   Site-wide idle cursor. 32–64px PNG with transparency.
+    assets/cursor.gif   Site-wide animated cursor. Plays on hover over links/buttons.
+                        See PART 6 for how the cursor system works.
+
+    assets/artist.png   About page photo. 400×400 px min, PNG/JPEG/WebP.
                         Displays as a 140px circle on the about page.
 
   After adding any asset file:
@@ -526,9 +563,17 @@
        Run node scan.js after editing the JSON.
 
   Problem: Custom cursor not appearing
-  Fix: File must be named cursor.png (or cursor.gif) and placed
-       directly in the series folder (not the chapter folder).
+  Fix: File must be named cursor.png and/or cursor.gif and placed
+       in comics/[series]/assets/ (not the chapter folder).
        Run node scan.js after adding it.
+       Also check: site-wide cursors (assets/cursor.png and
+       assets/cursor.gif) must exist for the base site cursor.
+
+  Problem: Cursor shows but GIF doesn't animate
+  Fix: This is expected for CSS cursors — browsers don't animate
+       them. The cursor.js fake cursor system handles this.
+       If you're seeing a plain arrow instead of your GIF,
+       make sure cursor.gif is committed and pushed.
 
   Problem: Wrong date on a chapter card
   Fix: Edit the "date" field in chapter.json (use YYYY-MM-DD),

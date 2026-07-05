@@ -49,8 +49,9 @@
     el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
   }, { passive: true });
 
-  document.addEventListener('mouseleave', () => {
-    el.style.transform = 'translate(-100px, -100px)';
+  // mouseout with no relatedTarget = cursor left the viewport
+  document.addEventListener('mouseout', e => {
+    if (!e.relatedTarget) el.style.transform = 'translate(-100px, -100px)';
   }, { passive: true });
 
   // ── Swap between idle and animated on interactive elements ────────────

@@ -30,7 +30,8 @@ v1/
 │   ├── app.js          🏠 Homepage logic — series cards, latest updates feed
 │   ├── series.js       🗂️  Series page logic — theming, chapters grid, progress badges
 │   ├── reader.js       📖 Reader logic — navigation, zoom, progress bar, shortcuts
-│   └── archive.js      🗂️  Archive page logic — full chapter listing
+│   ├── archive.js      🗂️  Archive page logic — full chapter listing
+│   └── cursor.js       🖱️  Animated cursor system — fake cursor div, GIF on hover
 │
 ├── assets/             🗂️  Site-wide assets
 │   ├── site.webmanifest    ✓ created — Android/PWA app manifest
@@ -40,8 +41,10 @@ v1/
 │   ├── apple-touch-icon.png ← drop in (180×180)
 │   ├── android-chrome-192x192.png ← drop in
 │   ├── android-chrome-512x512.png ← drop in
-│   ├── logo.png            ← drop in (site header logo)
-│   └── artist.jpg          ← drop in (about page photo)
+│   ├── logo.svg            ← site header logo (SVG, transparent bg)
+│   ├── cursor.png          ← site-wide idle cursor (32–64px PNG)
+│   ├── cursor.gif          ← site-wide hover cursor (animated GIF)
+│   └── artist.png          ← about page photo
 │
 ├── comics/             📚 Your content lives here
 │   ├── iagl/           🟡 It's a Good Life  (theme: warm)
@@ -50,7 +53,8 @@ v1/
 │   │   │   ├── cover.jpg       ← series card image
 │   │   │   ├── header.png      ← title card logo/treatment
 │   │   │   ├── bg.jpg          ← series background
-│   │   │   └── cursor.png      ← custom series cursor
+│   │   │   ├── cursor.png      ← custom series cursor (idle)
+│   │   │   └── cursor.gif      ← custom series cursor (hover animated)
 │   │   └── chapter-01/
 │   │       ├── chapter.json
 │   │       ├── bg.jpg          ← chapter bg override (optional)
@@ -177,7 +181,8 @@ The theme drives the title card overlay gradient, title text glow, and the decor
 | `cover.jpg` | Series card image on homepage (600×800 px) |
 | `header.png` | Title treatment / logo in the title card (500px wide, PNG) |
 | `bg.jpg` | Background image — cover or tile depending on `backgroundMode` |
-| `cursor.png` | Custom cursor active on all pages for this series |
+| `cursor.png` | Custom idle cursor for this series (32–64px PNG) |
+| `cursor.gif` | Custom hover/animated cursor for this series (plays on links/buttons) |
 
 ### Background modes
 
@@ -198,11 +203,27 @@ Drop a `bg.jpg` inside any chapter folder. Add `"backgroundMode"` to `chapter.js
 
 ## 🖱️ Custom Cursors
 
-Drop `cursor.png` (or `cursor.gif` for animated) in a series folder. `node scan.js` wires it up automatically — no other changes needed.
+The site uses a **fake cursor div** (`js/cursor.js`) instead of CSS `cursor:` — because browsers don't animate GIFs in CSS cursors (they fall back to an arrow). The div follows `mousemove` via `transform` and uses `background-image`, which does animate GIFs.
 
-- Active on the series archive page and reader for that series
-- Cursor restores to default when leaving
-- See IMAGE-SPECS.txt Part 5 for size specs, hotspot notes, and design tips
+**Site-wide cursors** (assets/ root):
+
+| File | Role |
+|------|------|
+| `assets/cursor.png` | Idle — shown everywhere |
+| `assets/cursor.gif` | Animated — shown when hovering links/buttons |
+
+**Per-series cursors** (override the site defaults on series + reader pages):
+
+| File | Role |
+|------|------|
+| `comics/[series]/assets/cursor.png` | Series idle cursor |
+| `comics/[series]/assets/cursor.gif` | Series hover cursor |
+
+Drop either or both files — `node scan.js` wires them up automatically. No other changes needed.
+
+- Touch devices (`pointer: coarse`) are skipped — they get the OS default touch behaviour
+- GIF restarts from frame 1 each time the cursor enters an interactive element
+- See IMAGE-SPECS.txt Part 5 for size specs and design tips
 
 ---
 
@@ -232,6 +253,8 @@ A thin coloured bar above the comic page fills as you read. Colour tracks the se
 
 ### Zoom / lightbox
 Press `Z` or click ⤢ in the toolbar to open the current page full-screen. Click outside, press `Esc`, or tap the ✕ button to close.
+
+On touch devices the lightbox supports **pinch-to-zoom** (up to 5×) and **drag to pan** when zoomed in. Tap outside only closes the lightbox when at 1× scale; if zoomed in it just releases the drag.
 
 ### Strip mode (wide images)
 When a comic page is wider than 2× its height (newspaper strips, 2-page spreads), the reader automatically switches to **strip mode** on mobile: fixed readable height, horizontal scroll, `← scroll →` hint. On desktop, wide images fill the container normally.
@@ -299,7 +322,7 @@ All pages include a full modern favicon set. Drop these 6 files into `assets/`:
 ## ℹ️ About Page
 
 `about.html` — edit directly in the file. Placeholder sections:
-- Artist photo: drop `assets/artist.jpg` (displays as a 140px circle)
+- Artist photo: drop `assets/artist.png` (displays as a 140px circle)
 - Bio paragraph: marked with a comment, replace the placeholder text
 - Series blurbs: pre-filled with your three series, update descriptions as needed
 - Tools paragraph: marked with a comment, describe your actual process
@@ -429,8 +452,9 @@ Built from scratch in a single session to replace a WordPress installation at st
 |------|-------------|
 | `app.js` | Fetches manifest, renders series cards (cover art, CTAs), renders latest updates feed |
 | `series.js` | Applies theming + cursor, renders title card, renders chapters grid with localStorage progress badges |
-| `reader.js` | Full reader: theming, cursor, navigation (First/Prev/Next/Latest), chapter selector, progress bar, lightbox/zoom, keyboard shortcut overlay, strip mode, orientation overlay, swipe, click-to-navigate, keyboard, URL sync, preloading, localStorage progress |
+| `reader.js` | Full reader: theming, cursor, navigation (First/Prev/Next/Latest), chapter selector, progress bar, lightbox/zoom (+ pinch-to-zoom on touch), keyboard shortcut overlay, strip mode, orientation overlay, swipe, click-to-navigate, keyboard, URL sync, preloading, localStorage progress |
 | `archive.js` | Fetches manifest, renders all chapters grouped by series |
+| `cursor.js` | Animated fake cursor system: idle PNG everywhere, animated GIF on hover over links/buttons; skips touch devices; exposes `window.__cursorSetPaths()` for per-series override |
 
 ### scan.js
 
@@ -438,7 +462,7 @@ Node.js, zero dependencies. Walks `comics/` alphabetically, reads `series.json` 
 - `manifest.json` — all series/chapter/page data the frontend reads via `fetch()`
 - `sitemap.xml` — all page URLs for search engine indexing
 
-Detected automatically (no config needed): `cover.jpg`, `header.png`, `bg.jpg`, `cursor.png/gif`, chapter page images (all standard image extensions).
+Detected automatically (no config needed): `cover.jpg`, `header.png`, `bg.jpg`, `cursor.png` (idle), `cursor.gif` (animated hover), chapter page images (all standard image extensions). Cursor fields emitted separately as `cursor` and `cursorAnim` in the manifest.
 
 ### CSS architecture
 
@@ -473,7 +497,8 @@ Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigati
 - localStorage reading progress (per chapter, per series)
 - Adjacent page preloading
 - URL sync via `history.replaceState` (no full reload)
-- Custom cursor per series (auto-activated)
+- Custom cursor per series (auto-activated via cursor.js)
+- Lightbox pinch-to-zoom (1×–5×) and drag-to-pan on touch
 - Content panel backdrop (auto-activated when bg image present)
 
 ---
