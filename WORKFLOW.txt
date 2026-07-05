@@ -594,4 +594,25 @@
        Use a local server: npx serve . -l 3000
        Then open http://localhost:3000 instead.
 
+  Problem: Pages or manifest not updating on the live site
+  Fix: GitHub Pages caches aggressively. Two steps:
+       1. Hard refresh in the browser: Ctrl+Shift+R (Windows/Linux)
+          or Cmd+Shift+R (Mac).
+       2. If still stale, wait 1–2 minutes — Pages can take that
+          long to deploy after a push. Then hard refresh again.
+       Check the push went through: git log --oneline -1 should
+       match what you see in the GitHub repo on the web.
+
+  Problem: Batch-resized images have duplicate content
+  Fix: Windows GDI+ (System.Drawing) caches image file handles
+       when using Image.FromFile() in a loop — later iterations
+       can return a previous file's data. Always read images via
+       a file stream instead:
+         $stream = [System.IO.File]::OpenRead($srcPath)
+         $img = [System.Drawing.Image]::FromStream($stream)
+         ...
+         $stream.Dispose()
+       If duplicates slipped through, compare MD5 hashes:
+         Get-FileHash *.jpg -Algorithm MD5 | Sort Hash
+
 ================================================================
