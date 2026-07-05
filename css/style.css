@@ -125,14 +125,17 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  cursor: url(../assets/cursor.png) 0 0, auto;
 }
 
-/* 🖱️ SITE CURSOR — animated on interactive elements
+/* 🖱️ SITE CURSOR — mouse/trackpad only (pointer: fine)
+   Touch devices skip this entirely — OS handles tap feedback natively.
    Drop cursor.png + cursor.gif into assets/ to activate.
    Per-series cursors override these via injected <style> tags. */
-a, button, select, input, label, [role="button"], [tabindex] {
-  cursor: url(../assets/cursor.gif) 0 0, auto;
+@media (pointer: fine) {
+  body { cursor: url(../assets/cursor.png) 0 0, auto; }
+  a, button, select, input, label, [role="button"], [tabindex] {
+    cursor: url(../assets/cursor.gif) 0 0, auto;
+  }
 }
 
 /* Applied by JS when a series background image exists */

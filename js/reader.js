@@ -121,8 +121,10 @@
       const anim = s.cursorAnim ? `url(${s.cursorAnim}) 0 0, auto` : base;
       const style = document.createElement('style');
       style.textContent =
+        `@media (pointer: fine) {` +
         `body { cursor: ${base}; }` +
-        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim}; }`;
+        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim}; }` +
+        `}`;
       document.head.appendChild(style);
     }
 
