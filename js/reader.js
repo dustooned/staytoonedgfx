@@ -113,8 +113,18 @@
     if (s.accentColor) root.style.setProperty('--series-accent', s.accentColor);
     if (s.theme)       document.body.setAttribute('data-theme', s.theme);
 
-    // 🖱️ CUSTOM CURSOR — drop cursor.png in the series folder to activate
-    if (s.cursor) document.body.style.cursor = `url(${s.cursor}) 0 0, auto`;
+    // 🖱️ CUSTOM CURSOR
+    //    cursor.png  → default (static, first frame)
+    //    cursor.gif  → interactive elements (animates on hover)
+    if (s.cursor || s.cursorAnim) {
+      const base = s.cursor     ? `url(${s.cursor}) 0 0, auto`     : 'auto';
+      const anim = s.cursorAnim ? `url(${s.cursorAnim}) 0 0, auto` : base;
+      const style = document.createElement('style');
+      style.textContent =
+        `body { cursor: ${base}; }` +
+        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim}; }`;
+      document.head.appendChild(style);
+    }
 
     // 🎭 TITLE CARD — series logo image or styled text + chapter name
     titlecardSeries.innerHTML = s.headerImage

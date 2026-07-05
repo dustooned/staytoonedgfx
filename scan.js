@@ -77,7 +77,8 @@ function scanComics() {
     const cover       = firstExisting(assetBase, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
     const headerImage = firstExisting(assetBase, ['header.png', 'header.jpg', 'header.webp']);
     const background  = firstExisting(assetBase, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
-    const cursor      = firstExisting(assetBase, ['cursor.png', 'cursor.gif', 'cursor.cur']);
+    const cursorStatic = firstExisting(assetBase, ['cursor.png', 'cursor.cur']);
+    const cursorAnim   = firstExisting(assetBase, ['cursor.gif']);
 
     // 📁 LIST CHAPTER FOLDERS — sorted alphabetically (skip assets/ subfolder)
     const chapterSlugs = fs.readdirSync(seriesDir)
@@ -130,7 +131,8 @@ function scanComics() {
       cover:        cover       ? `${assetPrefix}/${cover}`       : null,
       headerImage:  headerImage ? `${assetPrefix}/${headerImage}` : null,
       background:   background  ? `${assetPrefix}/${background}`  : null,
-      cursor:       cursor      ? `${assetPrefix}/${cursor}`      : null,
+      cursor:       cursorStatic ? `${assetPrefix}/${cursorStatic}` : null,
+      cursorAnim:   cursorAnim   ? `${assetPrefix}/${cursorAnim}`   : null,
       chapterCount: chapters.length,
       chapters,
     });
