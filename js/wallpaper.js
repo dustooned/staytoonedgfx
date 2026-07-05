@@ -16,20 +16,24 @@
     }
   }
 
-  // Button
-  var btn = document.createElement('button');
-  btn.id          = 'wallpaper-toggle';
-  btn.textContent = paused ? '▶' : '⏸';
-  btn.title       = paused ? 'Play wallpaper' : 'Pause wallpaper';
-  btn.setAttribute('aria-label', btn.title);
-
-  btn.addEventListener('click', function () {
-    paused = !paused;
-    localStorage.setItem(KEY, paused ? '1' : '0');
+  function updateBtn() {
     btn.textContent = paused ? '▶' : '⏸';
     var label = paused ? 'Play wallpaper' : 'Pause wallpaper';
     btn.title = label;
     btn.setAttribute('aria-label', label);
+    if (paused) btn.setAttribute('data-paused', '');
+    else        btn.removeAttribute('data-paused');
+  }
+
+  // Button
+  var btn = document.createElement('button');
+  btn.id = 'wallpaper-toggle';
+  updateBtn();
+
+  btn.addEventListener('click', function () {
+    paused = !paused;
+    localStorage.setItem(KEY, paused ? '1' : '0');
+    updateBtn();
     applyState();
   });
 

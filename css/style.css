@@ -1429,18 +1429,31 @@ kbd {
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
-  background: rgba(10, 10, 10, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   color: var(--text);
   cursor: pointer;
   backdrop-filter: blur(6px);
   transition: background 0.15s, border-color 0.15s, opacity 0.15s;
-  opacity: 0.6;
+  opacity: 0.7;
 }
-#wallpaper-toggle:hover {
-  background: rgba(28, 28, 28, 0.92);
-  border-color: rgba(255, 255, 255, 0.28);
+/* Playing → red */
+#wallpaper-toggle:not([data-paused]) {
+  background: rgba(160, 20, 20, 0.75);
+  border: 1px solid rgba(220, 60, 60, 0.5);
+}
+#wallpaper-toggle:not([data-paused]):hover {
+  background: rgba(200, 30, 30, 0.92);
+  border-color: rgba(255, 80, 80, 0.8);
+  opacity: 1;
+}
+/* Paused → green */
+#wallpaper-toggle[data-paused] {
+  background: rgba(20, 120, 40, 0.75);
+  border: 1px solid rgba(60, 180, 80, 0.5);
+}
+#wallpaper-toggle[data-paused]:hover {
+  background: rgba(30, 150, 55, 0.92);
+  border-color: rgba(80, 220, 100, 0.8);
   opacity: 1;
 }
 
