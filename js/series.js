@@ -60,8 +60,8 @@
       const style = document.createElement('style');
       style.textContent =
         `@media (pointer: fine) {` +
-        `body { cursor: ${base}; }` +
-        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim}; }` +
+        `body { cursor: ${base} !important; }` +
+        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim} !important; }` +
         `}`;
       document.head.appendChild(style);
     }

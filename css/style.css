@@ -132,10 +132,16 @@ body {
    Drop cursor.png + cursor.gif into assets/ to activate.
    Per-series cursors override these via injected <style> tags. */
 @media (pointer: fine) {
-  body { cursor: url(../assets/cursor.png) 0 0, auto; }
+  body { cursor: url(../assets/cursor.png) 0 0, auto !important; }
   a, button, select, input, label, [role="button"], [tabindex] {
-    cursor: url(../assets/cursor.gif) 0 0, auto;
+    cursor: url(../assets/cursor.gif) 0 0, auto !important;
   }
+  /* Preserve disabled state and lightbox-specific cursors */
+  :disabled, [disabled]       { cursor: not-allowed !important; }
+  .lightbox                   { cursor: zoom-out !important; }
+  .lightbox.is-zoomed         { cursor: grab !important; }
+  .lightbox.is-zoomed.is-dragging { cursor: grabbing !important; }
+  .lightbox img               { cursor: default !important; }
 }
 
 /* Applied by JS when a series background image exists */
