@@ -310,69 +310,86 @@ Always use zero-padded numbers so files sort correctly:
   PART 5: CUSTOM CURSORS (per-series)
 ----------------------------------------------------------------
 
-Each series can have a custom cursor that activates when the
-reader enters the series page or reader. Drop a cursor file in
-the series folder and scan.js picks it up automatically.
+Each series can have a TWO-FILE cursor set that activates on the
+series page and reader. Drop files in the series assets folder
+and scan.js picks them up automatically.
 
-  Filename:   cursor.png   (preferred)
-              cursor.gif   (for animated cursors)
-              cursor.cur   (Windows format — less compatible, avoid)
+  Two files, two states:
+
+    cursor.png   Idle state — shown whenever cursor is on the page
+    cursor.gif   Hover state — animates when cursor is over any
+                 link, button, or other interactive element
+
+  Supply one or both. If you only have a PNG it shows everywhere
+  as a static cursor. If you only have a GIF it's used for both
+  states. Both together gives you the idle → animate transition.
+
+  How it works (no CSS cursor tricks):
+
+    Browsers don't animate GIFs in CSS cursor: url() — they fall
+    back silently to a plain arrow. The site uses a fake cursor:
+    a <div> that follows the mouse via JS. background-image DOES
+    animate GIFs. The native cursor is hidden with cursor: none.
 
   Recommended canvas size:
 
-    32 × 32 px    Standard. Works in all browsers, crisp.
-    64 × 64 px    HiDPI / Retina screens. More visible.
-    128 × 128 px  Maximum practical size. Chrome/Firefox support.
+    32 × 32 px    Standard — works everywhere, sharp.
+    64 × 64 px    HiDPI / Retina — more visible on sharp screens.
 
-    Windows historically limited cursors to 32×32.
-    Most modern browsers support up to 128×128 PNG.
-    Stick to 32×32 or 64×64 for widest compatibility.
+    Stick to 32×32 or 64×64. Larger sizes aren't reliably
+    supported and the cursor div is 32×32 (scales with contain).
 
   Format notes:
 
-    PNG (cursor.png):
-      Best compatibility. Supports transparency — use it.
+    PNG (cursor.png — idle state):
       Export as PNG-24 or PNG-32 with alpha channel.
-      Design on transparent canvas. No background.
+      Design on a transparent canvas. No background fill.
       The outline/shape IS the cursor.
 
-    GIF (cursor.gif):
-      Animated cursors (blinking, wiggling, etc.).
-      256 colours only. Use for simple animations.
+    GIF (cursor.gif — animated hover state):
+      256 colours only — keep the palette simple.
+      Set to loop infinitely (loop count = 0 in GIF settings).
       Keep under 8–12 frames for best performance.
-      Transparent GIF requires "binary transparency" (no partial
-      alpha) — design with hard edges, no anti-aliasing on edges.
+      Binary transparency only — hard edges, no anti-aliasing
+      on transparent edges (GIF doesn't support partial alpha).
 
   Hotspot (click point):
 
-    The hotspot is the pixel that registers as the click.
-    The site sets it to 0,0 (top-left corner) by default.
-    For a pen/quill cursor: design with the tip at top-left.
-    For a hand cursor: design with the fingertip at top-left.
-    For a crosshair: design with the center at 16,16 and change
-    the JS hotspot values in series.js and reader.js accordingly:
-      document.body.style.cursor = `url(${s.cursor}) 16 16, auto`;
+    The hotspot is always the top-left corner (0, 0).
+    Design with the active point at the top-left:
+      Pen / quill   → nib tip at top-left
+      Hand / finger → fingertip at top-left
+      Arrow         → arrow tip at top-left
 
   Design tips:
 
-    - Keep it simple and readable at small sizes.
-    - Test at 32×32 even if you design at 64×64.
-    - High-contrast outline or drop shadow helps it stand out
-      on both light and dark backgrounds.
-    - Include a fallback `auto` (already wired in) for unsupported
-      formats so the default cursor shows instead of nothing.
+    - Keep it simple and readable at 32×32.
+    - High-contrast outline or 1px drop shadow helps it show
+      on both light and dark series backgrounds.
     - Suggested themes:
-        IAGL     — a retro quill pen, smiley face, or small character
-        Melvin   — something goofy (Melvin's face, a rubber duck)
-        Dio      — a candle, skull, crescent moon, or clawed hand
+        IAGL   — retro quill pen, smiley face, small character
+        Melvin — something goofy (his face, a rubber duck, a sock)
+        Dio    — candle, skull, crescent moon, clawed hand
 
-  Folder placement:
+  Folder placement (always in the series assets/ subfolder):
 
-    comics/iagl/cursor.png
-    comics/melvin/cursor.png
-    comics/dio/cursor.png
+    comics/iagl/assets/cursor.png
+    comics/iagl/assets/cursor.gif
+    comics/melvin/assets/cursor.png
+    comics/melvin/assets/cursor.gif
+    comics/dio/assets/cursor.png     ← done ✓
+    comics/dio/assets/cursor.gif     ← done ✓
 
-    Run node scan.js after adding the file. No other changes needed.
+  Site-wide cursors (fallback when no series is active):
+
+    assets/cursor.png
+    assets/cursor.gif
+
+    These are always shown on non-series pages (homepage, blog,
+    about, archive) and as the default before a series loads.
+
+  Run node scan.js after adding any cursor file.
+  No other code changes needed.
 
 
 ----------------------------------------------------------------

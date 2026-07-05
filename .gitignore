@@ -4,8 +4,24 @@ Thumbs.db
 *.log
 *.tmp
 .env
+
+# Affinity lock files and source exports
 *.afdesign~lock~
 *.af~lock~
 *.clip
 *.zip
+
+# Pixelmator source files
+*.pixi
+
+# Cursor source files (working files, not for deployment)
+assets/cursors/
+
+# Placeholder drop-target files
+_DROP-FILES-HERE.txt
+
+# Claude Code session data
+.claude/
+
+# Legacy favicon subfolder
 assets/favicon_io/
