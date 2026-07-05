@@ -127,21 +127,14 @@ body {
   flex-direction: column;
 }
 
-/* 🖱️ SITE CURSOR — mouse/trackpad only (pointer: fine)
-   Touch devices skip this entirely — OS handles tap feedback natively.
-   Drop cursor.png + cursor.gif into assets/ to activate.
-   Per-series cursors override these via injected <style> tags. */
+/* 🖱️ SITE CURSOR — handled by js/cursor.js (fake div, animates GIF)
+   cursor.js sets cursor: none !important on all elements via injected style.
+   These rules are a static fallback if cursor.js fails to load. */
 @media (pointer: fine) {
-  body { cursor: url(../assets/cursor.png) 0 0, auto !important; }
+  body { cursor: url(../assets/cursor.png) 0 0, auto; }
   a, button, select, input, label, [role="button"], [tabindex] {
-    cursor: url(../assets/cursor.gif) 0 0, auto !important;
+    cursor: url(../assets/cursor.png) 0 0, auto;
   }
-  /* Preserve disabled state and lightbox-specific cursors */
-  :disabled, [disabled]       { cursor: not-allowed !important; }
-  .lightbox                   { cursor: zoom-out !important; }
-  .lightbox.is-zoomed         { cursor: grab !important; }
-  .lightbox.is-zoomed.is-dragging { cursor: grabbing !important; }
-  .lightbox img               { cursor: default !important; }
 }
 
 /* Applied by JS when a series background image exists */

@@ -113,19 +113,11 @@
     if (s.accentColor) root.style.setProperty('--series-accent', s.accentColor);
     if (s.theme)       document.body.setAttribute('data-theme', s.theme);
 
-    // 🖱️ CUSTOM CURSOR
-    //    cursor.png  → default (static, first frame)
-    //    cursor.gif  → interactive elements (animates on hover)
+    // 🖱️ CUSTOM CURSOR — hand off to cursor.js fake cursor
     if (s.cursor || s.cursorAnim) {
-      const base = s.cursor     ? `url(${s.cursor}) 0 0, auto`     : 'auto';
-      const anim = s.cursorAnim ? `url(${s.cursorAnim}) 0 0, auto` : base;
-      const style = document.createElement('style');
-      style.textContent =
-        `@media (pointer: fine) {` +
-        `body { cursor: ${base} !important; }` +
-        `a, button, select, input, label, [role="button"], [tabindex] { cursor: ${anim} !important; }` +
-        `}`;
-      document.head.appendChild(style);
+      if (typeof window.__cursorSetPaths === 'function') {
+        window.__cursorSetPaths(s.cursor, s.cursorAnim);
+      }
     }
 
     // 🎭 TITLE CARD — series logo image or styled text + chapter name
