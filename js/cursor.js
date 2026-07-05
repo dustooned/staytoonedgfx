@@ -44,34 +44,26 @@
   hideStyle.textContent = '@media (pointer: fine) { * { cursor: none !important; } }';
   document.head.appendChild(hideStyle);
 
-  // ── Mouse tracking ────────────────────────────────────────────────────
+  // ── Mouse tracking + interactive detection ────────────────────────────
+  // Merged into mousemove: position updates every frame, interactive state
+  // is checked on every move. Simpler and more reliable than separate
+  // mouseover — no requestAnimationFrame race condition.
+  const INTERACTIVE = 'a, button, select, input, label, [role="button"], [tabindex]';
+  let onInteractive = false;
+
   document.addEventListener('mousemove', e => {
     el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+
+    const now = !!e.target.closest(INTERACTIVE);
+    if (now !== onInteractive) {
+      onInteractive = now;
+      el.style.backgroundImage = now ? `url(${SRC_ANIM})` : `url(${SRC_IDLE})`;
+    }
   }, { passive: true });
 
   // mouseout with no relatedTarget = cursor left the viewport
   document.addEventListener('mouseout', e => {
     if (!e.relatedTarget) el.style.transform = 'translate(-100px, -100px)';
-  }, { passive: true });
-
-  // ── Swap between idle and animated on interactive elements ────────────
-  const INTERACTIVE = 'a, button, select, input, label, [role="button"], [tabindex]';
-  let onInteractive = false;
-
-  document.addEventListener('mouseover', e => {
-    const isInteractive = !!e.target.closest(INTERACTIVE);
-
-    if (isInteractive && !onInteractive) {
-      // Force GIF to restart from frame 1 by briefly clearing
-      el.style.backgroundImage = 'none';
-      requestAnimationFrame(() => {
-        el.style.backgroundImage = `url(${SRC_ANIM})`;
-      });
-    } else if (!isInteractive && onInteractive) {
-      el.style.backgroundImage = `url(${SRC_IDLE})`;
-    }
-
-    onInteractive = isInteractive;
   }, { passive: true });
 
   // ── API for per-series cursor override ───────────────────────────────
