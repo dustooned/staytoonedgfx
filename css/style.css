@@ -137,6 +137,12 @@ body {
   }
 }
 
+/* Site-wide tiled background on non-series pages */
+body:not(.has-series-bg) {
+  background-image: url(../assets/site-bg.gif);
+  background-repeat: repeat;
+}
+
 /* Applied by JS when a series background image exists */
 body.has-series-bg {
   background-image: var(--series-bg);
