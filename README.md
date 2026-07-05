@@ -222,7 +222,7 @@ The site uses a **fake cursor div** (`js/cursor.js`) instead of CSS `cursor:` �
 Drop either or both files — `node scan.js` wires them up automatically. No other changes needed.
 
 - Touch devices (`pointer: coarse`) are skipped — they get the OS default touch behaviour
-- GIF restarts from frame 1 each time the cursor enters an interactive element
+- GIF animates continuously while hovering over any interactive element; loops infinitely
 - See IMAGE-SPECS.txt Part 5 for size specs and design tips
 
 ---
