@@ -11,7 +11,8 @@
       "cover": null,
       "headerImage": null,
       "background": null,
-      "cursor": null,
+      "cursor": "comics/dio/assets/cursor.png",
+      "cursorAnim": "comics/dio/assets/cursor.gif",
       "chapterCount": 1,
       "chapters": [
         {
@@ -38,6 +39,7 @@
       "headerImage": null,
       "background": null,
       "cursor": null,
+      "cursorAnim": null,
       "chapterCount": 1,
       "chapters": [
         {
@@ -64,6 +66,7 @@
       "headerImage": null,
       "background": null,
       "cursor": null,
+      "cursorAnim": null,
       "chapterCount": 1,
       "chapters": [
         {
