@@ -144,8 +144,10 @@ body:not(.has-series-bg) {
 }
 
 /* Centered dark content panel on non-series pages —
-   lets the tiled background show on the edges         */
-body:not(.has-series-bg) main {
+   lets the tiled background show on the edges.
+   Excluded on homepage (.page-home) which keeps its
+   full-width game-menu feel.                          */
+body:not(.has-series-bg):not(.page-home) main {
   max-width: 1100px;
   margin: 0 auto;
   background: rgba(10, 10, 10, 0.94);
@@ -1222,6 +1224,7 @@ kbd {
   height: 140px;
   border-radius: 50%;
   overflow: hidden;
+  margin: 0 auto 28px;
   margin-bottom: 36px;
   background: var(--surface-alt);
   border: 2px solid var(--border);
