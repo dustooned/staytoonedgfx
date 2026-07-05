@@ -143,6 +143,19 @@ body:not(.has-series-bg) {
   background-repeat: repeat;
 }
 
+/* Centered dark content panel on non-series pages —
+   lets the tiled background show on the edges         */
+body:not(.has-series-bg) main {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: rgba(10, 10, 10, 0.94);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 8px 8px;
+  min-height: calc(100vh - 64px);
+}
+
 /* Applied by JS when a series background image exists */
 body.has-series-bg {
   background-image: var(--series-bg);
