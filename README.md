@@ -58,6 +58,7 @@ v1/
 │   └── tv-static-tile.jsx  ← After Effects ExtendScript to generate site-bg.gif
 │
 ├── comics/             📚 Your content lives here
+│   ├── tucker/         🥊 Tucker Toon  (theme: sepia)
 │   ├── iagl/           🟡 It's a Good Life  (theme: warm)
 │   │   ├── series.json
 │   │   ├── assets/         ← all series visual files go here
@@ -212,6 +213,7 @@ Each series on the homepage card shows an emoji before its title:
 | 👿 Dio La Damned | 👿 | `dio` |
 | 🐰 Melvin | 🐰 | `melvin` |
 | 🦆 It's a Good Life | 🦆 | `iagl` |
+| 🥊 Tucker Toon | 🥊 | `tucker` |
 
 Managed in `js/app.js` via the `SERIES_EMOJI` lookup object. Add new entries to support additional series.
 
@@ -623,6 +625,7 @@ Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigati
 | `iagl` | It's a Good Life | warm | `#f0a500` | 🦆 |
 | `melvin` | Melvin | cool | `#4fc3f7` | 🐰 |
 | `dio` | Dio La Damned | dark | `#c62828` | 👿 |
+| `tucker` | Tucker Toon | sepia | `#c8a87a` | 🥊 |
 
 ### Key technical decisions
 

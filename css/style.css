@@ -4,8 +4,9 @@
    Libre Baskerville — IAGL / warm (editorial, newspaper)
    Caveat        — Melvin / cool (nervous handwriting)
    UnifrakturMaguntia — Dio / dark (gothic blackletter)
+   Bangers       — Tucker / sepia (bold slapstick comic)
    ───────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=UnifrakturMaguntia&family=Bangers&display=swap');
 
 /* ┌─────────────────────────────────────────────────────┐
    │  style.css — Stay Tooned GFX                        │
@@ -82,6 +83,20 @@
   --theme-title-spacing:   -0.03em;
   --theme-font:            'Caveat', cursive;
 }
+
+/* 📜 SEPIA — Tucker Toon (vintage slapstick) */
+[data-theme="sepia"] {
+  --theme-overlay:         linear-gradient(160deg, rgba(100,75,30,0.45) 0%, rgba(8,6,2,0.92) 65%);
+  --theme-glow:            0 0 40px rgba(200,168,100,0.4), 0 2px 8px rgba(0,0,0,0.9);
+  --theme-line:            rgba(200,168,100,0.8);
+  --theme-title-style:     normal;
+  --theme-title-transform: none;
+  --theme-title-spacing:   0.04em;
+  --theme-font:            'Bangers', cursive;
+}
+
+/* Bangers needs wider spacing to read well at display sizes */
+[data-theme="sepia"] .title-card-series-name { letter-spacing: 0.06em; }
 
 /* 🩸 DARK — Dio La Damned (red / dramatic) */
 [data-theme="dark"] {
