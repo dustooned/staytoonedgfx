@@ -1014,23 +1014,34 @@ body.has-series-bg .content-panel {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.97);
+  background: rgba(0, 0, 0, 0.88);
   z-index: 600;
   align-items: center;
   justify-content: center;
   cursor: zoom-out;
-  overflow: hidden;
 }
 
 .lightbox.show { display: flex; }
 
-.lightbox img {
-  max-width: 95vw;
-  max-height: 95vh;
-  object-fit: contain;
-  border-radius: 2px;
+/* Panel sizes to the image — dark background matches image dimensions */
+.lightbox-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 98vw;
+  max-height: 98vh;
+  background: #000;
+  border-radius: 4px;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.9);
   cursor: default;
-  box-shadow: 0 0 60px rgba(0,0,0,1);
+}
+
+.lightbox img {
+  display: block;
+  max-width: 98vw;
+  max-height: 98vh;
+  border-radius: 4px;
   touch-action: none;
   user-select: none;
   will-change: transform;
@@ -1040,7 +1051,8 @@ body.has-series-bg .content-panel {
 .lightbox.is-zoomed { cursor: grab; }
 .lightbox.is-zoomed.is-dragging { cursor: grabbing; }
 
-/* Wide strips fill the lightbox width and let height be proportional */
+/* Wide strips fill panel width, height follows proportionally */
+.lightbox.lb-strip .lightbox-panel { max-width: 98vw; }
 .lightbox.lb-strip img {
   width: 98vw;
   height: auto;
@@ -1050,8 +1062,8 @@ body.has-series-bg .content-panel {
 
 .lightbox-close {
   position: absolute;
-  top: 16px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
