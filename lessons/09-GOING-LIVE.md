@@ -40,7 +40,7 @@ Before pushing, run through this:
 - [ ] At least one chapter is fully readable in the reader
 
 **Code:**
-- [ ] `SITE_URL` in `scan.js` is set to your actual URL
+- [ ] `BASE_URL` in `scan.js` is set to your actual URL
 - [ ] All donate links (`href="#"`) updated to your real Ko-fi/PayPal/etc. URL, or left as `#` if not ready
 - [ ] `SHOW = true` in `construction.js` if you want the welcome overlay to show, `false` to hide it
 

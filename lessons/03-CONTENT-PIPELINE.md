@@ -35,7 +35,7 @@ This means **you never hand-edit the manifest.** The scanner handles it. You jus
 
 ## 📋 Step 1 — Create Your First Series Folder
 
-In your `comics/` folder, create a folder for your series. Use a **slug** — lowercase, no spaces, hyphens instead:
+In your `comics/` folder, create a folder for your series. Use a **slug** — lowercase, no spaces, hyphens instead of spaces:
 
 ```
 comics/
@@ -73,9 +73,9 @@ Create a file called `series.json` directly inside `comics/my-series/`:
 
 | `"theme"` | Overlay gradient | Title style | Accent line colour |
 |-----------|-----------------|-------------|-------------------|
-| `"warm"` | Amber diagonal | Italic | Gold |
-| `"cool"` | Cyan fade from top | Normal weight | Cyan |
-| `"dark"` | Red radial vignette | Uppercase | Blood red |
+| `"warm"` | Amber diagonal | Italic (Libre Baskerville) | Gold |
+| `"cool"` | Cyan fade from top | Normal (Caveat) | Cyan |
+| `"dark"` | Red radial vignette | Uppercase (UnifrakturMaguntia) | Blood red |
 
 ---
 
@@ -136,15 +136,17 @@ Pages are sorted alphabetically by filename, so zero-padding is critical:
 |-----------|---------|
 | `01.jpg` | `1.jpg` |
 | `02.jpg` | `2.jpg` |
-| `10.jpg` | `10.jpg` but with `1.jpg` also present — sorts before `2.jpg` |
+| `10.jpg` | `10.jpg` (sorts before `2.jpg` without zero-padding) |
 
-**Supported image extensions:** `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`
+**Supported image extensions:** `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.avif`
+
+> 💡 **Any image file in the chapter folder becomes a page.** The scanner includes all image files, sorted alphabetically. Use a consistent naming scheme (`01.jpg`, `02.jpg`, etc.) to control order.
 
 ---
 
 ## 📋 Step 6 — Create `scan.js`
 
-Create a file called `scan.js` in the project root. This is the full scanner:
+Create `scan.js` in the project root. This is the scanner that builds the manifest:
 
 ```js
 // scan.js — Walks comics/ and builds manifest.json + sitemap.xml
@@ -153,132 +155,196 @@ Create a file called `scan.js` in the project root. This is the full scanner:
 const fs   = require('fs');
 const path = require('path');
 
-const COMICS_DIR = path.join(__dirname, 'comics');
-const OUT_MANIFEST = path.join(__dirname, 'manifest.json');
-const OUT_SITEMAP  = path.join(__dirname, 'sitemap.xml');
-const SITE_URL     = 'https://yourusername.github.io/your-repo'; // ← update this
+const COMICS_DIR    = path.join(__dirname, 'comics');
+const MANIFEST_PATH = path.join(__dirname, 'manifest.json');
+const SITEMAP_PATH  = path.join(__dirname, 'sitemap.xml');
+const IMAGE_EXTS    = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif']);
 
-const IMG_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
-const ASSET_FILES = ['cover.jpg', 'cover.webp', 'header.png', 'bg.jpg', 'bg.webp', 'bg.png'];
+// Update this to your GitHub Pages URL (or custom domain when ready):
+const BASE_URL = 'https://YOUR_USERNAME.github.io/YOUR_REPO';
 
-function readJson(filePath) {
+function isImage(f) {
+  return IMAGE_EXTS.has(path.extname(f).toLowerCase());
+}
+
+function readJSON(filePath) {
   try { return JSON.parse(fs.readFileSync(filePath, 'utf8')); }
-  catch (e) { return null; }
+  catch { return null; }
 }
 
-function listImages(dir) {
-  return fs.readdirSync(dir)
-    .filter(f => IMG_EXTS.has(path.extname(f).toLowerCase()) && /^\d+/.test(f))
-    .sort()
-    .map(f => f);
+// Find the first matching file from a list of candidates
+function firstExisting(dir, candidates) {
+  return candidates.find(f => fs.existsSync(path.join(dir, f))) ?? null;
 }
 
-const seriesList = [];
+if (!fs.existsSync(COMICS_DIR)) {
+  console.warn('comics/ not found — nothing to scan.');
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ series: [] }, null, 2));
+  process.exit(0);
+}
 
-for (const seriesSlug of fs.readdirSync(COMICS_DIR).sort()) {
-  const seriesDir = path.join(COMICS_DIR, seriesSlug);
-  if (!fs.statSync(seriesDir).isDirectory()) continue;
+const manifest = { series: [] };
 
-  const seriesJson = readJson(path.join(seriesDir, 'series.json'));
-  if (!seriesJson) { console.warn(`[skip] ${seriesSlug} — no series.json`); continue; }
+const seriesSlugs = fs.readdirSync(COMICS_DIR)
+  .filter(f => fs.statSync(path.join(COMICS_DIR, f)).isDirectory())
+  .sort();
 
-  // Detect assets
-  const assetsDir = path.join(seriesDir, 'assets');
-  const hasCover  = fs.existsSync(path.join(assetsDir, 'cover.jpg')) ||
-                    fs.existsSync(path.join(assetsDir, 'cover.webp'));
-  const hasHeader = fs.existsSync(path.join(assetsDir, 'header.png'));
-  const hasBg     = fs.existsSync(path.join(assetsDir, 'bg.jpg')) ||
-                    fs.existsSync(path.join(assetsDir, 'bg.webp')) ||
-                    fs.existsSync(path.join(assetsDir, 'bg.png'));
-  const hasCursorPng = fs.existsSync(path.join(assetsDir, 'cursor.png'));
-  const hasCursorGif = fs.existsSync(path.join(assetsDir, 'cursor.gif'));
+for (const slug of seriesSlugs) {
+  const seriesDir  = path.join(COMICS_DIR, slug);
+  const seriesData = readJSON(path.join(seriesDir, 'series.json'));
+
+  if (!seriesData) {
+    console.warn(`[skip] ${slug} — no series.json`);
+    continue;
+  }
+
+  // Look for assets in comics/slug/assets/ subfolder
+  const assetsDir   = path.join(seriesDir, 'assets');
+  const assetBase   = fs.existsSync(assetsDir) ? assetsDir : seriesDir;
+  const assetPrefix = fs.existsSync(assetsDir)
+    ? `comics/${slug}/assets`
+    : `comics/${slug}`;
+
+  // Detect series asset files
+  const cover       = firstExisting(assetBase, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
+  const headerImage = firstExisting(assetBase, ['header.png', 'header.jpg', 'header.webp']);
+  const background  = firstExisting(assetBase, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp']);
+  const cursor      = firstExisting(assetBase, ['cursor.png']);
+  const cursorAnim  = firstExisting(assetBase, ['cursor.gif']);
+
+  // Walk chapter folders (skip the assets/ subfolder)
+  const chapterSlugs = fs.readdirSync(seriesDir)
+    .filter(f => f !== 'assets' && fs.statSync(path.join(seriesDir, f)).isDirectory())
+    .sort();
 
   const chapters = [];
 
-  for (const chapterSlug of fs.readdirSync(seriesDir).sort()) {
-    const chapterDir = path.join(seriesDir, chapterSlug);
-    if (!fs.statSync(chapterDir).isDirectory()) continue;
-    if (chapterSlug === 'assets') continue;
+  for (const chSlug of chapterSlugs) {
+    const chDir  = path.join(seriesDir, chSlug);
+    const chData = readJSON(path.join(chDir, 'chapter.json')) ?? { title: chSlug };
 
-    const chapterJson = readJson(path.join(chapterDir, 'chapter.json'));
-    if (!chapterJson) { console.warn(`[skip] ${seriesSlug}/${chapterSlug} — no chapter.json`); continue; }
+    // All image files in the chapter folder become pages, sorted alphabetically
+    const pages = fs.readdirSync(chDir)
+      .filter(isImage)
+      .sort()
+      .map(f => `comics/${slug}/${chSlug}/${f}`);  // full relative path for <img src>
 
-    const pages = listImages(chapterDir);
-    if (pages.length === 0) { console.warn(`[warn] ${seriesSlug}/${chapterSlug} — no images`); }
+    const chBackground = firstExisting(chDir, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp']);
 
-    const chapterBg = fs.existsSync(path.join(chapterDir, 'bg.jpg')) ||
-                      fs.existsSync(path.join(chapterDir, 'bg.webp'));
+    if (pages.length === 0) {
+      console.warn(`  [warn] ${slug}/${chSlug} — no image files`);
+    }
 
     chapters.push({
-      slug:  chapterSlug,
-      title: chapterJson.title,
-      date:  chapterJson.date,
-      pages: pages,
-      ...(chapterJson.backgroundMode && { backgroundMode: chapterJson.backgroundMode }),
-      ...(chapterBg && { hasBg: true }),
+      slug:           chSlug,
+      title:          chData.title          ?? chSlug,
+      date:           chData.date           ?? null,
+      backgroundMode: chData.backgroundMode ?? null,
+      pageCount:      pages.length,
+      thumbnail:      pages[0]              ?? null,   // first page, used as chapter card preview
+      pages,
+      background: chBackground ? `comics/${slug}/${chSlug}/${chBackground}` : null,
     });
 
-    console.log(`  ✓ ${seriesSlug}/${chapterSlug} — ${pages.length} page(s)`);
+    console.log(`  ✓ ${slug}/${chSlug} — ${pages.length} page(s)`);
   }
 
-  seriesList.push({
-    slug:        seriesSlug,
-    title:       seriesJson.title,
-    shortName:   seriesJson.shortName,
-    description: seriesJson.description,
-    accentColor: seriesJson.accentColor,
-    theme:       seriesJson.theme,
-    ...(seriesJson.backgroundMode && { backgroundMode: seriesJson.backgroundMode }),
-    ...(hasCover  && { cover:  `comics/${seriesSlug}/assets/cover.jpg` }),
-    ...(hasHeader && { header: `comics/${seriesSlug}/assets/header.png` }),
-    ...(hasBg     && { bg:     `comics/${seriesSlug}/assets/bg.jpg` }),
-    ...(hasCursorPng && { cursor:     `comics/${seriesSlug}/assets/cursor.png` }),
-    ...(hasCursorGif && { cursorAnim: `comics/${seriesSlug}/assets/cursor.gif` }),
+  manifest.series.push({
+    slug,
+    title:          seriesData.title          ?? slug,
+    shortName:      seriesData.shortName      ?? slug.toUpperCase(),
+    description:    seriesData.description    ?? '',
+    accentColor:    seriesData.accentColor    ?? '#ffffff',
+    theme:          seriesData.theme          ?? null,
+    backgroundMode: seriesData.backgroundMode ?? 'cover',
+    cover:        cover       ? `${assetPrefix}/${cover}`       : null,
+    headerImage:  headerImage ? `${assetPrefix}/${headerImage}` : null,  // title card logo
+    background:   background  ? `${assetPrefix}/${background}`  : null,  // page background
+    cursor:       cursor      ? `${assetPrefix}/${cursor}`      : null,
+    cursorAnim:   cursorAnim  ? `${assetPrefix}/${cursorAnim}`  : null,
+    chapterCount: chapters.length,
     chapters,
   });
 
-  console.log(`✓ ${seriesSlug} — ${chapters.length} chapter(s)`);
+  console.log(`✓ ${seriesData.title} (${chapters.length} chapter(s))`);
 }
 
 // Write manifest.json
-fs.writeFileSync(OUT_MANIFEST, JSON.stringify({ series: seriesList }, null, 2));
-console.log(`\n✅ manifest.json written (${seriesList.length} series)`);
+fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
+console.log(`\n✅ manifest.json written (${manifest.series.length} series)`);
 
 // Write sitemap.xml
-const pages = ['index.html', 'series.html', 'reader.html', 'blog.html', 'about.html', 'archive.html'];
-const urls  = pages.map(p => `  <url><loc>${SITE_URL}/${p}</loc></url>`).join('\n');
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
-fs.writeFileSync(OUT_SITEMAP, sitemap);
-console.log(`✅ sitemap.xml written`);
+const staticPages  = ['', 'about.html', 'blog.html', 'archive.html'];
+const seriesPages  = manifest.series.map(s => `series.html?s=${s.slug}`);
+const readerPages  = manifest.series.flatMap(s =>
+  s.chapters.map(ch => `reader.html?s=${s.slug}&ch=${ch.slug}&p=1`)
+);
+const allUrls = [...staticPages, ...seriesPages, ...readerPages];
+const today   = new Date().toISOString().slice(0, 10);
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allUrls.map(url => `  <url>\n    <loc>${BASE_URL}/${url}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`).join('\n')}
+</urlset>`;
+fs.writeFileSync(SITEMAP_PATH, sitemap);
+console.log(`✅ sitemap.xml written (${allUrls.length} URLs)`);
 ```
 
-> ⚠️ **Update line 9:** Replace the `SITE_URL` value with your actual GitHub Pages URL.
+> ⚠️ **Update line 11:** Replace `BASE_URL` with your actual GitHub Pages URL.
 
 ---
 
 ## 📋 Step 7 — Run the Scanner
 
-In your terminal:
-
 ```bash
 node scan.js
 ```
 
-You should see output like:
+Expected output:
 
 ```
   ✓ my-series/chapter-01 — 3 page(s)
-✓ my-series — 1 chapter(s)
+✓ My Series (1 chapter(s))
 
 ✅ manifest.json written (1 series)
-✅ sitemap.xml written
+✅ sitemap.xml written (3 URLs)
 ```
 
-Two new files appear in your project root:
-- `manifest.json` — all series and chapter data
-- `sitemap.xml` — URL list for search engines
+Open `manifest.json` to see what the frontend will read. Key fields to know:
 
-Open `manifest.json` in VS Code to see what it looks like. This is the data your frontend reads.
+```json
+{
+  "series": [{
+    "slug": "my-series",
+    "title": "My Series",
+    "accentColor": "#4fc3f7",
+    "theme": "cool",
+    "cover": null,
+    "headerImage": null,
+    "background": null,
+    "cursor": null,
+    "chapterCount": 1,
+    "chapters": [{
+      "slug": "chapter-01",
+      "title": "Chapter 1: The Beginning",
+      "date": "2026-07-01",
+      "pageCount": 3,
+      "thumbnail": "comics/my-series/chapter-01/01.jpg",
+      "pages": [
+        "comics/my-series/chapter-01/01.jpg",
+        "comics/my-series/chapter-01/02.jpg",
+        "comics/my-series/chapter-01/03.jpg"
+      ]
+    }]
+  }]
+}
+```
+
+> **Note the field names** — these are what your frontend JS will read:
+> - `headerImage` — the series title card logo/treatment
+> - `background` — the series/chapter background image
+> - `pageCount` — number of pages (integer)
+> - `thumbnail` — full path to the first page image
+> - Pages are **full relative paths** (e.g. `comics/my-series/chapter-01/01.jpg`) so they can be used directly as `<img src>` values
 
 ---
 
@@ -315,19 +381,25 @@ fetch('manifest.json')
     grid.innerHTML = data.series.map(function(s) {
       var emoji = SERIES_EMOJI[s.slug] ? SERIES_EMOJI[s.slug] + ' ' : '';
       var firstChapter = s.chapters && s.chapters[0];
-      var readHref = firstChapter
-        ? 'reader.html?series=' + s.slug + '&chapter=' + firstChapter.slug + '&page=0'
-        : '#';
 
-      return '<div class="series-card">' +
-        (s.cover ? '<img class="series-card-cover" src="' + s.cover + '" alt="' + s.title + '">' : '') +
+      // URL params: ?s= for series slug, ?ch= for chapter slug, ?p= for page (1-indexed)
+      var readHref = firstChapter
+        ? 'reader.html?s=' + s.slug + '&ch=' + firstChapter.slug + '&p=1'
+        : 'series.html?s=' + s.slug;
+
+      var coverHtml = s.cover
+        ? '<img class="series-card-cover" src="' + s.cover + '" alt="' + s.title + '">'
+        : '<div class="series-card-cover-placeholder">📖</div>';
+
+      return '<div class="series-card" style="--card-accent:' + (s.accentColor || '#fff') + '">' +
+        '<a href="series.html?s=' + s.slug + '" class="series-card-cover-wrap">' + coverHtml + '</a>' +
         '<div class="series-card-body">' +
           '<div class="series-card-title">' + emoji + s.title + '</div>' +
           '<div class="series-card-desc">' + (s.description || '') + '</div>' +
-          '<div class="series-card-meta">' + (s.chapters ? s.chapters.length : 0) + ' chapter(s)</div>' +
+          '<div class="series-card-meta">' + s.chapterCount + ' chapter(s)</div>' +
           '<div class="series-card-actions">' +
-            '<a href="' + readHref + '" class="btn-read">Start Reading →</a>' +
-            '<a href="series.html?series=' + s.slug + '" class="btn-archive">Archive ›</a>' +
+            '<a href="' + readHref + '" class="start-reading-btn">Start Reading →</a>' +
+            '<a href="series.html?s=' + s.slug + '" class="series-archive-link">Archive ›</a>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -339,6 +411,13 @@ fetch('manifest.json')
     console.error(err);
   });
 ```
+
+> **URL parameter convention used throughout this codebase:**
+> - `?s=` — series slug (e.g. `?s=my-series`)
+> - `?ch=` — chapter slug (e.g. `?ch=chapter-01`)
+> - `?p=` — page number, **1-indexed** (e.g. `?p=1` for page 1)
+>
+> You'll see this same pattern in `series.js` and `reader.js`.
 
 ---
 
@@ -363,10 +442,16 @@ Add this to `css/style.css`:
   flex-direction: column;
 }
 
-.series-card-cover {
+.series-card-cover,
+.series-card-cover-placeholder {
   width: 100%;
   aspect-ratio: 3/4;
   object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: #1a1a1a;
 }
 
 .series-card-body {
@@ -401,7 +486,7 @@ Add this to `css/style.css`:
   padding-top: 12px;
 }
 
-.btn-read, .btn-archive {
+.start-reading-btn, .series-archive-link {
   display: inline-block;
   padding: 8px 14px;
   border-radius: 8px;
@@ -409,17 +494,15 @@ Add this to `css/style.css`:
   font-weight: 600;
 }
 
-.btn-read {
+.start-reading-btn {
   background: rgba(255,255,255,0.1);
   color: #fff;
   border: 1px solid rgba(255,255,255,0.15);
 }
-.btn-read:hover { background: rgba(255,255,255,0.18); }
+.start-reading-btn:hover { background: rgba(255,255,255,0.18); }
 
-.btn-archive {
-  color: rgba(255,255,255,0.5);
-}
-.btn-archive:hover { color: rgba(255,255,255,0.8); }
+.series-archive-link { color: rgba(255,255,255,0.5); }
+.series-archive-link:hover { color: rgba(255,255,255,0.8); }
 ```
 
 ---
@@ -428,33 +511,39 @@ Add this to `css/style.css`:
 
 1. Start your server: `npm run dev`
 2. Open `http://localhost:3000`
-3. You should see your series card render with the title, description, and chapter count
+3. You should see your series card render with title, description, and chapter count
 4. If you added a `cover.jpg`, it should show as the card image
+5. Click "Start Reading →" — the URL should be `reader.html?s=my-series&ch=chapter-01&p=1`
+6. Click "Archive ›" — the URL should be `series.html?s=my-series`
 
 ---
 
 ## 🧪 How to Know It's Working
 
-- [ ] `node scan.js` runs without errors and prints your series/chapter names
-- [ ] `manifest.json` exists in the project root and contains your series data
-- [ ] The homepage loads and shows your series card
-- [ ] The series title appears with the right emoji prefix
+- [ ] `node scan.js` prints your series/chapter names without errors
+- [ ] `manifest.json` exists and contains your series data with correct field names
+- [ ] Pages in the manifest are full paths like `comics/my-series/chapter-01/01.jpg`
+- [ ] Homepage loads and shows your series card
+- [ ] "Start Reading" link URL contains `?s=`, `?ch=`, `?p=`
 
 ---
 
 ## 🐛 Common Mistakes
 
 **"No series found"**
-→ Make sure `series.json` exists directly inside `comics/my-series/` (not inside a subfolder). Same for `chapter.json` in the chapter folder.
+→ Make sure `series.json` exists directly inside `comics/my-series/` and `chapter.json` inside the chapter folder. The scanner skips folders without these files.
 
 **"fetch failed" / "Could not load manifest"**
 → You're opening the HTML file directly instead of using the local server. Run `npm run dev` and go to `http://localhost:3000`.
 
 **Pages are missing from the reader**
-→ You ran `scan.js` before adding the images. Drop the images in the chapter folder, then run `node scan.js` again.
+→ You ran `scan.js` before adding the images. Drop the images in, then run `node scan.js` again.
 
 **"Scanner shows 0 page(s)"**
-→ File names must start with a number (the scanner filters by `/^\d+/`). A file named `page-01.jpg` won't be found; `01.jpg` will.
+→ The scanner includes any file with an image extension (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.avif`). If you have 0 pages, there are genuinely no supported image files in the chapter folder.
+
+**Images don't load in the reader**
+→ Check your `manifest.json` — pages should be full paths like `comics/my-series/chapter-01/01.jpg`, not just `01.jpg`. If you see just filenames, the scan.js pages mapping is missing the `comics/${slug}/${chSlug}/` prefix.
 
 ---
 

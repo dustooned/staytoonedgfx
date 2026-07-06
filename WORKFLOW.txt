@@ -543,7 +543,7 @@
 
   ── Artist photo ─────────────────────────────────────────────
 
-    Drop your photo at:   assets/artist.jpg
+    Drop your photo at:   assets/artist.png  ← what about.html expects
     Recommended size:     400 × 400 px minimum (displays as 140px circle)
     Format:               JPEG or WebP
 
@@ -609,6 +609,7 @@
                         See PART 6 for how the cursor system works.
 
     assets/artist.png   About page photo. 400×400 px min, PNG/JPEG/WebP.
+                        about.html references this filename directly.
                         Displays as a 140px circle on the about page.
 
   After adding any asset file:

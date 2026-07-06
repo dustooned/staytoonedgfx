@@ -201,13 +201,14 @@ Always resize down from your master file — never up.
     Site logo (header bar):
       Height:           72 px  (displays at 36px, 2× for Retina)
       Width:            auto
-      Format:           PNG (transparency required)
-      Filename:         assets/logo.png
+      Format:           SVG (preferred — scales perfectly at any size)
+                        PNG (fallback — use if SVG isn't available)
+      Filename:         assets/logo.svg  (what the site actually uses)
 
     Artist photo (About page):
       Size:             400 × 400 px minimum  (displays as 140px circle)
-      Format:           JPEG or WebP
-      Filename:         assets/artist.jpg
+      Format:           PNG, JPEG, or WebP
+      Filename:         assets/artist.png  ← what about.html expects
 
 
   [ FAVICON & APP ICONS ]

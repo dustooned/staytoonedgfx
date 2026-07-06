@@ -177,7 +177,7 @@ These aren't required for Lesson 2, but gather them when you have them:
 |-------|------|------|
 | Site logo | SVG or PNG, ~72px tall | `assets/logo.svg` |
 | Favicon | 512×512 PNG to start | `assets/` |
-| About photo | 400×400 px minimum | `assets/artist.jpg` |
+| About photo | 400×400 px minimum | `assets/artist.png` |
 | Series cover | 600×800 px | `comics/[series]/assets/cover.jpg` |
 | Series header/logo | 500px wide, PNG with transparency | `comics/[series]/assets/header.png` |
 

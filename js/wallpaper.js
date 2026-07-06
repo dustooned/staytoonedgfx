@@ -1,31 +1,25 @@
 (function () {
-  // Skip on touch/mobile devices — no wallpaper loads there
   if (!window.matchMedia('(pointer: fine)').matches) return;
 
-  var KEY    = 'wallpaper-state';
+  var KEY = 'wallpaper-state';
+
+  // Migrate old 2-state key so returning visitors don't get confused
+  if (localStorage.getItem('wallpaper-paused') !== null) {
+    var old = localStorage.getItem('wallpaper-paused');
+    if (old === '1') localStorage.setItem(KEY, 'pause');
+    localStorage.removeItem('wallpaper-paused');
+  }
+
   var STATES = ['play', 'pause', 'stop'];
   var state  = localStorage.getItem(KEY) || 'play';
   if (STATES.indexOf(state) === -1) state = 'play';
 
-  // Wallpaper only applies on non-series pages
-  var page           = location.pathname.split('/').pop() || 'index.html';
-  var isWallpaperPage = page !== 'series.html' && page !== 'reader.html';
-
-  function assetUrl(filename) {
-    var link = document.querySelector('link[rel="stylesheet"]');
-    var href = link ? link.getAttribute('href') : 'css/style.css';
-    return href.replace('css/style.css', '') + 'assets/' + filename;
-  }
-
+  // Apply state as a body class — CSS handles the visual output.
+  // body.wallpaper-pause and body.wallpaper-stop rules in style.css
+  // use :not(.has-series-bg) so they never affect series pages.
   function applyState() {
-    if (!isWallpaperPage) return;
-    if (state === 'play') {
-      document.body.style.backgroundImage = '';           // CSS rule takes over
-    } else if (state === 'pause') {
-      document.body.style.backgroundImage = 'url(' + assetUrl('site-bg-pause.gif') + ')';
-    } else {
-      document.body.style.backgroundImage = 'none';       // black
-    }
+    document.body.classList.remove('wallpaper-play', 'wallpaper-pause', 'wallpaper-stop');
+    document.body.classList.add('wallpaper-' + state);
   }
 
   var CONFIG = {
@@ -42,7 +36,6 @@
     btn.setAttribute('data-state', state);
   }
 
-  // Widget
   var remote = document.createElement('div');
   remote.id  = 'bg-remote';
 
@@ -63,7 +56,6 @@
   remote.appendChild(lbl);
   remote.appendChild(btn);
 
-  // Inject as first child of header (leftmost position)
   var headerInner = document.querySelector('.header-inner');
   if (headerInner) {
     headerInner.insertBefore(remote, headerInner.firstChild);
