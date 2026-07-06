@@ -137,6 +137,7 @@
       `<option value="${ch.slug}" ${ch.slug === chapterSlug ? 'selected' : ''}>${ch.title}</option>`
     ).join('');
     chSelect.addEventListener('change', () => {
+      chSelect.blur();
       location.href = `reader.html?s=${seriesSlug}&ch=${chSelect.value}&p=1`;
     });
 
@@ -461,7 +462,7 @@
         return;
       }
 
-      if (e.key === 'ArrowLeft')                        go(page - 1);
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); go(page - 1); }
       if (e.key === 'ArrowRight' || e.key === ' ')  { e.preventDefault(); go(page + 1); }
       if (e.key === 'z' || e.key === 'Z')              openLightbox();
       if (e.key === '?')                               toggleShortcutOverlay();

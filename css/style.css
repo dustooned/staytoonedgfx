@@ -176,6 +176,12 @@ body:not(.has-series-bg) main {
   min-height: calc(100vh - 64px);
 }
 
+/* Reader panel shrinks to content — no forced full-screen height.
+   Strips and short pages shouldn't drown in empty dark space. */
+body.page-reader:not(.has-series-bg) main {
+  min-height: auto;
+}
+
 /* Homepage series picker breaks out of the panel to
    full viewport width so the game-menu feel is kept.
    The panel backdrop still shows on hero + footer.   */
