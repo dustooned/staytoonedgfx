@@ -384,7 +384,6 @@
       }
       page = Math.max(1, Math.min(n, total));
       render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ⏮ FIRST — page 1 of the very first chapter
