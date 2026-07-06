@@ -1,8 +1,15 @@
 (function () {
+  // Skip on touch/mobile devices — no wallpaper loads there
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+
   var KEY    = 'wallpaper-state';
   var STATES = ['play', 'pause', 'stop'];
   var state  = localStorage.getItem(KEY) || 'play';
   if (STATES.indexOf(state) === -1) state = 'play';
+
+  // Wallpaper only applies on non-series pages
+  var page           = location.pathname.split('/').pop() || 'index.html';
+  var isWallpaperPage = page !== 'series.html' && page !== 'reader.html';
 
   function assetUrl(filename) {
     var link = document.querySelector('link[rel="stylesheet"]');
@@ -11,19 +18,20 @@
   }
 
   function applyState() {
+    if (!isWallpaperPage) return;
     if (state === 'play') {
-      document.body.style.backgroundImage = '';          // restore CSS GIF rule
+      document.body.style.backgroundImage = '';           // CSS rule takes over
     } else if (state === 'pause') {
       document.body.style.backgroundImage = 'url(' + assetUrl('site-bg-pause.gif') + ')';
     } else {
-      document.body.style.backgroundImage = 'none';      // black
+      document.body.style.backgroundImage = 'none';       // black
     }
   }
 
   var CONFIG = {
-    play:  { icon: '▶', label: 'Pause wallpaper',  next: 'pause' },
-    pause: { icon: '⏸', label: 'Stop wallpaper',   next: 'stop'  },
-    stop:  { icon: '⏹', label: 'Play wallpaper',   next: 'play'  },
+    play:  { icon: '▶', label: 'Pause wallpaper', next: 'pause' },
+    pause: { icon: '⏸', label: 'Stop wallpaper',  next: 'stop'  },
+    stop:  { icon: '⏹', label: 'Play wallpaper',  next: 'play'  },
   };
 
   function updateBtn() {
@@ -34,16 +42,14 @@
     btn.setAttribute('data-state', state);
   }
 
-  // Container
+  // Widget
   var remote = document.createElement('div');
   remote.id  = 'bg-remote';
 
-  // Label
   var lbl = document.createElement('span');
   lbl.id          = 'bg-remote-label';
-  lbl.textContent = 'BG Remote';
+  lbl.textContent = '📺 BG Remote';
 
-  // Button
   var btn = document.createElement('button');
   btn.id = 'wallpaper-toggle';
 
@@ -56,7 +62,14 @@
 
   remote.appendChild(lbl);
   remote.appendChild(btn);
-  document.body.appendChild(remote);
+
+  // Inject as first child of header (leftmost position)
+  var headerInner = document.querySelector('.header-inner');
+  if (headerInner) {
+    headerInner.insertBefore(remote, headerInner.firstChild);
+  } else {
+    document.body.appendChild(remote);
+  }
 
   updateBtn();
   applyState();

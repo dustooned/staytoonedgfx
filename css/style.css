@@ -1424,54 +1424,51 @@ kbd {
    ───────────────────────────────────────────────────── */
 /* ─────────────────────────────────────────────────────
    🎛️ BG REMOTE
-   Fixed bottom-left widget: label + 3-state toggle.
-   play → pause (freeze frame) → stop (black) → play
-   Only injected by wallpaper.js on non-series pages.
+   Injected into .header-inner as first child (far left).
+   Inline flex row: emoji label + 3-state toggle button.
+   play (▶ green) → pause (⏸ amber) → stop (⏹ red)
+   Hidden on touch/mobile — wallpaper.js skips entirely.
    ───────────────────────────────────────────────────── */
 #bg-remote {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 9000;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 5px;
+  flex-shrink: 0;
 }
 
 #bg-remote-label {
-  display: block;
   background: #000;
   color: #fff;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 2px 6px;
+  padding: 3px 6px;
   border-radius: 3px;
+  white-space: nowrap;
   user-select: none;
   line-height: 1.6;
 }
 
 #wallpaper-toggle {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
-  border-radius: 6px;
+  font-size: 0.75rem;
+  border-radius: 5px;
   color: #fff;
   cursor: pointer;
-  backdrop-filter: blur(6px);
   transition: background 0.15s, border-color 0.15s, opacity 0.15s;
-  opacity: 0.75;
+  opacity: 0.8;
+  flex-shrink: 0;
 }
 #wallpaper-toggle:hover { opacity: 1; }
 
 /* Play → green */
 #wallpaper-toggle[data-state="play"] {
-  background: rgba(20, 130, 45, 0.85);
+  background: rgba(20, 130, 45, 0.9);
   border: 1px solid rgba(60, 200, 90, 0.6);
 }
 #wallpaper-toggle[data-state="play"]:hover {
@@ -1481,7 +1478,7 @@ kbd {
 
 /* Pause → amber */
 #wallpaper-toggle[data-state="pause"] {
-  background: rgba(160, 110, 10, 0.85);
+  background: rgba(160, 110, 10, 0.9);
   border: 1px solid rgba(220, 160, 40, 0.6);
 }
 #wallpaper-toggle[data-state="pause"]:hover {
@@ -1491,7 +1488,7 @@ kbd {
 
 /* Stop → red */
 #wallpaper-toggle[data-state="stop"] {
-  background: rgba(160, 20, 20, 0.85);
+  background: rgba(160, 20, 20, 0.9);
   border: 1px solid rgba(220, 60, 60, 0.6);
 }
 #wallpaper-toggle[data-state="stop"]:hover {

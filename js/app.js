@@ -26,6 +26,9 @@
     if (!res.ok) throw new Error('manifest not found');
     const { series } = await res.json();
 
+    // 🎭 Series emoji labels by slug
+    const SERIES_EMOJI = { dio: '👿', melvin: '🐰', iagl: '🦆' };
+
     // 🚫 EMPTY STATE
     if (!series || series.length === 0) {
       grid.innerHTML = '<p class="empty">No series found. Add a series folder and run <code>node scan.js</code>.</p>';
@@ -58,7 +61,7 @@
           </a>
           <div class="series-card-body">
             <a href="series.html?s=${s.slug}" class="series-card-title-link">
-              <div class="series-card-title">${s.title}</div>
+              <div class="series-card-title">${SERIES_EMOJI[s.slug] ? SERIES_EMOJI[s.slug] + ' ' : ''}${s.title}</div>
             </a>
             <div class="series-card-desc">${s.description || ''}</div>
             <div class="series-card-meta">
