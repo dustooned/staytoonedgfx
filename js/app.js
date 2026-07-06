@@ -27,7 +27,7 @@
     const { series } = await res.json();
 
     // 🎭 Series emoji labels by slug
-    const SERIES_EMOJI = { dio: '👿', melvin: '🐰', iagl: '🦆', tucker: '🥊' };
+    const SERIES_EMOJI = { dio: '👹', melvin: '🐰', iagl: '🦆', tucker: '😈' };
 
     // 🚫 EMPTY STATE
     if (!series || series.length === 0) {
