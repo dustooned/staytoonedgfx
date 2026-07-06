@@ -22,6 +22,7 @@ Think of a webcomic website like **a comic book store you own.**
 By the end of these lessons you'll have:
 
 ✅ A multi-series comic site hosted free on GitHub Pages  
+✅ An interactive Bungee Inline hero title with per-word brand colors and hover scale effects  
 ✅ A tiled animated TV-static wallpaper that visitors can control  
 ✅ Pixel-dissolve page transitions between every page  
 ✅ Custom animated cursors that change per-series  
@@ -44,6 +45,7 @@ By the end of these lessons you'll have:
 | [07 — Welcome Overlay](07-WELCOME-OVERLAY.md) | First-visit modal | One-time welcome screen |
 | [08 — Series Theming](08-SERIES-THEMING.md) | CSS custom properties + body classes | Each series looks totally different |
 | [09 — Going Live](09-GOING-LIVE.md) | GitHub Pages + custom domain | Site live at your own URL |
+| [10 — Interactive Typography](10-INTERACTIVE-TYPOGRAPHY.md) | Bungee Inline + scale falloff + Web Audio | Homepage hero comes alive on hover |
 
 ---
 

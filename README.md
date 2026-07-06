@@ -34,6 +34,7 @@ v1/
 │   ├── cursor.js       🖱️  Animated cursor system — fake cursor div, GIF on hover
 │   ├── transition.js   ✨ Pixel dissolve page transitions — canvas, Fisher-Yates
 │   ├── wallpaper.js    📺 BG Remote wallpaper control — 3 states, localStorage
+│   ├── hero-type.js    ✍️  Homepage hero interactive typography — Bungee Inline, scale falloff
 │   └── construction.js 🎉 First-visit welcome overlay — localStorage gate, email form
 │
 ├── assets/             🗂️  Site-wide assets
@@ -84,7 +85,8 @@ v1/
     ├── 06-CUSTOM-CURSORS.md
     ├── 07-WELCOME-OVERLAY.md
     ├── 08-SERIES-THEMING.md
-    └── 09-GOING-LIVE.md
+    ├── 09-GOING-LIVE.md
+    └── 10-INTERACTIVE-TYPOGRAPHY.md
 ```
 
 ---
@@ -235,31 +237,39 @@ Non-series pages (homepage, blog, about, archive, 404) show a tiled animated TV 
 
 ### Three states
 
-| State | Icon | Body class | Background | Button colour |
-|-------|------|------------|-----------|---------------|
+| State | Icon | `<html>` class | Background | Button colour |
+|-------|------|----------------|-----------|---------------|
+| Stop | ⏹ | `wallpaper-stop` | None (dark) | 🔴 Red |
 | Play | ▶ | `wallpaper-play` | `site-bg.gif` (animated) | 🟢 Green |
 | Pause | ⏸ | `wallpaper-pause` | `site-bg-pause.gif` (still) | 🟡 Amber |
-| Stop | ⏹ | `wallpaper-stop` | None (dark body) | 🔴 Red |
 
-Click cycles: Play → Pause → Stop → Play.
+**Default for new visitors: Stop.** Click cycles: Stop → Play → Pause → Stop.
 
 ### How it works
 
-`wallpaper.js` adds a body class (`wallpaper-play`, `wallpaper-pause`, or `wallpaper-stop`) on every page load. CSS handles the visual output via:
+`wallpaper.js` adds a class (`wallpaper-play`, `wallpaper-pause`, or `wallpaper-stop`) to the **`<html>` element** — not body. CSS handles the visual output via:
 
 ```css
-body:not(.has-series-bg) {
-  background-image: url(../assets/site-bg.gif);  /* base rule — play */
+html.wallpaper-play body:not(.has-series-bg) {
+  background-image: url(../assets/site-bg.gif);
+  background-repeat: repeat;
 }
-body.wallpaper-pause:not(.has-series-bg) {
+html.wallpaper-pause body:not(.has-series-bg) {
   background-image: url(../assets/site-bg-pause.gif);
+  background-repeat: repeat;
 }
-body.wallpaper-stop:not(.has-series-bg) {
-  background-image: none;
+/* Series pages get their own animated wallpaper via bg.gif in the series assets folder */
+html.wallpaper-play body.has-series-bg {
+  background-image: var(--series-bg);
+}
+html.wallpaper-pause body.has-series-bg {
+  background-image: var(--series-bg-pause, var(--series-bg));
 }
 ```
 
-The `:not(.has-series-bg)` selector means series/reader pages are **never affected** — series backgrounds are managed entirely by `series.js`.
+**Why `<html>` and not `<body>`:** No CSS rule fires without a positive class on `<html>`. This means the GIF is guaranteed never to load before JS runs — no flicker, no seizure-risk flash on first paint. The default (no class / JS disabled) is always a dark, background-free page.
+
+**Series pages get wallpaper control too.** If a series has a `bg.gif` in its assets folder, the BG Remote controls it just like the site-wide wallpaper. Series with only `bg.jpg` show the image on play/pause and go dark on stop.
 
 State is stored in `localStorage('wallpaper-state')` and persists across all pages and sessions.
 
@@ -331,6 +341,46 @@ Drop either or both files — `node scan.js` wires them up automatically.
 
 ---
 
+## ✍️ Interactive Typography (Homepage Hero)
+
+`js/hero-type.js` replaces the plain homepage `<h1>` with a character-by-character interactive display using **Bungee Inline** (Google Fonts).
+
+### How it works
+
+Each character in "Stay Tooned GFX" is wrapped in a `<span class="hero-char">` by JS on page load. On hover, an **exponential scale falloff** radiates out from the hovered character — neighbouring letters scale down proportionally, snapping back on mouse leave via a spring cubic-bezier.
+
+Per-word colors are pulled from the SVG logo palette:
+
+| Word | Color |
+|------|-------|
+| Stay | `#f60047` (red) |
+| Tooned | `#48a6ff` (blue) |
+| GFX | `#ffca23` (yellow) |
+
+Each character also gets a matching `--char-glow` CSS variable for a `drop-shadow` on hover.
+
+### Tunables (top of `hero-type.js`)
+
+```js
+var SCALE_MAX    = 1.55;   // how large the hovered character gets
+var FALLOFF      = 1.1;    // how fast scale drops with distance (higher = tighter)
+var WORD_PALETTE = ['#f60047', '#48a6ff', '#ffca23', '#8fe900'];
+```
+
+### Mobile / touch
+
+On `(pointer: coarse)` devices (touch/mobile) the hover and focus events are not bound — characters show their word colors but don't animate. This avoids accidental scale triggers on tap.
+
+### Accessibility
+
+The container has `role="img"` and `aria-label="Stay Tooned GFX"`. Individual character spans are `aria-hidden="true"`. Screen readers announce the whole phrase as a single label.
+
+### `prefers-reduced-motion`
+
+Scale animation is skipped; glow on focus is retained so keyboard users still get feedback.
+
+---
+
 ## 🎉 First-Visit Welcome Overlay
 
 `js/construction.js` shows a full-screen welcome modal to first-time visitors only. Uses `localStorage('stg-visited')` as a gate — set on dismiss, never shown again.
@@ -381,6 +431,9 @@ Change `const SHOW = false` and push. The overlay is gone site-wide until you fl
 | ⤢ Zoom button | Open current page full-screen |
 | ? button | Show keyboard shortcut reference |
 | Chapter dropdown | Jump directly to any chapter |
+
+> **Scroll position:** Page navigation does **not** scroll to the top. The viewport stays wherever the reader left it — they decide when and how to scroll.
+
 
 ---
 
@@ -492,14 +545,15 @@ Built from scratch to replace a WordPress installation. Pure static — HTML, CS
 | `archive.js` | Fetches manifest, renders all chapters grouped by series |
 | `cursor.js` | Animated fake cursor system: idle PNG everywhere, GIF on hover; skips touch; `window.__cursorSetPaths()` API |
 | `transition.js` | Pixel dissolve transitions: Fisher-Yates shuffled 12px block grid on `<canvas>`, `sessionStorage` flag for cross-page reveal |
-| `wallpaper.js` | BG Remote: 3-state (play/pause/stop) wallpaper control; adds body class for CSS to act on; localStorage persistence; mobile skip; old-key migration |
+| `wallpaper.js` | BG Remote: 3-state (play/pause/stop) wallpaper control; adds class to `<html>` (not body) for CSS to act on; default `'stop'`; localStorage persistence; mobile skip; old-key migration |
+| `hero-type.js` | Homepage hero: Bungee Inline character spans with exponential scale falloff on hover, per-word brand colors, `--char-glow` drop-shadow; skips events on touch/coarse-pointer; reduced-motion safe |
 | `construction.js` | First-visit welcome overlay: localStorage gate (`stg-visited`), animated-in modal, email form placeholder, click-outside dismiss |
 
 ### CSS architecture
 
 Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigation. Key systems:
 
-- **Tiled wallpaper**: `body:not(.has-series-bg)` base rule, overridden by `body.wallpaper-pause` and `body.wallpaper-stop` — higher-specificity rules written so `:not(.has-series-bg)` guards series pages automatically
+- **Tiled wallpaper**: classes on `<html>` (`wallpaper-play/pause/stop`) enable CSS rules. No class = no background — GIF can never fire before JS confirms it. Series pages get wallpaper control too via `--series-bg` / `--series-bg-pause` CSS custom properties
 - **Dark content panel**: `body:not(.has-series-bg) main` — max-width 1100px, dark bg, border glow. Exemptions via body classes for pages that don't need it.
 - **Series full-bleed breakout**: `body.page-home .series-picker` uses `width: 100vw; left: 50%; transform: translateX(-50%)` to break out of the content panel
 - **Theme system**: CSS custom properties on `[data-theme="warm|cool|dark"]`
@@ -519,8 +573,8 @@ Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigati
 **Why fake cursor div instead of CSS cursor?**
 Browsers silently drop GIF animation when set via `cursor: url()` — they only show the first frame. Using a `position:fixed; pointer-events:none` div with `background-image` is the only cross-browser way to get animated cursors.
 
-**Why body-class approach for wallpaper states?**
-Early implementation used `body.style.backgroundImage` directly from JS. This broke on page-to-page navigation (state wasn't re-applied consistently), and the inline style had higher specificity than any CSS overrides. Body classes give CSS full control — the `:not(.has-series-bg)` selector guard means series pages are automatically exempt without any URL detection.
+**Why `<html>` classes for wallpaper states, not body?**
+Early versions put classes on `<body>` and had a CSS base rule that loaded the GIF by default. Problem: the GIF would start loading before JS ran and could apply the `wallpaper-stop` class — causing a flash of animated background on first paint, a seizure risk. Moving classes to `<html>` and making every CSS rule an opt-in (`html.wallpaper-play body { ... }`) means no background fires without explicit JS confirmation. The default (no class, or JS disabled entirely) is always a clean dark page.
 
 **Why sessionStorage for transitions?**
 The transition needs to "know" when a page was arrived at via a pixel-cover click, so it can reveal on load. `sessionStorage` survives page navigation but clears on tab close — exactly the right scope. `localStorage` would persist too long (across future visits).

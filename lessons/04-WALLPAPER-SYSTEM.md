@@ -80,36 +80,48 @@ Target size: under 25KB.
 Open `css/style.css` and add these rules. Put them after your body base rule:
 
 ```css
-/* ── WALLPAPER — non-series pages ───────────────────────────────
-   .has-series-bg is added by series.js when a series background is active.
-   Everything here only fires when that class is NOT present.
+/* ── WALLPAPER ───────────────────────────────────────────────────
    wallpaper.js adds wallpaper-play / wallpaper-pause / wallpaper-stop
-   to body — the higher-specificity rules below override the base.    */
+   to the <html> element (document.documentElement), NOT body.
 
-body:not(.has-series-bg) {
+   IMPORTANT: Every rule here is an opt-in — no class = no background.
+   This means the GIF can never load before JS runs, so there is no
+   flash of animated content on first paint. Seizure-safe by design.
+
+   .has-series-bg is added to body by series.js when a series bg is
+   active. Non-series pages use site-bg.gif; series pages use
+   --series-bg (set by JS from the manifest).                       */
+
+/* Non-series pages: animated GIF when playing */
+html.wallpaper-play body:not(.has-series-bg) {
   background-image: url(../assets/site-bg.gif);
   background-repeat: repeat;
 }
 
-body.wallpaper-pause:not(.has-series-bg) {
+/* Non-series pages: still frame when paused */
+html.wallpaper-pause body:not(.has-series-bg) {
   background-image: url(../assets/site-bg-pause.gif);
   background-repeat: repeat;
 }
 
-body.wallpaper-stop:not(.has-series-bg) {
-  background-image: none;
+/* Series pages: JS sets --series-bg from manifest; wallpaper remote controls it */
+html.wallpaper-play body.has-series-bg {
+  background-image: var(--series-bg);
 }
+html.wallpaper-pause body.has-series-bg {
+  background-image: var(--series-bg-pause, var(--series-bg));
+}
+
+/* Stop state on either type: no background (covered by default — no rule needed) */
 ```
 
 ### Why this works
 
-The selector `body:not(.has-series-bg)` matches every page that does NOT have a series background active. That's your homepage, about page, blog, archive, 404.
+**The key insight:** There is no base CSS rule that loads the GIF. The GIF only loads when `html.wallpaper-play` is present — which only happens after JS runs and confirms the user's saved state. On first visit, the default stored state is `'stop'`, so new visitors always see a clean dark background until they choose to play.
 
-When `body.wallpaper-pause` is also present, the second rule has **higher specificity** (two classes vs. one) — so it wins and overrides the animated GIF with the still version.
+**Why `<html>` and not `<body>`?** Body is the element JS most commonly touches. If the class lived on body, a stylesheet with a high-specificity rule could load the GIF before JS removed it. Putting it on `<html>` is a safe layer above — CSS rules can target `html.wallpaper-play body`, which is only matched when both the html class and the body exist.
 
-When `body.wallpaper-stop` is present, it wins and sets `background-image: none` — the background goes dark.
-
-Series pages that have `body.has-series-bg` are never matched by any of these rules — so series/reader backgrounds are completely unaffected.
+**Series pages:** `body.has-series-bg` is added by `series.js` after it fetches the manifest and finds a background. The wallpaper CSS rules target it separately — so the BG Remote controls series backgrounds too (if the series has a `bg.gif`, the remote animates/pauses/stops it). Series with only `bg.jpg` show the static image on play/pause and go dark on stop.
 
 ---
 
@@ -198,13 +210,14 @@ Create `js/wallpaper.js`:
   }
 
   var STATES = ['play', 'pause', 'stop'];
-  var state  = localStorage.getItem(KEY) || 'play';
-  if (STATES.indexOf(state) === -1) state = 'play';
+  var state  = localStorage.getItem(KEY) || 'stop';   // default: off for new visitors
+  if (STATES.indexOf(state) === -1) state = 'stop';
 
-  // CSS does the visual work — we just manage the body class
+  // CSS does the visual work — we manage the class on <html>, not body.
+  // This guarantees no GIF fires before JS runs (see Lesson 04 Step 2 for why).
   function applyState() {
-    document.body.classList.remove('wallpaper-play', 'wallpaper-pause', 'wallpaper-stop');
-    document.body.classList.add('wallpaper-' + state);
+    document.documentElement.classList.remove('wallpaper-play', 'wallpaper-pause', 'wallpaper-stop');
+    document.documentElement.classList.add('wallpaper-' + state);
   }
 
   // Config for each state: what icon, what tooltip, what comes next on click
@@ -276,23 +289,23 @@ The BG Remote will appear in the header on every page that includes this script.
 
 1. Start your server: `npm run dev`
 2. Open `http://localhost:3000`
-3. You should see the TV static GIF tiling across the background
-4. In the top-left of the header, you should see `📺 BG Remote` with a green ▶ button
-5. Click the button:
-   - First click → ⏸ amber (pause) — static freezes
-   - Second click → ⏹ red (stop) — background goes dark
-   - Third click → ▶ green (play) — animated static returns
-6. Refresh the page — it should remember your last choice
+3. On first visit: **the background should be dark** — no GIF, no flash. The BG Remote shows a red ⏹ button (default stop state)
+4. Click the button:
+   - First click → ▶ green (play) — animated static appears
+   - Second click → ⏸ amber (pause) — static freezes to a still frame
+   - Third click → ⏹ red (stop) — background goes dark again
+5. Refresh the page — it should remember your last choice
 
 ---
 
 ## 🧪 How to Know It's Working
 
-- [ ] TV static GIF tiles across the background on non-series pages
-- [ ] BG Remote widget appears in top-left of header
-- [ ] Clicking cycles through green ▶ → amber ⏸ → red ⏹
+- [ ] On first visit, background is dark — no GIF, no flash
+- [ ] BG Remote widget appears in top-left of header showing red ⏹ (stop)
+- [ ] Clicking cycles: red ⏹ → green ▶ → amber ⏸ → red ⏹
 - [ ] State persists after page refresh (localStorage is saving it)
 - [ ] On a phone/tablet, the BG Remote doesn't appear and no GIF loads
+- [ ] DevTools → Elements → `<html>` has the `wallpaper-stop/play/pause` class (not on `<body>`)
 
 ---
 
@@ -301,11 +314,11 @@ The BG Remote will appear in the header on every page that includes this script.
 **"The GIF loads but the BG Remote doesn't appear"**
 → Check that `wallpaper.js` is included in the page's `<script>` tags. Also confirm `.header-inner` exists in your HTML — the script injects into it.
 
-**"The stop state doesn't turn off the background on series pages"**
-→ That's correct behavior! Series pages have their own background managed by `series.js`. The CSS `:not(.has-series-bg)` guard means the wallpaper rules never fire there.
+**"On series pages the BG Remote button is visible but nothing changes"**
+→ Series pages now respond to the remote too — but only if the series has a `bg.gif` (animated). If it only has a `bg.jpg`, the remote dims/shows the static image on stop but can't animate it. That's expected. Check the `html.wallpaper-play body.has-series-bg` CSS rule is in your stylesheet.
 
 **"My button is green but the GIF isn't showing"**
-→ Check the file path. The CSS rule is `url(../assets/site-bg.gif)` — it uses `../` because it's in `css/style.css`. Make sure the GIF is in `assets/site-bg.gif`.
+→ Check two things: (1) the file path — `url(../assets/site-bg.gif)` uses `../` because it's in `css/style.css`, so the GIF must be at `assets/site-bg.gif`. (2) Confirm the CSS rule is `html.wallpaper-play body:not(.has-series-bg)` — if you have the old `body:not(.has-series-bg)` base rule from an earlier version, remove it.
 
 **"I'm on mobile and want to test the GIF anyway"**
 → Open DevTools → find the `matchMedia` check at the top of `wallpaper.js` → the `(pointer: fine)` query returns `false` on touch devices. Comment out the early `return` temporarily to test.
