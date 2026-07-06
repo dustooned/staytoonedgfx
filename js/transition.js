@@ -86,4 +86,9 @@
     sessionStorage.removeItem('px-nav');
     reveal();
   }
+
+  // Register service worker for PWA / offline support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
 })();
