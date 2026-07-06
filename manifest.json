@@ -442,7 +442,7 @@
           "title": "Issue 3",
           "date": "2026-07-05",
           "backgroundMode": null,
-          "pageCount": 53,
+          "pageCount": 51,
           "thumbnail": "comics/tucker/chapter-03/01.jpg",
           "pages": [
             "comics/tucker/chapter-03/01.jpg",
@@ -495,9 +495,7 @@
             "comics/tucker/chapter-03/48.jpg",
             "comics/tucker/chapter-03/49.jpg",
             "comics/tucker/chapter-03/50.jpg",
-            "comics/tucker/chapter-03/51.jpg",
-            "comics/tucker/chapter-03/52.jpg",
-            "comics/tucker/chapter-03/53.jpg"
+            "comics/tucker/chapter-03/51.jpg"
           ],
           "background": null,
           "backgroundPause": null
