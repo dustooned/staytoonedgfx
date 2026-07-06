@@ -28,16 +28,30 @@
     stop:  { icon: '⏹', label: 'Play wallpaper',  next: 'play'  },
   };
 
+  function syncSeriesState() {
+    var active = document.body.classList.contains('has-series-bg');
+    remote.setAttribute('data-series-active', active ? '1' : '0');
+    var base = CONFIG[state].label;
+    var tip  = active ? base + ' — saved, takes effect on non-series pages' : base;
+    btn.title = tip;
+    btn.setAttribute('aria-label', tip);
+  }
+
   function updateBtn() {
     var c = CONFIG[state];
     btn.textContent = c.icon;
-    btn.title       = c.label;
-    btn.setAttribute('aria-label', c.label);
     btn.setAttribute('data-state', state);
+    syncSeriesState();
   }
 
   var remote = document.createElement('div');
   remote.id  = 'bg-remote';
+
+  // Dim immediately on series/reader pages so the button is clearly
+  // inactive before series.js finishes its async fetch.
+  var p = location.pathname;
+  remote.setAttribute('data-series-active',
+    (p.endsWith('series.html') || p.endsWith('reader.html')) ? '1' : '0');
 
   var lbl = document.createElement('span');
   lbl.id          = 'bg-remote-label';
@@ -65,4 +79,8 @@
 
   updateBtn();
   applyState();
+
+  // Re-sync when series.js adds/removes has-series-bg after its async fetch
+  new MutationObserver(function () { syncSeriesState(); })
+    .observe(document.body, { attributes: true, attributeFilter: ['class'] });
 })();

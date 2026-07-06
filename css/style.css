@@ -1476,6 +1476,15 @@ kbd {
 }
 #wallpaper-toggle:hover { opacity: 1; }
 
+/* Series bg is active — wallpaper controls have no effect here.
+   Dim the remote to signal it's dormant; tooltip explains the rest. */
+#bg-remote[data-series-active="1"] {
+  opacity: 0.38;
+}
+#bg-remote[data-series-active="1"]:hover {
+  opacity: 0.65;
+}
+
 /* Play → green */
 #wallpaper-toggle[data-state="play"] {
   background: rgba(20, 130, 45, 0.9);
