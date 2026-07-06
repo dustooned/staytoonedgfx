@@ -1,0 +1,122 @@
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bg:     #0e0e0e;
+  --glow:   rgba(255, 210, 80, 0.6);
+}
+
+/* ── PAGE ────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 52px;
+  padding: 40px 24px;
+}
+
+/* ── PHRASE ROW ──────────────────────────────────────────── */
+.phrase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;  /* chars scale upward from baseline */
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── CHARACTER SPANS ─────────────────────────────────────── */
+.char {
+  display: inline-block;
+  font-family: 'Bungee Inline', cursive;
+  font-size: clamp(2.6rem, 8.5vw, 7rem);
+  line-height: 1;
+
+  /*
+    TEXT FILL — two options:
+
+    A) Gold gradient (active — reliable everywhere, matches site palette)
+       Woodblock-press feel suits Bungee Inline perfectly.
+
+    B) TV static through text (swap in for site integration):
+       background-image: url('../../assets/site-bg.gif');
+       background-size: 160px auto;
+       NOTE: do NOT use background-attachment:fixed here — Chrome won't
+       render it with background-clip:text. Use scroll (default) instead.
+       The tile repeats per-char but static is random so it reads fine.
+  */
+  background: linear-gradient(170deg, #f7e8a4 0%, #c8831e 45%, #f5cc62 80%, #f0e090 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  /* Spring scale from the bottom */
+  transform: scale(1);
+  transform-origin: center bottom;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter    0.18s ease;
+
+  outline: none;
+  cursor: default;
+}
+
+/* Glow follows the actual glyph shape */
+.char.is-active {
+  filter: drop-shadow(0 0 16px var(--glow))
+          drop-shadow(0 0 6px rgba(255,230,130,0.4));
+}
+
+.char:focus-visible {
+  filter: drop-shadow(0 0 16px var(--glow))
+          drop-shadow(0 0 3px rgba(255,255,255,0.5));
+}
+
+/* Spaces: preserve word gap, not interactive */
+.char.space {
+  width: 0.3em;
+  pointer-events: none;
+  background: none;
+  color: transparent;
+}
+
+/* ── CONTROLS ────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+.controls button {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.6);
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  font-family: 'Bungee Inline', cursive;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.controls button:hover,
+.controls button[aria-pressed="true"] {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-color: rgba(255,255,255,0.28);
+}
+
+/* ── REDUCED MOTION ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .char { transition: filter 0.1s ease; }
+}
