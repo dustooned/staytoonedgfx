@@ -318,33 +318,54 @@
 
 
 ================================================================
-  PART 7: UNDER CONSTRUCTION OVERLAY
+  PART 7: FIRST-VISIT WELCOME OVERLAY  (js/construction.js)
 ================================================================
 
-  The site shows an "under construction" modal on every page
-  until you turn it off. One line to toggle it.
+  Shows a welcome modal to FIRST-TIME VISITORS ONLY.
+  localStorage('stg-visited') is the gate — set on dismiss,
+  never shown again to returning visitors.
 
   ── Toggle on / off ──────────────────────────────────────────
 
   Open:   js/construction.js
-  Line:   const SHOW = true;   ← change to false to hide it
+  Line:   const SHOW = true;   ← change to false to disable
 
   That's the only change needed. Then:
 
       git add js/construction.js
-      git commit -m "launch: disable construction overlay"
+      git commit -m "launch: disable welcome overlay"
       git push
 
-  ── What it does ─────────────────────────────────────────────
+  ── How it works ─────────────────────────────────────────────
 
-  - Appears on every page load, every page on the site
-  - Dark overlay behind a centred modal card
-  - Eases in with a scale + fade animation
-  - Has a friendly "we're rebuilding" message
-  - Email subscribe form (Mailchimp placeholder — see below)
-  - "I'll poke around anyway →" dismiss button so visitors
-    can still browse if they want
-  - Returns on every page refresh while SHOW = true
+  - SHOW = true + no 'stg-visited' key → overlay appears
+  - SHOW = true + 'stg-visited' key exists → skipped entirely
+  - SHOW = false → skipped entirely regardless of localStorage
+
+  On dismiss (button click OR click outside the modal):
+    - Writes localStorage('stg-visited') = '1'
+    - Fades out and removes the overlay DOM element
+
+  On form submit (placeholder Mailchimp):
+    - Shows success state ("You're in ✓")
+    - Auto-dismisses after 1.4 seconds
+
+  ── What it shows ─────────────────────────────────────────────
+
+  - 160×160 character wave GIF (assets/wave.gif)
+    Drop the file in when the artwork is ready.
+    If the file is missing, onerror shows "wave.gif / 160×160"
+    as a placeholder — nothing breaks.
+
+  - Welcome title + personal body copy
+  - Email subscribe form (Mailchimp placeholder)
+  - Dismiss button ("I'm already poking around, thanks →")
+  - Click outside the modal also dismisses
+
+  ── TO TEST THE OVERLAY AGAIN ────────────────────────────────
+
+  Open DevTools (F12) → Application → Local Storage →
+  find your site → delete the 'stg-visited' key → refresh.
 
   ── Wiring up the real Mailchimp form ────────────────────────
 
@@ -353,7 +374,7 @@
 
   2. Open js/construction.js
 
-  3. Find this comment block:
+  3. Find this comment block in backdrop.innerHTML:
        <!-- MAILCHIMP EMBED -->
        <form id="stg-ob-form" ...>
          ...
@@ -363,7 +384,7 @@
   4. Replace everything between those two comments
      with your Mailchimp embed code
 
-  5. Delete the placeholder form submit handler at the
+  5. Delete the placeholder submit handler at the
      bottom of the file (marked with a comment)
 
   6. Push:
@@ -371,15 +392,104 @@
        git commit -m "overlay: wire up Mailchimp form"
        git push
 
-  ── Editing the message ──────────────────────────────────────
+  ── Editing the copy ──────────────────────────────────────────
 
-  The copy is inside the backdrop.innerHTML block in
-  js/construction.js. Look for:
+  All copy is inside the backdrop.innerHTML block:
 
-    <div id="stg-ob-title">Hey, we're rebuilding!</div>
+    <div id="stg-ob-title">Oh. You actually showed up. 👀</div>
     <div id="stg-ob-body">...</div>
+    <button id="stg-ob-dismiss">I'm already poking around, thanks →</button>
 
-  Edit those two elements to change the heading and body text.
+  Edit those elements to change the heading, body, and dismiss text.
+
+
+================================================================
+  PART 7b: WALLPAPER SYSTEM  (js/wallpaper.js)
+================================================================
+
+  An animated TV-static GIF tiles across non-series pages.
+  The BG Remote widget in the header lets visitors control it.
+
+  ── Three states ─────────────────────────────────────────────
+
+    Play  ▶  green   → animated site-bg.gif tiles the background
+    Pause ⏸  amber   → still site-bg-pause.gif tiles (frozen frame)
+    Stop  ⏹  red     → background-image: none  (dark body only)
+
+  Clicking the BG Remote button cycles: play → pause → stop → play.
+  State is saved to localStorage('wallpaper-state') and persists
+  across all pages and sessions.
+
+  ── How the CSS works ─────────────────────────────────────────
+
+  wallpaper.js adds a body class (wallpaper-play, wallpaper-pause,
+  or wallpaper-stop). CSS rules with :not(.has-series-bg) do the
+  visual work. Series pages that have .has-series-bg are automatically
+  exempt — no wallpaper state ever fires on series/reader pages.
+
+  ── Mobile ───────────────────────────────────────────────────
+
+  wallpaper.js checks (pointer: fine) at startup.
+  On touch/mobile: the script exits immediately — no GIF loads,
+  no button is injected. GIFs are heavy and don't add value on mobile.
+
+  ── Changing the wallpaper GIF ───────────────────────────────
+
+  Replace assets/site-bg.gif with a new tiling animated GIF.
+  Replace assets/site-bg-pause.gif with a new still frame.
+  No code changes needed — push the new files.
+
+  To regenerate from scratch: run assets/templates/tv-static-tile.jsx
+  in After Effects (File → Scripts → Run Script File).
+
+  ── Removing the wallpaper entirely ──────────────────────────
+
+  Remove wallpaper.js from every page's <script> tags, and remove
+  the three CSS rules starting with body:not(.has-series-bg) that
+  reference site-bg.gif and site-bg-pause.gif.
+
+  ── Legacy key migration ──────────────────────────────────────
+
+  Earlier versions stored state as localStorage('wallpaper-paused')
+  with '0'/'1' values. wallpaper.js automatically migrates these
+  on first run: maps '1' → 'pause' and removes the old key.
+  This handles returning visitors seamlessly.
+
+
+================================================================
+  PART 7c: PIXEL DISSOLVE TRANSITIONS  (js/transition.js)
+================================================================
+
+  Page transitions require NO configuration. Just include the
+  script on every page. It works automatically.
+
+  ── How it works ──────────────────────────────────────────────
+
+  On link click:
+    - Covers the screen with 12px dark blocks in random order
+    - Sets sessionStorage('px-nav') = '1'
+    - Navigates to the new page after cover is complete
+
+  On page load:
+    - If 'px-nav' is in sessionStorage, starts solid black
+      then clears blocks in random order (the reveal)
+    - Removes the canvas element when reveal is complete
+
+  ── What gets a transition ────────────────────────────────────
+
+  Internal links only (same origin, not _blank, no modifier
+  keys, not anchor-only #id links).
+
+  External links and modified clicks (Ctrl+click, Cmd+click,
+  Shift+click) navigate normally without the transition.
+
+  ── Tuning the effect ─────────────────────────────────────────
+
+  Open js/transition.js and change the top three variables:
+
+    var BLOCK    = 12;        ← pixel block size (px)
+    var DURATION = 450;       ← total dissolve time (ms)
+    var COLOR    = '#080808'; ← block colour
 
 
 ================================================================

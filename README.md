@@ -31,7 +31,10 @@ v1/
 │   ├── series.js       🗂️  Series page logic — theming, chapters grid, progress badges
 │   ├── reader.js       📖 Reader logic — navigation, zoom, progress bar, shortcuts
 │   ├── archive.js      🗂️  Archive page logic — full chapter listing
-│   └── cursor.js       🖱️  Animated cursor system — fake cursor div, GIF on hover
+│   ├── cursor.js       🖱️  Animated cursor system — fake cursor div, GIF on hover
+│   ├── transition.js   ✨ Pixel dissolve page transitions — canvas, Fisher-Yates
+│   ├── wallpaper.js    📺 BG Remote wallpaper control — 3 states, localStorage
+│   └── construction.js 🎉 First-visit welcome overlay — localStorage gate, email form
 │
 ├── assets/             🗂️  Site-wide assets
 │   ├── site.webmanifest    ✓ created — Android/PWA app manifest
@@ -44,7 +47,13 @@ v1/
 │   ├── logo.svg            ← site header logo (SVG, transparent bg)
 │   ├── cursor.png          ← site-wide idle cursor (32–64px PNG)
 │   ├── cursor.gif          ← site-wide hover cursor (animated GIF)
-│   └── artist.png          ← about page photo
+│   ├── artist.png          ← about page photo
+│   ├── site-bg.gif         ← animated TV static wallpaper tile (tiling GIF)
+│   ├── site-bg-pause.gif   ← freeze-frame version for pause state
+│   └── wave.gif            ← welcome overlay character wave (160×160 — drop in when ready)
+│
+├── assets/templates/
+│   └── tv-static-tile.jsx  ← After Effects ExtendScript to generate site-bg.gif
 │
 ├── comics/             📚 Your content lives here
 │   ├── iagl/           🟡 It's a Good Life  (theme: warm)
@@ -62,8 +71,20 @@ v1/
 │   ├── melvin/         🔵 Melvin  (theme: cool)
 │   └── dio/            🔴 Dio La Damned  (theme: dark)
 │
-└── posts/              📝 Blog posts (static HTML files)
-    └── welcome.html    — starter post / copy as template for new posts
+├── posts/              📝 Blog posts (static HTML files)
+│   └── welcome.html    — starter post / copy as template for new posts
+│
+└── lessons/            📚 Student-facing lesson docs — build this from scratch
+    ├── 00-WELCOME.md
+    ├── 01-YOUR-TOOLKIT.md
+    ├── 02-PROJECT-SETUP.md
+    ├── 03-CONTENT-PIPELINE.md
+    ├── 04-WALLPAPER-SYSTEM.md
+    ├── 05-PIXEL-TRANSITIONS.md
+    ├── 06-CUSTOM-CURSORS.md
+    ├── 07-WELCOME-OVERLAY.md
+    ├── 08-SERIES-THEMING.md
+    └── 09-GOING-LIVE.md
 ```
 
 ---
@@ -126,10 +147,11 @@ Then `node scan.js`.
 ```
 comics/my-new-series/
     series.json
-    cover.jpg
-    header.png
-    bg.jpg
-    cursor.png
+    assets/
+        cover.jpg
+        header.png
+        bg.jpg
+        cursor.png
     chapter-01/
         chapter.json
         01.jpg
@@ -174,6 +196,18 @@ Each series has its own visual personality set by `"theme"` in `series.json`.
 
 The theme drives the title card overlay gradient, title text glow, and the decorative line at the bottom of the header.
 
+### Series emoji labels
+
+Each series on the homepage card shows an emoji before its title:
+
+| Series | Emoji | Slug |
+|--------|-------|------|
+| 👿 Dio La Damned | 👿 | `dio` |
+| 🐰 Melvin | 🐰 | `melvin` |
+| 🦆 It's a Good Life | 🦆 | `iagl` |
+
+Managed in `js/app.js` via the `SERIES_EMOJI` lookup object. Add new entries to support additional series.
+
 ### Optional assets per series (drop in the series folder, scan picks them up)
 
 | Filename | Effect |
@@ -193,11 +227,81 @@ Set `"backgroundMode"` in `series.json` (or `chapter.json` to override per chapt
 | `"cover"` (default) | 1920×1080 px | Scales to fill screen, fixed while scrolling |
 | `"tile"` | 200–800 px square, seamless | Repeats in all directions, scrolls with page |
 
-When any background is active, the page content floats in a centred dark panel so the background shows around the sides — matching classic webcomic layouts. See IMAGE-SPECS.txt for design specs.
+---
 
-### Optional chapter-level override
+## 📺 Wallpaper & BG Remote
 
-Drop a `bg.jpg` inside any chapter folder. Add `"backgroundMode"` to `chapter.json` to also change the tile/cover mode for just that chapter.
+Non-series pages (homepage, blog, about, archive, 404) show a tiled animated TV static GIF wallpaper as the site background. A **BG Remote** control widget in the header toolbar lets visitors cycle through three states.
+
+### Three states
+
+| State | Icon | Body class | Background | Button colour |
+|-------|------|------------|-----------|---------------|
+| Play | ▶ | `wallpaper-play` | `site-bg.gif` (animated) | 🟢 Green |
+| Pause | ⏸ | `wallpaper-pause` | `site-bg-pause.gif` (still) | 🟡 Amber |
+| Stop | ⏹ | `wallpaper-stop` | None (dark body) | 🔴 Red |
+
+Click cycles: Play → Pause → Stop → Play.
+
+### How it works
+
+`wallpaper.js` adds a body class (`wallpaper-play`, `wallpaper-pause`, or `wallpaper-stop`) on every page load. CSS handles the visual output via:
+
+```css
+body:not(.has-series-bg) {
+  background-image: url(../assets/site-bg.gif);  /* base rule — play */
+}
+body.wallpaper-pause:not(.has-series-bg) {
+  background-image: url(../assets/site-bg-pause.gif);
+}
+body.wallpaper-stop:not(.has-series-bg) {
+  background-image: none;
+}
+```
+
+The `:not(.has-series-bg)` selector means series/reader pages are **never affected** — series backgrounds are managed entirely by `series.js`.
+
+State is stored in `localStorage('wallpaper-state')` and persists across all pages and sessions.
+
+### Mobile
+
+`wallpaper.js` checks `window.matchMedia('(pointer: fine)')` on load. On touch/mobile devices the script returns immediately — no GIF is loaded, no button is injected. This prevents loading a heavy animated GIF on mobile.
+
+### The GIF assets
+
+| File | Description |
+|------|-------------|
+| `assets/site-bg.gif` | Animated TV static tile (~170KB). Generated via `assets/templates/tv-static-tile.jsx` in After Effects. |
+| `assets/site-bg-pause.gif` | Single freeze-frame of the static (~20KB). Hand-exported from AE or made by duplicating one frame of the animated GIF. |
+
+To regenerate: open `assets/templates/tv-static-tile.jsx` in After Effects via File → Scripts → Run Script File. Adjust size and frame rate in the script, render, export as GIF.
+
+### Legacy key migration
+
+Earlier versions of the site stored wallpaper state as `localStorage('wallpaper-paused')` with a `0`/`1` value. `wallpaper.js` automatically migrates returning visitors: if the old key is found, it maps it to the new `wallpaper-state` system and removes the old key.
+
+---
+
+## ✨ Pixel Dissolve Transitions
+
+`js/transition.js` intercepts internal link clicks and covers/reveals the screen with a randomised grid of `12px` dark blocks — like a comic panel wipe.
+
+### How it works
+
+1. On link click: a `<canvas>` covers the screen by filling blocks in Fisher-Yates random order (cover animation). Sets `sessionStorage('px-nav')` then navigates.
+2. On page load: if `px-nav` is in sessionStorage, the canvas starts solid, then clears blocks in random order (reveal animation). Removes the canvas when done.
+
+### What gets intercepted
+
+Only internal links (same origin, not `_blank`, no modifier keys, not anchor-only `#id` links). External links and modified clicks navigate normally.
+
+### Tunables (top of `transition.js`)
+
+```js
+var BLOCK    = 12;        // pixel block size in px — bigger = chunkier
+var DURATION = 450;       // ms for a full dissolve
+var COLOR    = '#080808'; // block fill colour
+```
 
 ---
 
@@ -219,11 +323,43 @@ The site uses a **fake cursor div** (`js/cursor.js`) instead of CSS `cursor:` �
 | `comics/[series]/assets/cursor.png` | Series idle cursor |
 | `comics/[series]/assets/cursor.gif` | Series hover cursor |
 
-Drop either or both files — `node scan.js` wires them up automatically. No other changes needed.
+Drop either or both files — `node scan.js` wires them up automatically.
 
-- Touch devices (`pointer: coarse`) are skipped — they get the OS default touch behaviour
-- GIF animates continuously while hovering over any interactive element; loops infinitely
-- See IMAGE-SPECS.txt Part 5 for size specs and design tips
+- Touch devices (`pointer: coarse`) are skipped
+- GIF animates continuously while hovering over any interactive element
+- The per-series override API: `window.__cursorSetPaths(staticPath, animPath)` — called automatically by `series.js` and `reader.js`
+
+---
+
+## 🎉 First-Visit Welcome Overlay
+
+`js/construction.js` shows a full-screen welcome modal to first-time visitors only. Uses `localStorage('stg-visited')` as a gate — set on dismiss, never shown again.
+
+### Toggle
+
+```js
+const SHOW = true;   // change to false to disable entirely
+```
+
+### To test the overlay again
+
+Open DevTools → Application → Local Storage → delete the `stg-visited` key → refresh.
+
+### What it shows
+
+- A 160×160 character wave GIF placeholder (`assets/wave.gif` — drop in when artwork is ready; `onerror` handles gracefully if missing)
+- Personal welcome copy with surreal/goofy tone
+- Email subscribe form (Mailchimp placeholder)
+- "I'm already poking around, thanks →" dismiss button
+- Click outside the modal also dismisses
+
+### Wiring up Mailchimp
+
+Find the `<!-- MAILCHIMP EMBED -->` comment block in `construction.js` and replace the placeholder `<form>` with your Mailchimp embedded form code. Delete the placeholder submit handler at the bottom (marked with a comment).
+
+### Disabling for launch
+
+Change `const SHOW = false` and push. The overlay is gone site-wide until you flip it back.
 
 ---
 
@@ -246,42 +382,6 @@ Drop either or both files — `node scan.js` wires them up automatically. No oth
 | ? button | Show keyboard shortcut reference |
 | Chapter dropdown | Jump directly to any chapter |
 
-First/Latest automatically cross chapter boundaries.
-
-### Progress bar
-A thin coloured bar above the comic page fills as you read. Colour tracks the series accent. Resets to 0% on chapter change.
-
-### Zoom / lightbox
-Press `Z` or click ⤢ in the toolbar to open the current page full-screen. Click outside, press `Esc`, or tap the ✕ button to close.
-
-On touch devices the lightbox supports **pinch-to-zoom** (up to 5×) and **drag to pan** when zoomed in. Tap outside only closes the lightbox when at 1× scale; if zoomed in it just releases the drag.
-
-### Strip mode (wide images)
-When a comic page is wider than 2× its height (newspaper strips, 2-page spreads), the reader automatically switches to **strip mode** on mobile: fixed readable height, horizontal scroll, `← scroll →` hint. On desktop, wide images fill the container normally.
-
-### Orientation overlay
-On mobile portrait when a wide image is open, a prompt appears to rotate the device. Dismisses automatically on rotate, or tap "Keep portrait."
-
-### Reading progress
-Saves your position to `localStorage` on every page turn. Series page shows a **▶ p.N** badge on in-progress chapters linking directly to the last-read page.
-
----
-
-## 📖 Navigation
-
-### Site nav (all pages)
-`Home` / `About` / `Blog` / `Donate`
-
-### Footer nav (all pages)
-`Home` / `About` / `Blog` / `Archive` / `Donate`
-
-### Homepage
-- **Series grid** — cover art, title, description, chapter count. "Start Reading →" goes to chapter 1 page 1. "Archive ›" goes to the series page.
-- **Latest Updates feed** — most recent 6 chapters across all series, sorted by date, auto-populated from the manifest.
-
-### Archive page
-`archive.html` — all chapters grouped by series with date and page count. Auto-populated from the manifest.
-
 ---
 
 ## 🖼️ Image Dimensions & Optimization
@@ -297,79 +397,10 @@ See **IMAGE-SPECS.txt** for the complete reference. Summary:
 | Header / title treatment | 500px max | PNG | — |
 | Background (cover) | 1920px | WebP / JPEG | 80% |
 | Background (tile) | 200–800px sq | WebP / JPEG / PNG | 80% |
+| Wallpaper tile | 200–400px sq | Animated GIF | — |
 | Favicon source | 512×512px | PNG | — |
 | Custom cursor | 32–64px sq | PNG / GIF | — |
-
----
-
-## 🌐 Favicons
-
-All pages include a full modern favicon set. Drop these 6 files into `assets/`:
-
-| File | Size |
-|------|------|
-| `favicon.ico` | 16+32px multi-size |
-| `favicon-16x16.png` | 16×16 |
-| `favicon-32x32.png` | 32×32 |
-| `apple-touch-icon.png` | 180×180 |
-| `android-chrome-192x192.png` | 192×192 |
-| `android-chrome-512x512.png` | 512×512 |
-
-**Quickest method:** design at 512×512, upload to [favicon.io](https://favicon.io) → download → rename → drop in `assets/`. The `site.webmanifest` is already created and wired up.
-
----
-
-## ℹ️ About Page
-
-`about.html` — edit directly in the file. Placeholder sections:
-- Artist photo: drop `assets/artist.png` (displays as a 140px circle)
-- Bio paragraph: marked with a comment, replace the placeholder text
-- Series blurbs: pre-filled with your three series, update descriptions as needed
-- Tools paragraph: marked with a comment, describe your actual process
-
----
-
-## 🚧 Under Construction Overlay
-
-A modal appears on every page until you turn it off. When you're ready to launch:
-
-1. Open [`js/construction.js`](js/construction.js)
-2. Change line 11: `const SHOW = false;`
-3. Commit and push — overlay is gone site-wide
-
-To re-enable it: set `SHOW = true` and push again.
-
-**Wiring up Mailchimp:** find the `<!-- MAILCHIMP EMBED -->` comment block inside `construction.js` and replace the placeholder `<form>` with your Mailchimp embedded form code. Then delete the placeholder submit handler at the bottom of the file (also marked with a comment).
-
-**Editing the message:** find `#stg-ob-title` and `#stg-ob-body` in the `backdrop.innerHTML` block inside `construction.js`.
-
-See WORKFLOW.txt Part 7 for the full step-by-step.
-
----
-
-## 📬 Mailchimp Setup
-
-1. Log into Mailchimp → **Audience → Signup forms → Embedded forms**
-2. Copy the embed code
-3. Open `index.html` and paste it inside the `<!-- MAILCHIMP EMBED -->` comment block, replacing the placeholder `<form>`
-
----
-
-## 💸 Donate Link
-
-All pages have a Donate button. To wire it up, find `href="#"` on every `.nav-donate` link and footer Donate link across:
-`index.html`, `series.html`, `reader.html`, `blog.html`, `about.html`, `archive.html`, `404.html`, `posts/*.html`
-
-Replace `#` with your Ko-fi, PayPal, Patreon, or other donation URL.
-
----
-
-## 📝 Adding a Blog Post
-
-1. Open `blog.html` and copy one `<a class="post-card">` block
-2. Paste it at the **top** of the `posts-list` div (newest first)
-3. Fill in the date, title, excerpt, and `href`
-4. Duplicate `posts/welcome.html` → rename → write content between the comment markers
+| Welcome overlay character | 160×160px | Animated GIF | — |
 
 ---
 
@@ -388,22 +419,13 @@ git push -u origin main
 
 Then in your GitHub repo: **Settings → Pages → Source: Deploy from branch → main → / (root)**.
 
-Your site will be live at `https://YOUR_USERNAME.github.io/YOUR_REPO/`.
+### Custom domain
 
-### Custom domain (staytoonedgfx.com)
-
-The `CNAME` file is already in the repo containing `staytoonedgfx.com`.
-
-At your DNS provider, point the domain to GitHub Pages:
-- `A` record → `185.199.108.153`
-- `A` record → `185.199.109.153`
-- `A` record → `185.199.110.153`
-- `A` record → `185.199.111.153`
+The `CNAME` file is already in the repo. At your DNS provider:
+- `A` records → `185.199.108.153`, `.109`, `.110`, `.111`
 - `CNAME` record: `www` → `YOUR_USERNAME.github.io`
 
-In GitHub repo Settings → Pages → Custom domain → enter `staytoonedgfx.com` → Save.
-
-DNS propagation can take up to 48 hours. GitHub auto-provisions HTTPS once it resolves.
+In GitHub Settings → Pages → Custom domain → enter your domain → Save.
 
 ### Ongoing updates
 
@@ -414,13 +436,29 @@ git commit -m "add chapter X"
 git push
 ```
 
-GitHub Pages rebuilds automatically on every push. Live within 1–2 minutes.
+GitHub Pages rebuilds automatically. Live within 1–2 minutes.
+
+> **Cache note:** GitHub Pages caches aggressively. After a push, hard-refresh with `Ctrl+Shift+R` if you don't see changes.
+
+---
+
+## 📬 Mailchimp Setup
+
+1. Log into Mailchimp → **Audience → Signup forms → Embedded forms**
+2. Copy the embed code
+3. Replace the placeholder `<form>` inside the `<!-- MAILCHIMP EMBED -->` block in `js/construction.js` (overlay) and `index.html` (homepage)
+
+---
+
+## 💸 Donate Link
+
+All pages have a Donate button wired to `href="#"`. Replace with your Ko-fi, PayPal, or Patreon URL in all `.nav-donate` links and footer Donate links across all HTML files.
 
 ---
 
 ## 🏗️ Build Log
 
-Built from scratch in a single session to replace a WordPress installation at staytoonedgfx.com. Pure static — HTML, CSS, and vanilla JS only.
+Built from scratch to replace a WordPress installation. Pure static — HTML, CSS, and vanilla JS only. No frameworks, no build tools, no database.
 
 ### Goals
 
@@ -429,15 +467,13 @@ Built from scratch in a single session to replace a WordPress installation at st
 - Support multiple comic series with clean organisation
 - Automatic content detection — drop images in a folder, run one command, done
 - Each series has its own visual identity (themed headers, backgrounds, accent colours, cursors)
-- Universal nav (HOME / ABOUT / BLOG / DONATE), footer nav with Archive
-- Mailchimp newsletter embed
-- Mobile-first reader with swipe, strip mode, and orientation UX
+- Fun, personality-driven UI touches: animated wallpaper, pixel transitions, character cursors, goofy welcome overlay
 
 ### Pages built
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Homepage: series grid with Start Reading CTA + latest updates feed + Mailchimp subscribe |
+| `index.html` | Homepage: full-width series grid with emoji labels + latest updates feed + Mailchimp subscribe |
 | `series.html` | Series archive: themed title card + chapters grid with progress badges |
 | `reader.html` | Comic reader: progress bar, toolbar, page display, bottom nav mirror, lightbox, shortcut overlay |
 | `blog.html` | Blog index: flat post list, newest first |
@@ -450,56 +486,47 @@ Built from scratch in a single session to replace a WordPress installation at st
 
 | File | What it does |
 |------|-------------|
-| `app.js` | Fetches manifest, renders series cards (cover art, CTAs), renders latest updates feed |
+| `app.js` | Fetches manifest, renders series cards with emoji labels (SERIES_EMOJI lookup), renders latest updates feed |
 | `series.js` | Applies theming + cursor, renders title card, renders chapters grid with localStorage progress badges |
-| `reader.js` | Full reader: theming, cursor, navigation (First/Prev/Next/Latest), chapter selector, progress bar, lightbox/zoom (+ pinch-to-zoom on touch), keyboard shortcut overlay, strip mode, orientation overlay, swipe, click-to-navigate, keyboard, URL sync, preloading, localStorage progress |
+| `reader.js` | Full reader: theming, cursor, navigation, chapter selector, progress bar, lightbox, keyboard shortcuts, strip mode, swipe, localStorage progress |
 | `archive.js` | Fetches manifest, renders all chapters grouped by series |
-| `cursor.js` | Animated fake cursor system: idle PNG everywhere, animated GIF on hover over links/buttons; skips touch devices; exposes `window.__cursorSetPaths()` for per-series override |
-
-### scan.js
-
-Node.js, zero dependencies. Walks `comics/` alphabetically, reads `series.json` and `chapter.json`, auto-detects all assets by filename, outputs:
-- `manifest.json` — all series/chapter/page data the frontend reads via `fetch()`
-- `sitemap.xml` — all page URLs for search engine indexing
-
-Detected automatically (no config needed): `cover.jpg`, `header.png`, `bg.jpg`, `cursor.png` (idle), `cursor.gif` (animated hover), chapter page images (all standard image extensions). Cursor fields emitted separately as `cursor` and `cursorAnim` in the manifest.
+| `cursor.js` | Animated fake cursor system: idle PNG everywhere, GIF on hover; skips touch; `window.__cursorSetPaths()` API |
+| `transition.js` | Pixel dissolve transitions: Fisher-Yates shuffled 12px block grid on `<canvas>`, `sessionStorage` flag for cross-page reveal |
+| `wallpaper.js` | BG Remote: 3-state (play/pause/stop) wallpaper control; adds body class for CSS to act on; localStorage persistence; mobile skip; old-key migration |
+| `construction.js` | First-visit welcome overlay: localStorage gate (`stg-visited`), animated-in modal, email form placeholder, click-outside dismiss |
 
 ### CSS architecture
 
-Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigation. Theme system via CSS custom properties on `[data-theme="warm|cool|dark"]`. Key systems:
-- **Content panel**: when a series background is active, content floats in a centred dark panel (max 1100px) with the background visible around the sides
-- **Strip mode**: `.strip-mode` class enables horizontal scroll at fixed 220px height on mobile for wide images
-- **Tile mode**: `body.has-series-bg.bg-tile` switches from fixed cover to repeating scroll background
-- **Lightbox**: fixed overlay with `z-index: 600`, closes on click-outside or Esc
-- **Shortcut overlay**: `z-index: 550`, shows keyboard reference card
-- **Progress bar**: 3px bar above the comic page, fills via inline `width` style set by JS
+Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigation. Key systems:
+
+- **Tiled wallpaper**: `body:not(.has-series-bg)` base rule, overridden by `body.wallpaper-pause` and `body.wallpaper-stop` — higher-specificity rules written so `:not(.has-series-bg)` guards series pages automatically
+- **Dark content panel**: `body:not(.has-series-bg) main` — max-width 1100px, dark bg, border glow. Exemptions via body classes for pages that don't need it.
+- **Series full-bleed breakout**: `body.page-home .series-picker` uses `width: 100vw; left: 50%; transform: translateX(-50%)` to break out of the content panel
+- **Theme system**: CSS custom properties on `[data-theme="warm|cool|dark"]`
+- **Strip mode**: `.strip-mode` class enables horizontal scroll at fixed height on mobile for wide images
+- **BG Remote widget**: `#bg-remote` in flex header row; `#wallpaper-toggle[data-state="play/pause/stop"]` drives colour via attribute selector
 
 ### Comic series
 
-| Slug | Title | Theme | Accent |
-|------|-------|-------|--------|
-| `iagl` | It's a Good Life | warm | `#f0a500` |
-| `melvin` | Melvin | cool | `#4fc3f7` |
-| `dio` | Dio La Damned | dark | `#c62828` |
+| Slug | Title | Theme | Accent | Emoji |
+|------|-------|-------|--------|-------|
+| `iagl` | It's a Good Life | warm | `#f0a500` | 🦆 |
+| `melvin` | Melvin | cool | `#4fc3f7` | 🐰 |
+| `dio` | Dio La Damned | dark | `#c62828` | 👿 |
 
-### Reader features at a glance
+### Key technical decisions
 
-- First / Prev / Next / Latest buttons (cross-chapter boundaries)
-- Chapter dropdown selector
-- Chapter progress bar (coloured, animated)
-- Zoom / lightbox (⤢ button or Z key)
-- Keyboard shortcut reference panel (? button or ? key)
-- Touch swipe (40px threshold, horizontal only)
-- Click-half navigation (right = next, left = prev; disabled in strip mode)
-- Arrow key + spacebar navigation
-- Strip mode auto-detection (ratio > 2:1)
-- Orientation overlay (touch + portrait + wide image)
-- localStorage reading progress (per chapter, per series)
-- Adjacent page preloading
-- URL sync via `history.replaceState` (no full reload)
-- Custom cursor per series (auto-activated via cursor.js)
-- Lightbox pinch-to-zoom (1×–5×) and drag-to-pan on touch
-- Content panel backdrop (auto-activated when bg image present)
+**Why fake cursor div instead of CSS cursor?**
+Browsers silently drop GIF animation when set via `cursor: url()` — they only show the first frame. Using a `position:fixed; pointer-events:none` div with `background-image` is the only cross-browser way to get animated cursors.
+
+**Why body-class approach for wallpaper states?**
+Early implementation used `body.style.backgroundImage` directly from JS. This broke on page-to-page navigation (state wasn't re-applied consistently), and the inline style had higher specificity than any CSS overrides. Body classes give CSS full control — the `:not(.has-series-bg)` selector guard means series pages are automatically exempt without any URL detection.
+
+**Why sessionStorage for transitions?**
+The transition needs to "know" when a page was arrived at via a pixel-cover click, so it can reveal on load. `sessionStorage` survives page navigation but clears on tab close — exactly the right scope. `localStorage` would persist too long (across future visits).
+
+**Why no social meta tags?**
+Intentional. No OG/Twitter/social share metadata on this site — URL sharing only, no card previews. This is a permanent constraint.
 
 ---
 
