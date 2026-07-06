@@ -395,12 +395,48 @@ main { flex: 1; }
   padding: 96px 24px 72px;
 }
 
-.home-hero h1 {
-  font-size: clamp(2.4rem, 6vw, 5rem);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+.hero-phrase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  line-height: 1;
+  user-select: none;
   margin-bottom: 18px;
+}
+
+.hero-char {
+  display: inline-block;
+  font-family: 'Bungee Inline', cursive;
+  font-size: clamp(2.2rem, 6.5vw, 5.5rem);
+  line-height: 1;
+  color: #f5f0e8;
+  transform: scale(1);
+  transform-origin: center bottom;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter    0.18s ease;
+  outline: none;
+  cursor: default;
+}
+
+.hero-char.is-active {
+  filter: drop-shadow(0 0 18px var(--char-glow, rgba(255,210,80,0.65)))
+          drop-shadow(0 0 6px  var(--char-glow, rgba(255,210,80,0.4)));
+}
+
+.hero-char:focus-visible {
+  filter: drop-shadow(0 0 18px var(--char-glow, rgba(255,210,80,0.65)))
+          drop-shadow(0 0 4px  rgba(255,255,255,0.4));
+}
+
+.hero-char.space {
+  width: 0.3em;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-char { transition: filter 0.1s ease; }
 }
 
 .home-hero p {
