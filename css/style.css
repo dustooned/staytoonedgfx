@@ -137,10 +137,20 @@ body {
   }
 }
 
-/* Site-wide tiled background on non-series pages */
+/* Site-wide tiled background on non-series pages.
+   wallpaper.js adds wallpaper-pause / wallpaper-stop
+   body classes to override this. Series pages are
+   protected by :not(.has-series-bg) specificity.     */
 body:not(.has-series-bg) {
   background-image: url(../assets/site-bg.gif);
   background-repeat: repeat;
+}
+body.wallpaper-pause:not(.has-series-bg) {
+  background-image: url(../assets/site-bg-pause.gif);
+  background-repeat: repeat;
+}
+body.wallpaper-stop:not(.has-series-bg) {
+  background-image: none;
 }
 
 /* Centered dark content panel on non-series pages —
