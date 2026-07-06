@@ -15,7 +15,6 @@
 // │  🔮 PRELOAD NEXT PAGE                               │
 // │  💾 READING PROGRESS (localStorage)                 │
 // │  🖼️  STRIP MODE DETECTION                           │
-// │  📐 ORIENTATION OVERLAY                             │
 // │  🔍 LIGHTBOX / ZOOM                                 │
 // │  ⌨️  SHORTCUT OVERLAY                               │
 // │  🖼️  RENDER CURRENT PAGE                            │
@@ -49,10 +48,6 @@
   const backLink    = document.getElementById('back-link');
   const chSelect    = document.getElementById('chapter-select');
   const pageDisplay = document.getElementById('page-display');
-
-  // 🖇️ DOM REFS — orientation overlay
-  const orientOverlay = document.getElementById('orientation-overlay');
-  const orientDismiss = document.getElementById('orientation-dismiss');
 
   // 🖇️ DOM REFS — top nav buttons
   const btnFirst  = document.getElementById('btn-first');
