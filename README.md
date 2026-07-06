@@ -142,6 +142,8 @@ Optional chapter fields:
 }
 ```
 
+> **Note:** `background` and `backgroundPause` for chapters are auto-detected from `bg.gif` / `bg.jpg` / `bg-pause.gif` in the chapter folder by `scan.js` — you don't add them to `chapter.json` manually.
+
 Then `node scan.js`.
 
 ### ➕ Add a new series
@@ -182,6 +184,8 @@ Full `series.json` with all options:
 }
 ```
 
+> **Note:** `background` and `backgroundPause` are auto-detected by `scan.js` from `bg.gif` / `bg.jpg` / `bg-pause.gif` in the series `assets/` folder — do not add them to `series.json` manually.
+
 Then `node scan.js`. The series appears on the homepage automatically.
 
 ---
@@ -216,7 +220,9 @@ Managed in `js/app.js` via the `SERIES_EMOJI` lookup object. Add new entries to 
 |----------|--------|
 | `cover.jpg` | Series card image on homepage (600×800 px) |
 | `header.png` | Title treatment / logo in the title card (500px wide, PNG) |
-| `bg.jpg` | Background image — cover or tile depending on `backgroundMode` |
+| `bg.gif` | Animated background — BG Remote play/pause/stop controls it (checked before `bg.jpg`) |
+| `bg.jpg` | Static background — used if no `bg.gif` is present |
+| `bg-pause.gif` | Still frame shown when BG Remote is in pause state (optional; falls back to `bg.gif`) |
 | `cursor.png` | Custom idle cursor for this series (32–64px PNG) |
 | `cursor.gif` | Custom hover/animated cursor for this series (plays on links/buttons) |
 
@@ -224,8 +230,8 @@ Managed in `js/app.js` via the `SERIES_EMOJI` lookup object. Add new entries to 
 
 Set `"backgroundMode"` in `series.json` (or `chapter.json` to override per chapter):
 
-| Mode | `bg.jpg` size | Behaviour |
-|------|--------------|-----------|
+| Mode | `bg.gif` / `bg.jpg` size | Behaviour |
+|------|--------------------------|-----------|
 | `"cover"` (default) | 1920×1080 px | Scales to fill screen, fixed while scrolling |
 | `"tile"` | 200–800 px square, seamless | Repeats in all directions, scrolls with page |
 
@@ -233,7 +239,7 @@ Set `"backgroundMode"` in `series.json` (or `chapter.json` to override per chapt
 
 ## 📺 Wallpaper & BG Remote
 
-Non-series pages (homepage, blog, about, archive, 404) show a tiled animated TV static GIF wallpaper as the site background. A **BG Remote** control widget in the header toolbar lets visitors cycle through three states.
+Non-series pages (homepage, blog, about, archive, 404) support a tiled animated TV static GIF wallpaper as the site background. The default state for new visitors is **Stop** (no background) — they can enable it via the BG Remote. A **BG Remote** control widget in the header toolbar lets visitors cycle through three states.
 
 ### Three states
 
