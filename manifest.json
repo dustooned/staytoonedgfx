@@ -11,6 +11,7 @@
       "cover": null,
       "headerImage": null,
       "background": null,
+      "backgroundPause": null,
       "cursor": "comics/dio/assets/cursor.png",
       "cursorAnim": "comics/dio/assets/cursor.gif",
       "chapterCount": 1,
@@ -37,7 +38,8 @@
             "comics/dio/chapter-01/12.jpg",
             "comics/dio/chapter-01/13.jpg"
           ],
-          "background": null
+          "background": null,
+          "backgroundPause": null
         }
       ]
     },
@@ -52,19 +54,270 @@
       "cover": null,
       "headerImage": null,
       "background": null,
+      "backgroundPause": null,
       "cursor": null,
       "cursorAnim": null,
-      "chapterCount": 1,
+      "chapterCount": 20,
       "chapters": [
         {
-          "slug": "chapter-01",
-          "title": "Chapter 1",
-          "date": "2024-01-01",
+          "slug": "01-good-one",
+          "title": "Good One",
+          "date": null,
           "backgroundMode": null,
-          "pageCount": 0,
-          "thumbnail": null,
-          "pages": [],
-          "background": null
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/01-good-one/01.jpg",
+          "pages": [
+            "comics/iagl/01-good-one/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "02-detective-benedict",
+          "title": "Detective Benedict",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/02-detective-benedict/01.jpg",
+          "pages": [
+            "comics/iagl/02-detective-benedict/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "03-its-a-good-game",
+          "title": "It's A Good Game",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/03-its-a-good-game/01.jpg",
+          "pages": [
+            "comics/iagl/03-its-a-good-game/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "04-public-stall",
+          "title": "Public Stall",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/04-public-stall/01.jpg",
+          "pages": [
+            "comics/iagl/04-public-stall/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "05-trouble-afoot",
+          "title": "Trouble Afoot",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/05-trouble-afoot/01.jpg",
+          "pages": [
+            "comics/iagl/05-trouble-afoot/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "06-space-dump",
+          "title": "Space Dump",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/06-space-dump/01.jpg",
+          "pages": [
+            "comics/iagl/06-space-dump/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "07-seven-and-seven-is",
+          "title": "Seven and Seven Is",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/07-seven-and-seven-is/01.jpg",
+          "pages": [
+            "comics/iagl/07-seven-and-seven-is/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "08-flyxlexia",
+          "title": "Flyxlexia",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/08-flyxlexia/01.jpg",
+          "pages": [
+            "comics/iagl/08-flyxlexia/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "09-money-men",
+          "title": "Money Men",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/09-money-men/01.jpg",
+          "pages": [
+            "comics/iagl/09-money-men/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "10-w8",
+          "title": "W8",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/10-w8/01.jpg",
+          "pages": [
+            "comics/iagl/10-w8/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "11-inherit-moniker",
+          "title": "Inherit Moniker",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/11-inherit-moniker/01.jpg",
+          "pages": [
+            "comics/iagl/11-inherit-moniker/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "12-self-care-diet",
+          "title": "Self Care Diet",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/12-self-care-diet/01.jpg",
+          "pages": [
+            "comics/iagl/12-self-care-diet/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "13-mclimb-is-back",
+          "title": "McLimb© is Back!",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/13-mclimb-is-back/01.jpg",
+          "pages": [
+            "comics/iagl/13-mclimb-is-back/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "14-final-destination-14",
+          "title": "Final Destination 14",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/14-final-destination-14/01.jpg",
+          "pages": [
+            "comics/iagl/14-final-destination-14/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "15-vomtoria",
+          "title": "Vomtoria",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/15-vomtoria/01.jpg",
+          "pages": [
+            "comics/iagl/15-vomtoria/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "16-exam",
+          "title": "Exam",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/16-exam/01.jpg",
+          "pages": [
+            "comics/iagl/16-exam/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "17-mandatory-training",
+          "title": "Mandatory Training",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/17-mandatory-training/01.jpg",
+          "pages": [
+            "comics/iagl/17-mandatory-training/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "18-certified-training",
+          "title": "Certified Training",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/18-certified-training/01.jpg",
+          "pages": [
+            "comics/iagl/18-certified-training/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "19-an-eachtra-quackens",
+          "title": "An Eachtra Quackens",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/19-an-eachtra-quackens/01.jpg",
+          "pages": [
+            "comics/iagl/19-an-eachtra-quackens/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
+        },
+        {
+          "slug": "20-an-tobar-orga",
+          "title": "An Tobar Órga",
+          "date": null,
+          "backgroundMode": null,
+          "pageCount": 1,
+          "thumbnail": "comics/iagl/20-an-tobar-orga/01.jpg",
+          "pages": [
+            "comics/iagl/20-an-tobar-orga/01.jpg"
+          ],
+          "background": null,
+          "backgroundPause": null
         }
       ]
     },
@@ -79,6 +332,7 @@
       "cover": null,
       "headerImage": null,
       "background": null,
+      "backgroundPause": null,
       "cursor": null,
       "cursorAnim": null,
       "chapterCount": 1,
@@ -91,7 +345,8 @@
           "pageCount": 0,
           "thumbnail": null,
           "pages": [],
-          "background": null
+          "background": null,
+          "backgroundPause": null
         }
       ]
     }
