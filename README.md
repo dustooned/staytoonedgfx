@@ -58,8 +58,10 @@ v1/
 │   └── tv-static-tile.jsx  ← After Effects ExtendScript to generate site-bg.gif
 │
 ├── comics/             📚 Your content lives here
-│   ├── tucker/         🥊 Tucker Toon  (theme: sepia)
-│   ├── iagl/           🟡 It's a Good Life  (theme: warm)
+│   ├── tucker/         😈 Tucker Toon  (theme: sepia) — 3 issues (14 / 33 / 51 pages)
+│   ├── melvin/         🐰 Melvin  (theme: cool) — 2 volumes (67 / 66 pages)
+│   │                       Vol 1: needs cover art (cover.jpg in assets/)
+│   ├── iagl/           🦆 It's a Good Life  (theme: warm) — 20 chapters
 │   │   ├── series.json
 │   │   ├── assets/         ← all series visual files go here
 │   │   │   ├── cover.jpg       ← series card image
@@ -71,8 +73,7 @@ v1/
 │   │       ├── chapter.json
 │   │       ├── bg.jpg          ← chapter bg override (optional)
 │   │       └── 01.jpg, 02.jpg...
-│   ├── melvin/         🔵 Melvin  (theme: cool)
-│   └── dio/            🔴 Dio La Damned  (theme: dark)
+│   └── dio/            👹 Dio La Damned  (theme: dark)
 │
 ├── posts/              📝 Blog posts (static HTML files)
 │   └── welcome.html    — starter post / copy as template for new posts
@@ -198,9 +199,10 @@ Each series has its own visual personality set by `"theme"` in `series.json`.
 
 | Theme | Series | Overlay | Title | Glow line |
 |-------|--------|---------|-------|-----------|
-| `"warm"` | IAGL | Amber diagonal | Italic | Gold |
-| `"cool"` | Melvin | Cyan fade from top | Normal | Cyan |
-| `"dark"` | Dio La Damned | Red radial vignette | Uppercase | Blood red |
+| `"warm"` | IAGL | Amber diagonal | Italic (Libre Baskerville) | Gold |
+| `"cool"` | Melvin | Cyan fade from top | Normal (Caveat) | Cyan |
+| `"dark"` | Dio La Damned | Red radial vignette | Uppercase (UnifrakturMaguntia) | Blood red |
+| `"sepia"` | Tucker Toon | Warm brown diagonal | Normal (Bangers) | Sepia gold |
 
 The theme drives the title card overlay gradient, title text glow, and the decorative line at the bottom of the header.
 
@@ -620,12 +622,12 @@ Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigati
 
 ### Comic series
 
-| Slug | Title | Theme | Accent | Emoji |
-|------|-------|-------|--------|-------|
-| `iagl` | It's a Good Life | warm | `#f0a500` | 🦆 |
-| `melvin` | Melvin | cool | `#4fc3f7` | 🐰 |
-| `dio` | Dio La Damned | dark | `#c62828` | 👹 |
-| `tucker` | Tucker Toon | sepia | `#c8a87a` | 😈 |
+| Slug | Title | Theme | Accent | Emoji | Chapters | Notes |
+|------|-------|-------|--------|-------|----------|-------|
+| `iagl` | It's a Good Life | warm | `#f0a500` | 🦆 | 20 | |
+| `melvin` | Melvin | cool | `#4fc3f7` | 🐰 | 2 (volumes) | Vol 1 needs cover art |
+| `dio` | Dio La Damned | dark | `#c62828` | 👹 | 1 | |
+| `tucker` | Tucker Toon | sepia | `#c8a87a` | 😈 | 3 (issues) | |
 
 ### Key technical decisions
 
