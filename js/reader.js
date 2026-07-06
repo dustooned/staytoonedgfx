@@ -270,12 +270,13 @@
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
       lightbox.classList.add('show');
+      lightbox.classList.toggle('lb-strip', isStripMode);
       document.body.style.overflow = 'hidden';
       if (isTouchDevice && isStripMode) tryLandscapeLock();
     }
 
     function closeLightbox() {
-      lightbox.classList.remove('show');
+      lightbox.classList.remove('show', 'lb-strip');
       document.body.style.overflow = '';
       lbReset();
       releaseLandscapeLock();
@@ -361,12 +362,19 @@
       const img     = new Image();
       img.className = 'comic-page-img';
       img.alt       = `Page ${page} of ${total}`;
-      img.src       = pages[page - 1];
 
       img.onload = () => {
         checkStripMode(img);
         preloadAdjacent();
       };
+
+      img.src = pages[page - 1];
+
+      // If image was already cached, onload won't fire — run detection manually
+      if (img.complete) {
+        checkStripMode(img);
+        preloadAdjacent();
+      }
 
       pageDisplay.innerHTML = '';
       pageDisplay.appendChild(img);

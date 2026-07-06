@@ -1040,6 +1040,14 @@ body.has-series-bg .content-panel {
 .lightbox.is-zoomed { cursor: grab; }
 .lightbox.is-zoomed.is-dragging { cursor: grabbing; }
 
+/* Wide strips fill the lightbox width and let height be proportional */
+.lightbox.lb-strip img {
+  width: 98vw;
+  height: auto;
+  max-height: 98vh;
+  max-width: none;
+}
+
 .lightbox-close {
   position: absolute;
   top: 16px;
