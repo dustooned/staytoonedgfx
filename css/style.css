@@ -877,9 +877,11 @@ body.has-series-bg .content-panel {
 
 /* Click cursor shows it's interactive (click to navigate) */
 .comic-page-img {
-  width: 100%;
+  max-width: 100%;
   height: auto;
+  max-height: 85vh;
   display: block;
+  margin: 0 auto;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -935,47 +937,10 @@ body.has-series-bg .content-panel {
 
 /* ─────────────────────────────────────────────────────
    🖼️ STRIP MODE
-   Applied by JS when a comic image is wider than 2:1
-   (e.g. IAGL newspaper strips, 2-page Dio spreads).
-   On mobile: scrolls horizontally at a readable height
-   instead of squashing to an unreadable thumbnail.
-   On desktop: fills the container normally.
+   strip-mode class is still toggled by JS for reference,
+   but all images size naturally — max-width: 100% with
+   proportional height. No fixed-height horizontal scroll.
    ───────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .reader-page-display.strip-mode {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-left: 0;
-    padding-right: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .reader-page-display.strip-mode .comic-page-img {
-    width: auto;
-    height: 220px;       /* fixed height so it's comfortably readable */
-    max-width: none;     /* override the 100% width so it can extend past viewport */
-    border-radius: 0;
-    cursor: grab;
-    display: block;
-  }
-
-  .reader-page-display.strip-mode .comic-page-img:active {
-    cursor: grabbing;
-  }
-
-  /* Hint bar shown below the strip telling users to scroll */
-  .reader-page-display.strip-mode::after {
-    content: '← scroll →';
-    display: block;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    padding: 6px 0 2px;
-  }
-}
 
 /* ─────────────────────────────────────────────────────
    📐 ORIENTATION OVERLAY

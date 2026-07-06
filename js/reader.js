@@ -138,7 +138,7 @@
     ).join('');
     chSelect.addEventListener('change', () => {
       chSelect.blur();
-      location.href = `reader.html?s=${seriesSlug}&ch=${chSelect.value}&p=1`;
+      location.href = `reader.html?s=${seriesSlug}&ch=${chSelect.value}&p=1#comic`;
     });
 
     // ─────────────────────────────────────────────────────
@@ -202,28 +202,7 @@
       pageDisplay.classList.toggle('strip-mode', isStrip);
     }
 
-    // ─────────────────────────────────────────────────────
-    // 📐 ORIENTATION OVERLAY
-    //    Shown on mobile portrait when image is wide.
-    //    Dismissed by rotating OR tapping "Keep portrait".
-    // ─────────────────────────────────────────────────────
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-
-    function checkOrientationOverlay(img) {
-      if (!isTouchDevice) return;
-      const isWide     = img.naturalWidth / img.naturalHeight > 2.0;
-      const isPortrait = window.matchMedia('(orientation: portrait)').matches;
-      orientOverlay.classList.toggle('show', isWide && isPortrait);
-    }
-
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => {
-        const img = pageDisplay.querySelector('.comic-page-img');
-        if (img) checkOrientationOverlay(img);
-      }, 350);
-    });
-
-    orientDismiss.addEventListener('click', () => orientOverlay.classList.remove('show'));
+    // 📐 Orientation overlay removed — image auto-sizes to its natural dimensions.
 
     // ─────────────────────────────────────────────────────
     // 🔍 LIGHTBOX / ZOOM
@@ -354,7 +333,6 @@
 
       img.onload = () => {
         checkStripMode(img);
-        checkOrientationOverlay(img);
         preloadAdjacent();
       };
 
@@ -376,11 +354,11 @@
     // ─────────────────────────────────────────────────────
     function go(n) {
       if (n < 1 && prevChapter) {
-        location.href = `reader.html?s=${seriesSlug}&ch=${prevChapter.slug}&p=${prevChapter.pageCount}`;
+        location.href = `reader.html?s=${seriesSlug}&ch=${prevChapter.slug}&p=${prevChapter.pageCount}#comic`;
         return;
       }
       if (n > total && nextChapter) {
-        location.href = `reader.html?s=${seriesSlug}&ch=${nextChapter.slug}&p=1`;
+        location.href = `reader.html?s=${seriesSlug}&ch=${nextChapter.slug}&p=1#comic`;
         return;
       }
       page = Math.max(1, Math.min(n, total));
@@ -390,7 +368,7 @@
     // ⏮ FIRST — page 1 of the very first chapter
     function goFirst() {
       if (s.chapters[0].slug !== chapterSlug) {
-        location.href = `reader.html?s=${seriesSlug}&ch=${s.chapters[0].slug}&p=1`;
+        location.href = `reader.html?s=${seriesSlug}&ch=${s.chapters[0].slug}&p=1#comic`;
       } else { go(1); }
     }
 
@@ -398,7 +376,7 @@
     function goLatest() {
       const last = s.chapters[s.chapters.length - 1];
       if (last.slug !== chapterSlug) {
-        location.href = `reader.html?s=${seriesSlug}&ch=${last.slug}&p=${last.pageCount || 1}`;
+        location.href = `reader.html?s=${seriesSlug}&ch=${last.slug}&p=${last.pageCount || 1}#comic`;
       } else { go(total); }
     }
 
