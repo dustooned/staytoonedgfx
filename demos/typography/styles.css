@@ -55,10 +55,9 @@ body {
        render it with background-clip:text. Use scroll (default) instead.
        The tile repeats per-char but static is random so it reads fine.
   */
-  background: linear-gradient(170deg, #f7e8a4 0%, #c8831e 45%, #f5cc62 80%, #f0e090 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  /* Color set per-word by script.js via inline style.
+     Palette pulled from the SVG logo: red / blue / yellow / green  */
+  color: #f5f0e8; /* fallback until JS runs */
 
   /* Spring scale from the bottom */
   transform: scale(1);
@@ -71,15 +70,15 @@ body {
   cursor: default;
 }
 
-/* Glow follows the actual glyph shape */
+/* Glow uses the character's own word color (set as --char-glow by JS) */
 .char.is-active {
-  filter: drop-shadow(0 0 16px var(--glow))
-          drop-shadow(0 0 6px rgba(255,230,130,0.4));
+  filter: drop-shadow(0 0 18px var(--char-glow, rgba(255,210,80,0.65)))
+          drop-shadow(0 0 6px  var(--char-glow, rgba(255,210,80,0.4)));
 }
 
 .char:focus-visible {
-  filter: drop-shadow(0 0 16px var(--glow))
-          drop-shadow(0 0 3px rgba(255,255,255,0.5));
+  filter: drop-shadow(0 0 18px var(--char-glow, rgba(255,210,80,0.65)))
+          drop-shadow(0 0 4px  rgba(255,255,255,0.4));
 }
 
 /* Spaces: preserve word gap, not interactive */

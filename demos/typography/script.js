@@ -20,6 +20,11 @@ const MAGNETIC_MODE_DEFAULT = false;
 // Change or extend this array to alter the sonic palette.
 const NOTES = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66];
 
+// Word colors — pulled from the SVG logo (red / blue / yellow / green) ————————
+// Index 0 = first word, 1 = second word, etc.
+// Cycles automatically for phrases with more than 4 words.
+const WORD_PALETTE = ['#f60047', '#48a6ff', '#ffca23', '#8fe900'];
+
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let soundEnabled  = false;
@@ -28,11 +33,23 @@ let audioCtx      = null;
 let lastClosest   = -1;   // tracks closest char in magnetic mode to avoid repeat tones
 
 
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+
+// Convert a #rrggbb hex color to rgba() string for use in CSS drop-shadow
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+
 // ─── BUILD THE PHRASE ─────────────────────────────────────────────────────────
 const container = document.getElementById('phrase');
 const chars     = [];   // all span elements in order
 
 let noteIdx = 0;
+let wordIdx = 0;        // which word we're currently in
 
 [...PHRASE].forEach((ch) => {
   const span = document.createElement('span');
@@ -41,10 +58,17 @@ let noteIdx = 0;
 
   if (ch === ' ') {
     span.className = 'char space';
+    wordIdx++;  // advance to next word color on each space
   } else {
     span.className = 'char';
     span.setAttribute('tabindex', '0');
-    // Store the pitch for this character
+
+    // Assign word color + matching glow variable
+    const color = WORD_PALETTE[wordIdx % WORD_PALETTE.length];
+    span.style.color = color;
+    span.style.setProperty('--char-glow', hexToRgba(color, 0.65));
+
+    // Store pitch for this character
     span.dataset.note = NOTES[noteIdx % NOTES.length];
     noteIdx++;
   }
