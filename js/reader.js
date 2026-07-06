@@ -194,20 +194,50 @@
 
     // ─────────────────────────────────────────────────────
     // 🖼️ STRIP MODE DETECTION
-    //    Wide images (ratio > 2:1) get horizontal scroll on
-    //    mobile instead of being squashed to unreadable size.
+    //    Tracks whether the current image is a wide strip (>2:1).
+    //    Used to trigger landscape lock when opening zoom on mobile.
     // ─────────────────────────────────────────────────────
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+    let isStripMode = false;
+
     function checkStripMode(img) {
-      const isStrip = img.naturalWidth / img.naturalHeight > 2.0;
-      pageDisplay.classList.toggle('strip-mode', isStrip);
+      isStripMode = img.naturalWidth / img.naturalHeight > 2.0;
+      pageDisplay.classList.toggle('strip-mode', isStripMode);
     }
 
-    // 📐 Orientation overlay removed — image auto-sizes to its natural dimensions.
+    // ─────────────────────────────────────────────────────
+    // 📐 LANDSCAPE LOCK
+    //    On Android: tapping zoom on a wide strip enters native
+    //    fullscreen and locks landscape for comfortable reading.
+    //    On iOS: fullscreen + lock are unsupported — silently skipped.
+    //    Releasing exits fullscreen and unlocks orientation.
+    // ─────────────────────────────────────────────────────
+    async function tryLandscapeLock() {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+        }
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock('landscape-primary');
+        }
+      } catch (_) {}
+    }
+
+    function releaseLandscapeLock() {
+      try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (_) {}
+      try { if (document.fullscreenElement) document.exitFullscreen(); } catch (_) {}
+    }
+
+    // Exit fullscreen via OS back button also closes lightbox
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && lightbox.classList.contains('show')) closeLightbox();
+    });
 
     // ─────────────────────────────────────────────────────
     // 🔍 LIGHTBOX / ZOOM
     //    Opens the current page full-screen for detailed viewing.
     //    Triggered by the ⤢ toolbar button or Z key.
+    //    On touch + wide strip: also locks landscape orientation.
     //    Supports pinch-to-zoom and pan (drag) when zoomed.
     //    Close via ✕ button, click-outside (at 1×), Esc, or Z.
     // ─────────────────────────────────────────────────────
@@ -241,12 +271,14 @@
       lightboxImg.alt = img.alt;
       lightbox.classList.add('show');
       document.body.style.overflow = 'hidden';
+      if (isTouchDevice && isStripMode) tryLandscapeLock();
     }
 
     function closeLightbox() {
       lightbox.classList.remove('show');
       document.body.style.overflow = '';
       lbReset();
+      releaseLandscapeLock();
     }
 
     // Pinch to zoom
