@@ -377,6 +377,7 @@
       }
 
       pageDisplay.innerHTML = '';
+      pageDisplay.classList.remove('comic-page-placeholder');
       pageDisplay.appendChild(img);
 
       syncButtons();
