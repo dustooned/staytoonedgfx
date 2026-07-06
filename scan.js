@@ -74,11 +74,12 @@ function scanComics() {
     const assetBase    = fs.existsSync(assetsDir) ? assetsDir : seriesDir;
     const assetPrefix  = fs.existsSync(assetsDir) ? `comics/${slug}/assets` : `comics/${slug}`;
 
-    const cover       = firstExisting(assetBase, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
-    const headerImage = firstExisting(assetBase, ['header.png', 'header.jpg', 'header.webp']);
-    const background  = firstExisting(assetBase, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
-    const cursorStatic = firstExisting(assetBase, ['cursor.png', 'cursor.cur']);
-    const cursorAnim   = firstExisting(assetBase, ['cursor.gif']);
+    const cover            = firstExisting(assetBase, ['cover.jpg', 'cover.jpeg', 'cover.png', 'cover.webp']);
+    const headerImage      = firstExisting(assetBase, ['header.png', 'header.jpg', 'header.webp']);
+    const background       = firstExisting(assetBase, ['bg.gif', 'bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
+    const backgroundPause  = firstExisting(assetBase, ['bg-pause.gif', 'bg-pause.jpg', 'bg-pause.png', 'bg-pause.webp']);
+    const cursorStatic     = firstExisting(assetBase, ['cursor.png', 'cursor.cur']);
+    const cursorAnim       = firstExisting(assetBase, ['cursor.gif']);
 
     // 📁 LIST CHAPTER FOLDERS — sorted alphabetically (skip assets/ subfolder)
     const chapterSlugs = fs.readdirSync(seriesDir)
@@ -95,7 +96,8 @@ function scanComics() {
       const chData = readJSON(path.join(chDir, 'chapter.json')) ?? { title: chSlug };
 
       // 🖼️ CHAPTER ASSETS — background override for this chapter
-      const chBg = firstExisting(chDir, ['bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
+      const chBg      = firstExisting(chDir, ['bg.gif', 'bg.jpg', 'bg.jpeg', 'bg.png', 'bg.webp', 'background.jpg', 'background.png']);
+      const chBgPause = firstExisting(chDir, ['bg-pause.gif', 'bg-pause.jpg', 'bg-pause.png', 'bg-pause.webp']);
 
       // 📄 PAGE LIST — all image files sorted alphabetically
       const pages = fs.readdirSync(chDir)
@@ -108,14 +110,15 @@ function scanComics() {
       }
 
       chapters.push({
-        slug:           chSlug,
-        title:          chData.title          ?? chSlug,
-        date:           chData.date           ?? null,
-        backgroundMode: chData.backgroundMode ?? null,   // 🖼️ null = inherit from series
-        pageCount:      pages.length,
-        thumbnail:      pages[0]              ?? null,
+        slug:            chSlug,
+        title:           chData.title          ?? chSlug,
+        date:            chData.date           ?? null,
+        backgroundMode:  chData.backgroundMode ?? null,   // 🖼️ null = inherit from series
+        pageCount:       pages.length,
+        thumbnail:       pages[0]              ?? null,
         pages,
-        background: chBg ? `comics/${slug}/${chSlug}/${chBg}` : null,
+        background:      chBg      ? `comics/${slug}/${chSlug}/${chBg}`      : null,
+        backgroundPause: chBgPause ? `comics/${slug}/${chSlug}/${chBgPause}` : null,
       });
     }
 
@@ -130,8 +133,9 @@ function scanComics() {
       backgroundMode: seriesData.backgroundMode ?? 'cover', // 🖼️ "cover" | "tile"
       cover:        cover       ? `${assetPrefix}/${cover}`       : null,
       headerImage:  headerImage ? `${assetPrefix}/${headerImage}` : null,
-      background:   background  ? `${assetPrefix}/${background}`  : null,
-      cursor:       cursorStatic ? `${assetPrefix}/${cursorStatic}` : null,
+      background:       background       ? `${assetPrefix}/${background}`       : null,
+      backgroundPause:  backgroundPause  ? `${assetPrefix}/${backgroundPause}`  : null,
+      cursor:           cursorStatic     ? `${assetPrefix}/${cursorStatic}`      : null,
       cursorAnim:   cursorAnim   ? `${assetPrefix}/${cursorAnim}`   : null,
       chapterCount: chapters.length,
       chapters,

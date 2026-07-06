@@ -137,20 +137,30 @@ body {
   }
 }
 
-/* Site-wide tiled background on non-series pages.
-   wallpaper.js adds wallpaper-pause / wallpaper-stop
-   body classes to override this. Series pages are
-   protected by :not(.has-series-bg) specificity.     */
-body:not(.has-series-bg) {
+/* ── WALLPAPER SYSTEM ──────────────────────────────────────────
+   wallpaper.js stamps .wallpaper-play / .wallpaper-pause /
+   .wallpaper-stop on <html>. Default (no class, no-JS, first
+   visit, stop) = no background. GIF never loads before JS
+   confirms it should — no flicker, no seizure risk.
+
+   Non-series:  site-bg.gif  /  site-bg-pause.gif
+   Series:      --series-bg  /  --series-bg-pause (falls back
+                to --series-bg if no pause variant exists)
+   Stop / off:  no background (all rules below are silent)   */
+
+html.wallpaper-play body:not(.has-series-bg) {
   background-image: url(../assets/site-bg.gif);
   background-repeat: repeat;
 }
-body.wallpaper-pause:not(.has-series-bg) {
+html.wallpaper-pause body:not(.has-series-bg) {
   background-image: url(../assets/site-bg-pause.gif);
   background-repeat: repeat;
 }
-body.wallpaper-stop:not(.has-series-bg) {
-  background-image: none;
+html.wallpaper-play body.has-series-bg {
+  background-image: var(--series-bg);
+}
+html.wallpaper-pause body.has-series-bg {
+  background-image: var(--series-bg-pause, var(--series-bg));
 }
 
 /* Centered dark content panel on non-series pages —
@@ -177,9 +187,9 @@ body.page-home .series-picker {
   background: transparent;
 }
 
-/* Applied by JS when a series background image exists */
+/* Applied by JS when a series background image exists.
+   background-image is controlled by the wallpaper system above. */
 body.has-series-bg {
-  background-image: var(--series-bg);
   background-size: cover;
   background-position: center top;
   background-attachment: fixed;
@@ -1475,15 +1485,6 @@ kbd {
   flex-shrink: 0;
 }
 #wallpaper-toggle:hover { opacity: 1; }
-
-/* Series bg is active — wallpaper controls have no effect here.
-   Dim the remote to signal it's dormant; tooltip explains the rest. */
-#bg-remote[data-series-active="1"] {
-  opacity: 0.38;
-}
-#bg-remote[data-series-active="1"]:hover {
-  opacity: 0.65;
-}
 
 /* Play → green */
 #wallpaper-toggle[data-state="play"] {

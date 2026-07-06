@@ -45,6 +45,7 @@
     const root = document.documentElement;
     if (s.background) {
       root.style.setProperty('--series-bg', `url(${s.background})`);
+      if (s.backgroundPause) root.style.setProperty('--series-bg-pause', `url(${s.backgroundPause})`);
       document.body.classList.add('has-series-bg');
       if (s.backgroundMode === 'tile') document.body.classList.add('bg-tile');
     }

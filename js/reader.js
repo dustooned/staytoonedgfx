@@ -103,10 +103,12 @@
     // 🎨 APPLY THEMING
     // Chapter-level bg overrides series-level bg (drop bg.jpg in chapter folder)
     const root = document.documentElement;
-    const bg     = chapter.background || s.background;
-    const bgMode = chapter.backgroundMode ?? s.backgroundMode ?? 'cover';
+    const bg      = chapter.background      || s.background;
+    const bgPause = chapter.backgroundPause || s.backgroundPause;
+    const bgMode  = chapter.backgroundMode ?? s.backgroundMode ?? 'cover';
     if (bg) {
       root.style.setProperty('--series-bg', `url(${bg})`);
+      if (bgPause) root.style.setProperty('--series-bg-pause', `url(${bgPause})`);
       document.body.classList.add('has-series-bg');
       if (bgMode === 'tile') document.body.classList.add('bg-tile');
     }
