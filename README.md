@@ -16,6 +16,7 @@ v1/
 ├── about.html          ℹ️  About page    — bio, series blurbs, artist photo
 ├── archive.html        🗂️  Archive       — all chapters across all series
 ├── 404.html            🚫 Custom 404    — GitHub Pages auto-serves this
+├── sw.js               📦 Service worker — caches app shell + comic images for PWA/offline
 ├── scan.js             🔄 Manifest + sitemap generator — run after adding content
 ├── manifest.json       📦 Auto-generated  — DO NOT hand-edit
 ├── sitemap.xml         🗺️  Auto-generated  — DO NOT hand-edit
@@ -434,7 +435,7 @@ Change `const SHOW = false` and push. The overlay is gone site-wide until you fl
 | `Esc` | Close zoom or shortcut panel |
 | ⏮ First | Page 1 of the very first chapter |
 | ⏭ Latest | Last page of the most recent chapter |
-| ⤢ Zoom button | Open current page full-screen |
+| ⤢ Zoom button | Open lightbox — on Android + wide strip, also locks landscape orientation |
 | ? button | Show keyboard shortcut reference |
 | Chapter dropdown | Jump directly to any chapter |
 
@@ -499,6 +500,54 @@ GitHub Pages rebuilds automatically. Live within 1–2 minutes.
 
 > **Cache note:** GitHub Pages caches aggressively. After a push, hard-refresh with `Ctrl+Shift+R` if you don't see changes.
 
+> **Service worker cache:** When you add new comic strips, bump the `CACHE` version string at the top of `sw.js` (e.g., `'stg-2026-07-05'` → `'stg-2026-07-12'`). This forces installed PWAs to fetch fresh assets rather than serving the old cached manifest.
+
+---
+
+## 📱 Mobile & PWA
+
+The site is installable as a Progressive Web App on Android and iOS.
+
+### How it works
+
+- `sw.js` (service worker) pre-caches the app shell on install and caches comic images as they're accessed. Registered by `transition.js` on every page.
+- `assets/site.webmanifest` defines the PWA identity: name, icons, theme colour, display mode.
+- All pages have iOS PWA meta tags for home screen installs: `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style`, `apple-mobile-web-app-title`.
+- Viewport uses `viewport-fit=cover` so content reaches the edges on notched iPhones.
+
+### Cache strategy
+
+| Request type | Strategy |
+|---|---|
+| Comic images (`/comics/**`) | Cache-first — fast repeat visits, survives offline |
+| `manifest.json` | Network-first — always reflect new content |
+| App shell (HTML, CSS, JS, assets) | Cache-first |
+
+### Installing on Android
+
+Visit the site in Chrome → three-dot menu → **Add to Home Screen**. The site opens full-screen with the correct theme colour.
+
+### Installing on iOS (Safari)
+
+Visit the site in Safari → Share → **Add to Home Screen**. Opens as a standalone app, status bar uses `black-translucent` style.
+
+### Adding new strips — bump the cache
+
+After adding new comic pages and running `scan.js`, also bump the `CACHE` constant at the top of `sw.js`. This forces all installed PWAs to re-download the updated manifest and new images on next open.
+
+```js
+// sw.js — top of file
+const CACHE = 'stg-2026-07-12'; // change the date when adding new content
+```
+
+### Landscape orientation (Android)
+
+On the comic reader, tapping the ⤢ Zoom button on a wide strip (newspaper-style panels, ratio > 2:1) on an Android touch device will:
+1. Request fullscreen
+2. Lock screen orientation to landscape
+
+This happens automatically — no prompt, no overlay. Closing the lightbox releases the lock. iOS does not support programmatic orientation lock and is silently skipped.
+
 ---
 
 ## 📬 Mailchimp Setup
@@ -547,10 +596,10 @@ Built from scratch to replace a WordPress installation. Pure static — HTML, CS
 |------|-------------|
 | `app.js` | Fetches manifest, renders series cards with emoji labels (SERIES_EMOJI lookup), renders latest updates feed |
 | `series.js` | Applies theming + cursor, renders title card, renders chapters grid with localStorage progress badges |
-| `reader.js` | Full reader: theming, cursor, navigation, chapter selector, progress bar, lightbox, keyboard shortcuts, strip mode, swipe, localStorage progress |
+| `reader.js` | Full reader: theming, cursor, navigation, chapter selector, progress bar, lightbox (panel-sized to image), keyboard shortcuts, strip detection, swipe, localStorage progress, landscape lock on Android, no auto-scroll on chapter nav |
 | `archive.js` | Fetches manifest, renders all chapters grouped by series |
 | `cursor.js` | Animated fake cursor system: idle PNG everywhere, GIF on hover; skips touch; `window.__cursorSetPaths()` API |
-| `transition.js` | Pixel dissolve transitions: Fisher-Yates shuffled 12px block grid on `<canvas>`, `sessionStorage` flag for cross-page reveal |
+| `transition.js` | Pixel dissolve transitions: Fisher-Yates shuffled 12px block grid on `<canvas>`, `sessionStorage` flag for cross-page reveal; also registers `sw.js` service worker on every page |
 | `wallpaper.js` | BG Remote: 3-state (play/pause/stop) wallpaper control; adds class to `<html>` (not body) for CSS to act on; default `'stop'`; localStorage persistence; mobile skip; old-key migration |
 | `hero-type.js` | Homepage hero: Bungee Inline character spans with exponential scale falloff on hover, per-word brand colors, `--char-glow` drop-shadow; skips events on touch/coarse-pointer; reduced-motion safe |
 | `construction.js` | First-visit welcome overlay: localStorage gate (`stg-visited`), animated-in modal, email form placeholder, click-outside dismiss |
@@ -563,7 +612,8 @@ Single stylesheet (`style.css`) with emoji-labelled sections for Ctrl+F navigati
 - **Dark content panel**: `body:not(.has-series-bg) main` — max-width 1100px, dark bg, border glow. Exemptions via body classes for pages that don't need it.
 - **Series full-bleed breakout**: `body.page-home .series-picker` uses `width: 100vw; left: 50%; transform: translateX(-50%)` to break out of the content panel
 - **Theme system**: CSS custom properties on `[data-theme="warm|cool|dark"]`
-- **Strip mode**: `.strip-mode` class enables horizontal scroll at fixed height on mobile for wide images
+- **Strip mode**: `.strip-mode` class tracked by JS for wide images (ratio > 2:1). No forced horizontal scroll — images always size naturally (`max-width: 100%; height: auto; max-height: 85vh`). Used to trigger landscape lock and lightbox strip mode
+- **Lightbox panel**: `.lightbox-panel` inside `.lightbox` — panel auto-sizes to the image so the dark background matches image dimensions exactly. The outer `.lightbox` is the full-screen dim backdrop only
 - **BG Remote widget**: `#bg-remote` in flex header row; `#wallpaper-toggle[data-state="play/pause/stop"]` drives colour via attribute selector
 
 ### Comic series

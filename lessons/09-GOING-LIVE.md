@@ -194,6 +194,63 @@ This is the complete pipeline to run every time you publish new comic content:
 
 ---
 
+## 📱 Step 8 — Mobile Install (PWA)
+
+Your site is set up as a **Progressive Web App** — readers can install it on their phone like a native app. It appears on the home screen, opens full-screen, and works offline (for pages they've already visited).
+
+### What's already set up
+
+| File | Role |
+|------|------|
+| `sw.js` | Service worker — caches app shell on install, comic images as they're accessed |
+| `assets/site.webmanifest` | PWA identity — app name, icons, theme colour, display mode |
+| iOS meta tags in all HTML | `apple-mobile-web-app-capable`, status bar style, app title |
+| `viewport-fit=cover` | Content fills the full screen on notched iPhones |
+
+The service worker is registered by `transition.js`, which runs on every page.
+
+### How readers install it
+
+**Android (Chrome):**
+1. Visit the site in Chrome
+2. Tap the three-dot menu → **Add to Home Screen**
+3. Confirm — it appears as a standalone app icon
+
+**iPhone/iPad (Safari):**
+1. Visit the site in Safari
+2. Tap the Share button → **Add to Home Screen**
+3. Confirm — opens full-screen with a black status bar
+
+### When you add new comics — bump the cache version
+
+The service worker caches content so it loads fast offline. When you add new strips, installed PWAs need to know there's something new to fetch. **You must bump the version string in `sw.js`** every time you update content:
+
+```js
+// sw.js — top of file
+const CACHE = 'stg-2026-07-12'; // ← change this date when adding new content
+```
+
+A good rule: match it to the date you're pushing. On the next app open, the old cache is discarded and fresh content is downloaded.
+
+### Updated scan.js pipeline (with PWA step)
+
+```
+[ ] Export art at correct pixel dimensions
+[ ] Rename files with zero-padded numbers: 01.jpg, 02.jpg...
+[ ] Place in the correct chapter folder
+[ ] Create or update chapter.json if it's a new chapter
+[ ] Bump CACHE version in sw.js (e.g., 'stg-2026-07-12')  ← NEW
+[ ] Run: node scan.js
+[ ] Check output for [warn] or [skip] messages
+[ ] Test locally: npm run dev → http://localhost:3000
+[ ] git add .
+[ ] git commit -m "add: [series] chapter [N], pages [X–Y]"
+[ ] git push
+[ ] Wait 1–2 min → hard refresh live site: Ctrl+Shift+R
+```
+
+---
+
 ## 🧪 How to Know It's Working
 
 - [ ] `https://YOUR_USERNAME.github.io/YOUR_REPO/` loads your site
@@ -252,6 +309,7 @@ If you've worked through all nine lessons, you've built:
 ✅ A first-visit welcome overlay  
 ✅ Per-series visual theming (backgrounds, accent colours, font treatments)  
 ✅ A live site on GitHub Pages (free forever)  
+✅ PWA — installable on Android and iPhone, works offline  
 
 The next steps are up to you:
 - Fill in your real comic content
