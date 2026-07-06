@@ -371,7 +371,7 @@
           "title": "Issue 1",
           "date": "2026-07-05",
           "backgroundMode": null,
-          "pageCount": 16,
+          "pageCount": 15,
           "thumbnail": "comics/tucker/chapter-01/01.jpg",
           "pages": [
             "comics/tucker/chapter-01/01.jpg",
@@ -388,8 +388,7 @@
             "comics/tucker/chapter-01/12.jpg",
             "comics/tucker/chapter-01/13.jpg",
             "comics/tucker/chapter-01/14.jpg",
-            "comics/tucker/chapter-01/15.jpg",
-            "comics/tucker/chapter-01/16.jpg"
+            "comics/tucker/chapter-01/15.jpg"
           ],
           "background": null,
           "backgroundPause": null
