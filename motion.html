@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Motion work by T' — direction, animation, and music production.">
+  <title>Motion — Stay Tooned GFX</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stay Tooned GFX">
+</head>
+<body>
+
+  <!-- 🔝 SITE HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.png" alt="Stay Tooned GFX" onerror="this.style.display='none'">
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="#" class="nav-donate" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 🏷️ PAGE HEADER -->
+    <div class="about-hero section">
+      <h1>Motion</h1>
+      <p>Direction, animation, and music production.</p>
+    </div>
+
+    <!-- 🎬 MOTION GRID -->
+    <!-- To add a new video:
+         Copy a .motion-item block, set data-video-id to the YouTube video ID,
+         and fill in data-title and data-desc. -->
+    <div class="motion-grid" id="motionGrid">
+
+      <div class="motion-item"
+           data-video-id="xkxjYk0K-pI"
+           data-title="m00d5wing"
+           data-desc="Director / Animator / Music Production">
+        <div class="motion-thumb-wrap">
+          <img class="motion-thumb"
+               src="https://img.youtube.com/vi/xkxjYk0K-pI/hqdefault.jpg"
+               alt="m00d5wing" loading="lazy">
+          <div class="motion-play-btn" aria-hidden="true">&#9654;</div>
+        </div>
+        <p class="motion-title">m00d5wing</p>
+        <p class="motion-desc">Director / Animator / Music Production</p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- 🎬 VIDEO LIGHTBOX -->
+  <div class="motion-lightbox" id="motionLightbox" role="dialog" aria-modal="true" aria-label="Video player">
+    <button class="gallery-lightbox-close" id="motionClose" aria-label="Close">&times;</button>
+    <div class="motion-lightbox-inner">
+      <div class="motion-embed-wrap">
+        <iframe id="motionIframe"
+                src=""
+                title="Video"
+                frameborder="0"
+                allow="autoplay; fullscreen"
+                allowfullscreen></iframe>
+      </div>
+      <p class="motion-lightbox-title" id="motionLightboxTitle"></p>
+      <p class="gallery-lightbox-caption" id="motionLightboxDesc"></p>
+    </div>
+  </div>
+
+  <!-- 🦶 FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <p class="footer-copy">&copy; <span class="js-year"></span> Stay Tooned GFX. All characters and artwork are protected.</p>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="archive.html">Archive</a>
+        <a href="#" target="_blank" rel="noopener">Donate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.js-year').forEach(el => el.textContent = new Date().getFullYear());
+
+    const lightbox  = document.getElementById('motionLightbox');
+    const iframe    = document.getElementById('motionIframe');
+    const lbTitle   = document.getElementById('motionLightboxTitle');
+    const lbDesc    = document.getElementById('motionLightboxDesc');
+    const closeBtn  = document.getElementById('motionClose');
+
+    function openVideo(videoId, title, desc) {
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&rel=0';
+      lbTitle.textContent = title;
+      lbDesc.textContent  = desc;
+      lightbox.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideo() {
+      lightbox.classList.remove('is-open');
+      document.body.style.overflow = '';
+      iframe.src = '';
+    }
+
+    document.getElementById('motionGrid').addEventListener('click', e => {
+      const item = e.target.closest('.motion-item');
+      if (!item) return;
+      openVideo(item.dataset.videoId, item.dataset.title, item.dataset.desc);
+    });
+
+    closeBtn.addEventListener('click', closeVideo);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeVideo(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+  </script>
+
+  <script src="js/transition.js"></script>
+  <script src="js/wallpaper.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/construction.js"></script>
+</body>
+</html>
