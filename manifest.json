@@ -61,7 +61,7 @@
       "chapters": [
         {
           "slug": "01-good-one",
-          "title": "Good One",
+          "title": "01-good-one",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -74,7 +74,7 @@
         },
         {
           "slug": "02-detective-benedict",
-          "title": "Detective Benedict",
+          "title": "02-detective-benedict",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -87,7 +87,7 @@
         },
         {
           "slug": "03-its-a-good-game",
-          "title": "It's A Good Game",
+          "title": "03-its-a-good-game",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -100,7 +100,7 @@
         },
         {
           "slug": "04-public-stall",
-          "title": "Public Stall",
+          "title": "04-public-stall",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -113,7 +113,7 @@
         },
         {
           "slug": "05-trouble-afoot",
-          "title": "Trouble Afoot",
+          "title": "05-trouble-afoot",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -126,7 +126,7 @@
         },
         {
           "slug": "06-space-dump",
-          "title": "Space Dump",
+          "title": "06-space-dump",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -139,7 +139,7 @@
         },
         {
           "slug": "07-seven-and-seven-is",
-          "title": "Seven and Seven Is",
+          "title": "07-seven-and-seven-is",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -152,7 +152,7 @@
         },
         {
           "slug": "08-flyxlexia",
-          "title": "Flyxlexia",
+          "title": "08-flyxlexia",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -165,7 +165,7 @@
         },
         {
           "slug": "09-money-men",
-          "title": "Money Men",
+          "title": "09-money-men",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -178,7 +178,7 @@
         },
         {
           "slug": "10-w8",
-          "title": "W8",
+          "title": "10-w8",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -191,7 +191,7 @@
         },
         {
           "slug": "11-inherit-moniker",
-          "title": "Inherit Moniker",
+          "title": "11-inherit-moniker",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -204,7 +204,7 @@
         },
         {
           "slug": "12-self-care-diet",
-          "title": "Self Care Diet",
+          "title": "12-self-care-diet",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -217,7 +217,7 @@
         },
         {
           "slug": "13-mclimb-is-back",
-          "title": "McLimb© is Back!",
+          "title": "13-mclimb-is-back",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -230,7 +230,7 @@
         },
         {
           "slug": "14-final-destination-14",
-          "title": "Final Destination 14",
+          "title": "14-final-destination-14",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -243,7 +243,7 @@
         },
         {
           "slug": "15-vomtoria",
-          "title": "Vomtoria",
+          "title": "15-vomtoria",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -256,7 +256,7 @@
         },
         {
           "slug": "16-exam",
-          "title": "Exam",
+          "title": "16-exam",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -269,7 +269,7 @@
         },
         {
           "slug": "17-mandatory-training",
-          "title": "Mandatory Training",
+          "title": "17-mandatory-training",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -282,7 +282,7 @@
         },
         {
           "slug": "18-certified-training",
-          "title": "Certified Training",
+          "title": "18-certified-training",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -295,7 +295,7 @@
         },
         {
           "slug": "19-an-eachtra-quackens",
-          "title": "An Eachtra Quackens",
+          "title": "19-an-eachtra-quackens",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -308,7 +308,7 @@
         },
         {
           "slug": "20-an-tobar-orga",
-          "title": "An Tobar Órga",
+          "title": "20-an-tobar-orga",
           "date": null,
           "backgroundMode": null,
           "pageCount": 1,
@@ -340,7 +340,7 @@
         {
           "slug": "chapter-01",
           "title": "Masks",
-          "date": "2020-05-01",
+          "date": "2026-07-15",
           "backgroundMode": null,
           "pageCount": 28,
           "thumbnail": "comics/masks/chapter-01/01.jpg",
@@ -725,7 +725,7 @@
         {
           "slug": "chapter-01",
           "title": "Kickstarter Preview",
-          "date": "2022-04-25",
+          "date": "2026-07-15",
           "backgroundMode": null,
           "pageCount": 16,
           "thumbnail": "comics/walo/chapter-01/01.jpg",
