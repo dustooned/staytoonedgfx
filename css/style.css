@@ -516,11 +516,24 @@ main { flex: 1; }
 
 /* ── "Drag to reorder" hint (desktop only) ────────────────── */
 .drag-hint {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   text-align: center;
   margin: -0.5rem 0 1.25rem;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
+}
+
+.drag-hint-key {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 5px;
+  line-height: 1.4;
+  vertical-align: middle;
 }
 
 @media (pointer: coarse) {

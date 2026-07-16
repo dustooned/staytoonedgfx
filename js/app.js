@@ -73,7 +73,7 @@
             ${coverHtml}
           </a>
           <div class="series-card-body">
-            <span class="drag-handle" aria-hidden="true">⠿</span>
+            <span class="drag-handle" title="Drag to reorder" aria-hidden="true">⠿</span>
             <a href="series.html?s=${s.slug}" class="series-card-title-link">
               <div class="series-card-title">${SERIES_EMOJI[s.slug] ? SERIES_EMOJI[s.slug] + ' ' : ''}${s.title}</div>
             </a>
