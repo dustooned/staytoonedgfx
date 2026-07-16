@@ -1064,6 +1064,11 @@ body.has-series-bg .content-panel {
 }
 
 /* Click cursor shows it's interactive (click to navigate) */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .comic-page-img {
   max-width: 100%;
   height: auto;
@@ -1072,6 +1077,7 @@ body.has-series-bg .content-panel {
   margin: 0 auto;
   border-radius: 3px;
   cursor: pointer;
+  animation: page-in 0.25s ease;
 }
 
 .comic-page-placeholder {

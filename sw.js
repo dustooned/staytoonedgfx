@@ -1,4 +1,4 @@
-const CACHE = 'stg-2026-07-16e';
+const CACHE = 'stg-2026-07-16f';
 
 const SHELL = [
   '/',
