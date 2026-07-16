@@ -570,6 +570,7 @@ body.is-dragging * { cursor: move !important; }
 .series-card-body {
   padding: 18px;
   flex: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;

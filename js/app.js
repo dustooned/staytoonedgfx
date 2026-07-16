@@ -69,11 +69,11 @@
 
       return `
         <div class="series-card" data-slug="${s.slug}" style="--card-accent:${s.accentColor || 'var(--series-accent)'}">
-          <span class="drag-handle" aria-hidden="true">⠿</span>
           <a href="series.html?s=${s.slug}" class="series-card-cover-wrap" tabindex="-1">
             ${coverHtml}
           </a>
           <div class="series-card-body">
+            <span class="drag-handle" aria-hidden="true">⠿</span>
             <a href="series.html?s=${s.slug}" class="series-card-title-link">
               <div class="series-card-title">${SERIES_EMOJI[s.slug] ? SERIES_EMOJI[s.slug] + ' ' : ''}${s.title}</div>
             </a>
