@@ -342,7 +342,7 @@
           "title": "Masks",
           "date": "2026-07-15",
           "backgroundMode": null,
-          "pageCount": 29,
+          "pageCount": 28,
           "thumbnail": "comics/masks/chapter-01/00.webp",
           "pages": [
             "comics/masks/chapter-01/00.webp",
@@ -372,8 +372,7 @@
             "comics/masks/chapter-01/24.jpg",
             "comics/masks/chapter-01/25.jpg",
             "comics/masks/chapter-01/26.jpg",
-            "comics/masks/chapter-01/27.jpg",
-            "comics/masks/chapter-01/28.jpg"
+            "comics/masks/chapter-01/27.jpg"
           ],
           "background": null,
           "backgroundPause": null
