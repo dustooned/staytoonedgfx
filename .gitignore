@@ -23,5 +23,8 @@ _DROP-FILES-HERE.txt
 # Claude Code session data
 .claude/
 
+# Local comics backup (not for deployment)
+comics-backup/
+
 # Legacy favicon subfolder
 assets/favicon_io/

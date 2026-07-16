@@ -44,9 +44,10 @@
       const latest       = s.chapters[s.chapters.length - 1];
       const firstChapter = s.chapters[0];
 
-      // 🖼️ Cover image or placeholder icon
-      const coverHtml = s.cover
-        ? `<img class="series-card-cover" src="${s.cover}" alt="${s.title} cover" loading="lazy">`
+      // 🖼️ Cover image — explicit cover.jpg, else first page of chapter 1, else placeholder
+      const coverSrc  = s.cover ?? firstChapter?.thumbnail ?? null;
+      const coverHtml = coverSrc
+        ? `<img class="series-card-cover" src="${coverSrc}" alt="${s.title} cover" loading="lazy">`
         : `<div class="series-card-cover-placeholder">📖</div>`;
 
       // 🔗 Start Reading link → chapter 1, page 1
