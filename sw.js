@@ -1,4 +1,4 @@
-const CACHE = 'stg-2026-07-16f';
+const CACHE = 'stg-2026-07-16g';
 
 const SHELL = [
   '/',
@@ -12,6 +12,8 @@ const SHELL = [
   '/js/app.js',
   '/js/drag-order.js',
   '/js/pwa-install.js',
+  '/js/confetti.js',
+  '/js/easter-egg.js',
   '/js/series.js',
   '/js/archive.js',
   '/js/hero-type.js',

@@ -379,6 +379,11 @@
       updateProgressBar();
       saveProgress();
 
+      // 🎉 CONFETTI — fire on last page of this chapter
+      if (page === total && typeof window.triggerConfetti === 'function') {
+        setTimeout(window.triggerConfetti, 400);
+      }
+
       // 🔗 Keep URL in sync without a full reload
       const url = new URL(location.href);
       url.searchParams.set('p', page);
