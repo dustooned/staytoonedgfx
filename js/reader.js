@@ -464,9 +464,25 @@
     document.addEventListener('keydown', e => {
       if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
 
-      // Lightbox takes priority — close on Esc or Z
+      // Lightbox: arrows navigate pages in-place, Esc/Z closes
       if (lightbox.classList.contains('show')) {
-        if (e.key === 'Escape' || e.key === 'z' || e.key === 'Z') closeLightbox();
+        if (e.key === 'Escape' || e.key === 'z' || e.key === 'Z') { closeLightbox(); return; }
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          go(page - 1);
+          lbReset();
+          lightboxImg.src = pages[page - 1];
+          lightboxImg.alt = `Page ${page} of ${total}`;
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+          e.preventDefault();
+          go(page + 1);
+          lbReset();
+          lightboxImg.src = pages[page - 1];
+          lightboxImg.alt = `Page ${page} of ${total}`;
+          return;
+        }
         return;
       }
 
