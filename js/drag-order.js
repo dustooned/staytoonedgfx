@@ -59,7 +59,7 @@
 
       dragging.style.opacity       = '0.2';
       dragging.style.pointerEvents = 'none';
-      document.body.style.cursor   = 'grabbing';
+      document.body.classList.add('is-dragging');
     }
 
     // ── Pointer down — start watching for movement ─────────────────
@@ -122,7 +122,7 @@
         dragging.style.pointerEvents = '';
         dragging = null;
       }
-      document.body.style.cursor = '';
+      document.body.classList.remove('is-dragging');
 
       if (active) saveOrder(grid);
       active = false;

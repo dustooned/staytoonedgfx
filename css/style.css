@@ -528,6 +528,9 @@ main { flex: 1; }
   .drag-hint { display: none; }
 }
 
+body.is-dragging,
+body.is-dragging * { cursor: move !important; }
+
 /* Cover wrap link — fills the image area, no text decoration */
 .series-card-cover-wrap {
   display: block;
