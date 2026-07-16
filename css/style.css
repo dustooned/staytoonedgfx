@@ -823,6 +823,18 @@ body.has-series-bg .content-panel {
   line-height: 1.55;
 }
 
+.ks-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #05ce78;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.ks-link:hover { text-decoration: underline; }
+
 /* ─────────────────────────────────────────────────────
    🗂️ SERIES: CHAPTERS GRID
    ───────────────────────────────────────────────────── */
