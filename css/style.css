@@ -495,6 +495,49 @@ main { flex: 1; }
   border-color: var(--card-accent, var(--series-accent));
 }
 
+/* ── Loading skeletons ────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--border);
+  background-image: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--border);
+  background-image: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-title { height: 16px; width: 60%; }
+.skeleton-short { width: 40%; }
+
 /* ── PWA install banner ───────────────────────────────────── */
 .pwa-banner {
   position: fixed;
