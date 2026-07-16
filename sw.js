@@ -1,4 +1,4 @@
-const CACHE = 'stg-2026-07-05b';
+const CACHE = 'stg-2026-07-15';
 
 const SHELL = [
   '/',
@@ -11,6 +11,7 @@ const SHELL = [
   '/404.html',
   '/css/style.css',
   '/js/app.js',
+  '/js/drag-order.js',
   '/js/series.js',
   '/js/archive.js',
   '/js/hero-type.js',

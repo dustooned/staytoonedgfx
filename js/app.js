@@ -1,4 +1,4 @@
-// ┌─────────────────────────────────────────────────────┐
+﻿// ┌─────────────────────────────────────────────────────┐
 // │  app.js — Homepage                                  │
 // │                                                     │
 // │  Sections (Ctrl+F the emoji to jump):               │
@@ -29,6 +29,18 @@
     // 🎭 Series emoji labels by slug
     const SERIES_EMOJI = { dio: '👹', melvin: '🐰', iagl: '🦆', tucker: '😈' };
 
+    // 🗂️ APPLY SAVED DRAG ORDER — restore user's custom card arrangement
+    const savedOrder = getSavedSeriesOrder?.() ?? null;
+    if (savedOrder?.length) {
+      series.sort((a, b) => {
+        const ia = savedOrder.indexOf(a.slug);
+        const ib = savedOrder.indexOf(b.slug);
+        if (ia === -1) return 1;
+        if (ib === -1) return -1;
+        return ia - ib;
+      });
+    }
+
     // 🚫 EMPTY STATE
     if (!series || series.length === 0) {
       grid.innerHTML = '<p class="empty">No series found. Add a series folder and run <code>node scan.js</code>.</p>';
@@ -56,7 +68,7 @@
         : `series.html?s=${s.slug}`;
 
       return `
-        <div class="series-card" style="--card-accent:${s.accentColor || 'var(--series-accent)'}">
+        <div class="series-card" data-slug="${s.slug}" style="--card-accent:${s.accentColor || 'var(--series-accent)'}">
           <a href="series.html?s=${s.slug}" class="series-card-cover-wrap" tabindex="-1">
             ${coverHtml}
           </a>
@@ -76,6 +88,9 @@
           </div>
         </div>`;
     }).join('');
+
+    // 🖱️ DRAG TO REORDER — enable after cards are in the DOM
+    if (typeof initDragOrder === 'function') initDragOrder(grid);
 
     // ─────────────────────────────────────────────────────
     // 🕐 RENDER LATEST UPDATES
@@ -129,3 +144,4 @@
   }
 
 })();
+
