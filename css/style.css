@@ -485,6 +485,7 @@ main { flex: 1; }
   color: var(--text);
   display: flex;
   flex-direction: column;
+  position: relative;
   transition: transform 0.2s ease, border-color 0.2s;
 }
 
@@ -492,6 +493,39 @@ main { flex: 1; }
 .series-card:hover {
   transform: translateY(-5px);
   border-color: var(--card-accent, var(--series-accent));
+}
+
+/* ── Drag handle (desktop only) ───────────────────────────── */
+.drag-handle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  color: var(--text);
+  opacity: 0.2;
+  cursor: grab;
+  line-height: 1;
+  user-select: none;
+  transition: opacity 0.15s;
+  z-index: 1;
+}
+
+.series-card:hover .drag-handle {
+  opacity: 0.65;
+}
+
+/* ── "Drag to reorder" hint (desktop only) ────────────────── */
+.drag-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: -0.5rem 0 1.25rem;
+  letter-spacing: 0.03em;
+}
+
+@media (pointer: coarse) {
+  .drag-handle,
+  .drag-hint { display: none; }
 }
 
 /* Cover wrap link — fills the image area, no text decoration */

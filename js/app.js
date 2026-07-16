@@ -69,6 +69,7 @@
 
       return `
         <div class="series-card" data-slug="${s.slug}" style="--card-accent:${s.accentColor || 'var(--series-accent)'}">
+          <span class="drag-handle" aria-hidden="true">⠿</span>
           <a href="series.html?s=${s.slug}" class="series-card-cover-wrap" tabindex="-1">
             ${coverHtml}
           </a>

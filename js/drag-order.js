@@ -20,6 +20,7 @@
 
   // ── Main init — call after cards are in the DOM ──────────────────
   window.initDragOrder = function (grid) {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
 
     let dragging       = null; // the card being dragged
     let ghost          = null; // floating clone that follows the pointer
